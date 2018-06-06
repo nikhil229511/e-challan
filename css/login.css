@@ -26,6 +26,9 @@
 	border-radius: 5px;
 }
 
+#error_msg{
+	color:red;
+}
 #Login{
 	font-size: 30px;
 	width: 80%;
