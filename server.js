@@ -33,49 +33,55 @@ wsServer.on('request',function(request){
 
 	var connection=request.accept(null,request.origin);
 	console.log((new Date()) + ' Connection accepted.');
+	//async function main_function(){
+		connection.on('message',function(message){
+			try{
+				if(message.type === 'utf8'){
+					console.log((new Date()) + '(R) => ' + message.utf8Data);
+					var c=JSON.parse(message.utf8Data);
+					switch(c.usertype){
+						case "login":
+						verifyUser(c.data.username,c.data.password,connection);
+						break;
 
-	connection.on('message',function(message){
-		try{
-			if(message.type === 'utf8'){
-				console.log((new Date()) + '(R) => ' + message.utf8Data);
-				var c=JSON.parse(message.utf8Data);
-				console.log(c);
-				switch(c.usertype){
-					case "login":
-					verifyUser(c.data.username,c.data.password,connection);
-					break;
-
+					}
 				}
+				else{
+					console.log('Invalid Message Format.');
+				}
+			}catch(ex){
+				console.log('This is not a valid json' + ex);
 			}
-			else{
-				console.log('Invalid Message Format.');
-			}
-		}catch(ex){
-			console.log('This is not a valid json' + ex);
-		}
-	});
+		});
 
-	connection.on('close',function(){
-		console.log((new Date()) + ' Peer disconnected.');
-	});
+		connection.on('close',function(){
+			console.log((new Date()) + ' Peer disconnected.');
+		});	
+
+		function verifyUser(username,password,connection){
+			var obj;
+			con.query("SELECT companyid,username,password FROM loginmaster where username='"+username+"' and password='"+password+"';", function (err, result, fields) {
+				if (err) 
+					throw err;
+				if(result.length==1){
+					obj={
+						msg:"success",
+						companyid:result[0].companyid,
+						username:result[0].username,
+						password:result[0].password
+					}	
+				}
+				else{
+					obj={
+						msg:"fail"
+					}
+				}
+
+				var json=JSON.stringify({type:"login_callback",data:obj});
+				connection.send(json);
+				});				
+		}
+	//}
+	//main_function();
+
 });
-
-	
-
-function verifyUser(username,password,connection){
-	var obj;
-	if(username=='admin' && password == 'admin123'){
-		obj={
-			msg:"success",
-			username:username,
-			password:password
-		}	
-	}
-	else{
-		obj={
-			msg:"fail"
-		}
-	}	
-	var json=JSON.stringify({type:"login_callback",data:obj});
-	connection.send(json);
-}

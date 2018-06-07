@@ -38,6 +38,11 @@ $(function(){
 	  console.log(json);
 	  	if(json.type == "login_callback") {
 	  		if(json.data.msg== 'success'){
+	  			if(window.sessionStorage){
+	  				sessionStorage.setItem('companyid','"'+json.data.companyid+'"');
+	  				sessionStorage.setItem('username','"'+json.data.username+'"');
+	  				sessionStorage.setItem('password','"'+json.data.password+'"');	  				
+	  			}
 	  			window.location='dashboard.html'
 	  		}
 	  		if(json.data.msg == 'fail'){
