@@ -15,7 +15,6 @@ var con = mysql.createConnection({
 con.connect(function(){
 	console.log("connected to database.");
 });
-//database connection end
 
 //http server created to bind it with websocket server
 var server=http.createServer(function(request,response){
@@ -37,13 +36,24 @@ wsServer.on('request',function(request){
 		connection.on('message',function(message){
 			try{
 				if(message.type === 'utf8'){
-					console.log((new Date()) + '(R) => ' + message.utf8Data);
+					console.log('(R) => ' + message.utf8Data);
 					var c=JSON.parse(message.utf8Data);
 					switch(c.usertype){
 						case "login":
 						verifyUser(c.data.username,c.data.password,connection);
 						break;
 
+						case "insertCustomer":
+							insertCustomer(c.data.fname,c.data.lname,c.data.contactno,c.data.gstno,c.data.address,c.data.companyid,connection);
+						break;
+
+						case "insertTransporter":
+							insertTransporter(c.data.fname,c.data.lname,c.data.contactno,c.data.gstno,c.data.address,c.data.companyid,connection);
+						break;
+
+						case "insertProduct":
+							insertProduct(c.data.name,c.data.length,c.data.width,c.data.thickness,c.data.companyid,connection);
+						break;
 					}
 				}
 				else{
@@ -60,7 +70,8 @@ wsServer.on('request',function(request){
 
 		function verifyUser(username,password,connection){
 			var obj;
-			con.query("SELECT companyid,username,password FROM loginmaster where username='"+username+"' and password='"+password+"';", function (err, result, fields) {
+			var sql="SELECT companyid,username,password FROM loginmaster where username='"+username+"' and password='"+password+"';"
+			con.query(sql, function (err, result, fields) {
 				if (err) 
 					throw err;
 				if(result.length==1){
@@ -78,8 +89,76 @@ wsServer.on('request',function(request){
 				}
 
 				var json=JSON.stringify({type:"login_callback",data:obj});
-				connection.send(json);
-				});				
+					sendResponse(json,connection);
+			});				
+		}
+
+		function insertCustomer(fname,lname,contactno,gstno,address,companyid,connection){
+			var obj;
+			var sql="INSERT INTO customers (companyid,fname,lname,contactno,address,gstno) values("+companyid+",'"+fname+"','"+lname+"','"+contactno+"','"+address+"','"+gstno+"');";
+			con.query(sql, function (err, result, fields) {
+				if(err)
+					throw err;
+				if(result.affectedRows){
+					obj={
+						msg:'CustomerSuccess'
+					}								
+				}
+				else{
+					obj={
+						msg:'CustomerFail'
+					}
+				}
+				var json=JSON.stringify({type:"customerInsert_callback",data:obj});
+				sendResponse(json,connection);
+			});
+		}
+
+		function insertTransporter(fname,lname,contactno,gstno,address,companyid,connection){
+			var obj;
+			var sql="INSERT INTO transporters (companyid,fname,lname,contactno,address,gstno) values("+companyid+",'"+fname+"','"+lname+"','"+contactno+"','"+address+"','"+gstno+"');";
+			con.query(sql, function (err, result, fields) {
+				if(err)
+					throw err;
+				if(result.affectedRows){
+					obj={
+						msg:'TransporterSuccess'
+					}								
+				}
+				else{
+					obj={
+						msg:'TransporterFail'
+					}
+				}
+				var json=JSON.stringify({type:"TransporterInsert_callback",data:obj});
+				sendResponse(json,connection);
+			});
+		}
+
+		function insertProduct(name,length,width,thickness,companyid,connection){
+			var obj;
+			var sql="INSERT INTO products (productname,length,width,thickness,companyid) values('"+name+"',"+length+","+width+","+thickness+","+companyid+");";
+			con.query(sql, function (err, result, fields) {
+				if(err)
+					throw err;
+				if(result.affectedRows){
+					obj={
+						msg:'ProductSuccess'
+					}								
+				}
+				else{
+					obj={
+						msg:'ProductFail'
+					}
+				}
+				var json=JSON.stringify({type:"ProductInsert_callback",data:obj});
+				sendResponse(json,connection);
+			});
+		}
+
+		function sendResponse(json,connection){
+			connection.send(json);
+			console.log('(S) => ' + json);
 		}
 	//}
 	//main_function();

@@ -3,8 +3,6 @@
 $(function(){
 
 	var login=$('#Login');
-	var port=5005;
-
 	window.WebSocket = window.WebSocket || window.MozWebSocket ;
 	if(!window.WebSocket){
 		alert("Sorry! Your browser doesn't support WebSocket.");
@@ -22,14 +20,6 @@ $(function(){
 	var connection = new WebSocket('ws://localhost:5005/');
 	connection.onopen = function (message) {
 		console.log("connected");
-		/*var msg={
-			hi: 'hi'
-		}
-		var json=JSON.stringify({ type:"login",data:msg});
-		console.log(json);
-		wSocket.send(json);*/
-
-		
 	};
 	  
 
@@ -41,7 +31,6 @@ $(function(){
 	  			if(window.sessionStorage){
 	  				sessionStorage.setItem('companyid','"'+json.data.companyid+'"');
 	  				sessionStorage.setItem('username','"'+json.data.username+'"');
-	  				sessionStorage.setItem('password','"'+json.data.password+'"');	  				
 	  			}
 	  			window.location='dashboard.html'
 	  		}
