@@ -13,13 +13,18 @@ $(function(){
 			console.log("Unable to connect to server. Please try again.");
 		}
 	},3000);
-
-	/*if(sessionStorage.getItem('companyid') =='' || sessionStorage.getItem('username') ==''){
+	if(sessionStorage.getItem('companyid') ==null || sessionStorage.getItem('username') ==null){
 		window.location='login.html'
-	}*/
+	}
 	var connection = new WebSocket('ws://localhost:5005/');
+	
 	connection.onopen = function (message) {
 		console.log("connected");
+		var obj={
+			companyid: sessionStorage.getItem('companyid')
+		}
+		var json=JSON.stringify({usertype:"sendAll",data:obj});
+		connection.send(json);
 	};
 
 	connection.onclose=function(){
@@ -28,6 +33,7 @@ $(function(){
 
 	connection.onmessage = function (message) {
 	  	var json = JSON.parse(message.data);
+	  	
 	  	if(json.type == "customerInsert_callback") {
 	  		if(json.data.msg== 'CustomerSuccess'){
 	  			alert('Record saved successfully.');
@@ -36,7 +42,7 @@ $(function(){
 	  			alert('Some Error Occured.');	
 	  		}
 	  	}
-	  	if(json.type == "TransporterInsert_callback") {
+	  	else if(json.type == "TransporterInsert_callback") {
 	  		if(json.data.msg== 'TransporterSuccess'){
 	  			alert('Record saved successfully.');
 	  		}
@@ -44,13 +50,54 @@ $(function(){
 	  			alert('Some Error Occured.');	
 	  		}
 	  	}
-	  	if(json.type == "ProductInsert_callback") {
+	  	else if(json.type == "ProductInsert_callback") {
 	  		if(json.data.msg== 'ProductSuccess'){
 	  			alert('Record saved successfully.');
 	  		}
 	  		if(json.data.msg == 'ProductFail'){
 	  			alert('Some Error Occured.');	
 	  		}
+	  	}
+	  	else if(json.type == "getAllCustomer_callback"){
+	  		var htmlString="";
+	  		for(var i=0;i<json.data.length;i++){
+	  			htmlString +='<tr>';
+	  			htmlString +='<td>'+json.data[i].fname+'</td>';
+	  			htmlString +='<td>'+json.data[i].lname+'</td>';	
+	  			htmlString +='<td>'+json.data[i].gstno+'</td>';
+	  			htmlString +='<td>'+json.data[i].contactno+'</td>';
+	  			htmlString +='<td>'+json.data[i].address+'</td>';
+	  			htmlString +='<td><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-trash" aria-hidden="true"></i></td>';
+	  			htmlString +='</tr>';
+	  		}
+	  		$('#CustomersData').html(htmlString);
+	  	}
+	  	else if(json.type == "getAllTransporter_callback"){
+	  		var htmlString="";
+	  		for(var i=0;i<json.data.length;i++){
+	  			htmlString +='<tr>';
+	  			htmlString +='<td>'+json.data[i].fname+'</td>';
+	  			htmlString +='<td>'+json.data[i].lname+'</td>';	
+	  			htmlString +='<td>'+json.data[i].gstno+'</td>';
+	  			htmlString +='<td>'+json.data[i].contactno+'</td>';
+	  			htmlString +='<td>'+json.data[i].address+'</td>';
+	  			htmlString +='<td><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-trash" aria-hidden="true"></i></td>';
+	  			htmlString +='</tr>';
+	  		}
+	  		$('#TransportersData').html(htmlString);
+	  	}
+	  	else if(json.type == "getAllProducts_callback"){
+	  		var htmlString="";
+	  		for(var i=0;i<json.data.length;i++){
+	  			htmlString +='<tr>';
+	  			htmlString +='<td>'+json.data[i].productname+'</td>';
+	  			htmlString +='<td>'+json.data[i].length+'</td>';	
+	  			htmlString +='<td>'+json.data[i].width+'</td>';
+	  			htmlString +='<td>'+json.data[i].thickness+'</td>';
+	  			htmlString +='<td><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-trash" aria-hidden="true"></i></td>';
+	  			htmlString +='</tr>';
+	  		}
+	  		$('#productsData').html(htmlString);
 	  	}
 	};
 
@@ -117,7 +164,7 @@ $(function(){
 			contactno:ccontactno,
 			gstno : cgstno,
 			address: caddress,
-			companyid: '1'
+			companyid: sessionStorage.getItem('companyid')
 		};
 		
 		var json=JSON.stringify({usertype: "insertCustomer", data:obj});
@@ -176,7 +223,7 @@ $(function(){
 			contactno:tcontactno,
 			gstno :tgstno,
 			address: taddress,
-			companyid: '1'
+			companyid: sessionStorage.getItem('companyid')
 		};
 		
 		var json=JSON.stringify({usertype: "insertTransporter", data:obj});
@@ -232,7 +279,7 @@ $(function(){
 			length:length,
 			width:width,
 			thickness:thickness,
-			companyid:'1'
+			companyid: sessionStorage.getItem('companyid')
 		}
 		var json=JSON.stringify({usertype: "insertProduct", data:obj});
 		connection.send(json);

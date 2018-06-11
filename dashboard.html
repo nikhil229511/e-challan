@@ -27,618 +27,236 @@
           </ul>
         </li>
       </ul>
-    </header>
+  </header>
     <!-- Header -->
 
-    <!-- Sidebar menu-->
-    <div class="app-sidebar__overlay" data-toggle="sidebar"></div>
-    <aside class="app-sidebar">
-      <div class="app-sidebar__user"><img class="app-sidebar__user-avatar" src="https://s3.amazonaws.com/uifaces/faces/twitter/jsa/48.jpg" alt="User Image">
-        <div>
-          <p class="app-sidebar__user-name">John Doe</p>
-          <p class="app-sidebar__user-designation">Software Developer</p>
+  <!-- Sidebar menu-->
+  <div class="app-sidebar__overlay" data-toggle="sidebar"></div>
+  <aside class="app-sidebar">
+    <div class="app-sidebar__user"><img class="app-sidebar__user-avatar" src="https://s3.amazonaws.com/uifaces/faces/twitter/jsa/48.jpg" alt="User Image">
+      <div>
+        <p class="app-sidebar__user-name">John Doe</p>
+        <p class="app-sidebar__user-designation">Software Developer</p>
+      </div>
+    </div>
+    <ul class="app-menu">
+      <li><a class="app-menu__item active" style="cursor: pointer;" onclick='showDashboard();'><i class="app-menu__icon fa fa-dashboard"></i><span class="app-menu__label">Dashboard</span></a></li>
+      <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon fa fa-laptop"></i><span class="app-menu__label">Masters</span><i class="treeview-indicator fa fa-angle-right"></i></a>
+        <ul class="treeview-menu">
+          <li><a class="treeview-item" style="cursor: pointer;" onclick='showCustomers();'><i class="icon fa fa-circle-o"></i> Customer Master</a></li>
+          <li><a class="treeview-item" style="cursor: pointer;" onclick='showProducts();' rel="noopener"><i class="icon fa fa-circle-o"></i> Product Master</a></li>
+          <li><a class="treeview-item" style="cursor: pointer;" onclick='showTransporters();' rel="noopener"><i class="icon fa fa-circle-o"></i> Transport Master</a></li>            
+        </ul>
+      </li>
+      <li><a class="app-menu__item" href="#"><i class="app-menu__icon fa fa-edit"></i><span class="app-menu__label">Challan</span></a></li>
+      <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon fa fa-th-list "></i><span class="app-menu__label">Reports</span><i class="treeview-indicator fa fa-angle-right"></i></a>
+        <ul class="treeview-menu">
+          <li><a class="treeview-item" href="#"><i class="icon fa fa-circle-o"></i> Challan No.-wise</a></li>
+          <li><a class="treeview-item" href="#"><i class="icon fa fa-circle-o"></i>Date-wise</a></li>
+          <li><a class="treeview-item" href="#"><i class="icon fa fa-circle-o"></i>Customer-wise</a></li>
+        </ul>
+      </li>        
+    </ul>
+  </aside>
+  <!-- side menu -->
+
+
+  <main class="app-content">
+  	<!-- page title -->
+  	<div class="app-title">
+    	<div>
+    		<h1><i class="fa fa-dashboard"></i> Welcome <strong><em>{username}</em></strong></h1>
+    		<!-- <p>A free and open source Bootstrap 4 admin template</p> -->
+    	</div>
+      <ul class="app-breadcrumb breadcrumb">
+        <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
+        <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+      </ul>
+  	</div>
+    <!-- page title -->
+
+    	<!-- Changable content Dashboard-->
+    	<div id="div_dashboard">
+      	<div class="row user">
+        	<div class="col-md-12">
+          		<div class="profile">
+            		<div class="info"><img class="user-img" src="https://s3.amazonaws.com/uifaces/faces/twitter/jsa/128.jpg">
+              			<h4>John Doe</h4>
+  	            		<p>Software Developer</p>
+            		</div>
+            		<div class="cover-image"></div>
+          		</div>
+        	</div>
+      	</div>
+      </div>
+      
+      <!-- Changable content Customers-->
+      <div id="div_customers">
+        <div class="col-md-12">
+          <div class="tile">
+            <h3 class="tile-title">Customers Detail</h3>
+            <div class="tile-body">
+              <form class="row formvalidate" id="customerForm">
+                <div class="form-group col-md-3">
+                  <label class="control-label">First Name</label>
+                  <input class="form-control" id="cfname" type="text" name="cfname" placeholder="Enter First Name">
+                </div>
+                <div class="form-group col-md-3">
+                  <label class="control-label">Last Name</label>
+                  <input class="form-control" id="clname" type="text" name="clname" placeholder="Enter Last Name">
+                </div>
+                <div class="form-group col-md-3">
+                  <label class="control-label">Contact No.</label>
+                  <input class="form-control" id="ccontactno" name="ccontactno" type="text" placeholder="Enter Contact Number">
+                </div>
+                <div class="form-group col-md-3">
+                  <label class="control-label">GST No</label>
+                  <input class="form-control" id="cgstno" type="text" name="cgstno" placeholder="Enter GST  Number">
+                </div>
+                <div class="form-group col-md-8">
+                  <label class="control-label">Address</label>
+                  <input class="form-control" id="caddress" type="text" name="caddress" placeholder="Enter Address">
+                </div>
+                <div class="form-group col-md-4 align-self-end">
+                  <button class="btn btn-primary" id="csubmit" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Okay</button>
+                  &nbsp;&nbsp;<button class="btn btn-secondary" href="#"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancel</button>
+                </div>
+              </form>
+            </div>
+          </div>
+          
+          <div class="tile">
+            <div class="tile-body">
+            <table class="table table-hover table-bordered" id="sampleTableCustomer">
+              <thead>
+                <tr>
+                  <th>First Name</th>
+                  <th>Last Name</th>
+                  <th>GST No.</th>
+                  <th>Contact No.</th>
+                  <th>Address</th> 
+                  <th>Action</th>                 
+                </tr>
+              </thead>
+              <tbody id="CustomersData">
+                <!-- dynamic table load -->
+              </tbody>
+            </table>
+            </div>
+          </div>            
         </div>
       </div>
-      <ul class="app-menu">
-        <li><a class="app-menu__item active" style="cursor: pointer;" onclick='showDashboard();'><i class="app-menu__icon fa fa-dashboard"></i><span class="app-menu__label">Dashboard</span></a></li>
-        <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon fa fa-laptop"></i><span class="app-menu__label">Masters</span><i class="treeview-indicator fa fa-angle-right"></i></a>
-          <ul class="treeview-menu">
-            <li><a class="treeview-item" style="cursor: pointer;" onclick='showCustomers();'><i class="icon fa fa-circle-o"></i> Customer Master</a></li>
-            <li><a class="treeview-item" style="cursor: pointer;" onclick='showProducts();' rel="noopener"><i class="icon fa fa-circle-o"></i> Product Master</a></li>
-            <li><a class="treeview-item" style="cursor: pointer;" onclick='showTransporters();' rel="noopener"><i class="icon fa fa-circle-o"></i> Transport Master</a></li>            
-          </ul>
-        </li>
-        <li><a class="app-menu__item" href="#"><i class="app-menu__icon fa fa-edit"></i><span class="app-menu__label">Challan</span></a></li>
-        <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon fa fa-th-list "></i><span class="app-menu__label">Reports</span><i class="treeview-indicator fa fa-angle-right"></i></a>
-          <ul class="treeview-menu">
-            <li><a class="treeview-item" href="#"><i class="icon fa fa-circle-o"></i> Challan No.-wise</a></li>
-            <li><a class="treeview-item" href="#"><i class="icon fa fa-circle-o"></i>Date-wise</a></li>
-            <li><a class="treeview-item" href="#"><i class="icon fa fa-circle-o"></i>Customer-wise</a></li>
-          </ul>
-        </li>        
-      </ul>
-    </aside>
-    <!-- side menu -->
 
-
-    <main class="app-content">
-    	<!-- page title -->
-    	<div class="app-title">
-      	<div>
-      		<h1><i class="fa fa-dashboard"></i> Welcome <strong><em>{username}</em></strong></h1>
-      		<!-- <p>A free and open source Bootstrap 4 admin template</p> -->
-      	</div>
-        <ul class="app-breadcrumb breadcrumb">
-          <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
-          <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
-        </ul>
-    	</div>
-      <!-- page title -->
-
-      	<!-- Changable content Dashboard-->
-      	<div id="div_dashboard">
-	      	<div class="row user">
-	        	<div class="col-md-12">
-	          		<div class="profile">
-	            		<div class="info"><img class="user-img" src="https://s3.amazonaws.com/uifaces/faces/twitter/jsa/128.jpg">
-	              			<h4>John Doe</h4>
-	  	            		<p>Software Developer</p>
-	            		</div>
-	            		<div class="cover-image"></div>
-	          		</div>
-	        	</div>
-	      	</div>
-	      </div>
-        
-        <!-- Changable content Customers-->
-        <div id="div_customers">
-          <div class="col-md-12">
-            <div class="tile">
-              <h3 class="tile-title">Customers Detail</h3>
-              <div class="tile-body">
-                <form class="row formvalidate" id="customerForm">
-                  <div class="form-group col-md-3">
-                    <label class="control-label">First Name</label>
-                    <input class="form-control" id="cfname" type="text" name="cfname" placeholder="Enter First Name">
-                  </div>
-                  <div class="form-group col-md-3">
-                    <label class="control-label">Last Name</label>
-                    <input class="form-control" id="clname" type="text" name="clname" placeholder="Enter Last Name">
-                  </div>
-                  <div class="form-group col-md-3">
-                    <label class="control-label">Contact No.</label>
-                    <input class="form-control" id="ccontactno" name="ccontactno" type="text" placeholder="Enter Contact Number">
-                  </div>
-                  <div class="form-group col-md-3">
-                    <label class="control-label">GST No</label>
-                    <input class="form-control" id="cgstno" type="text" name="cgstno" placeholder="Enter GST  Number">
-                  </div>
-                  <div class="form-group col-md-8">
-                    <label class="control-label">Address</label>
-                    <input class="form-control" id="caddress" type="text" name="caddress" placeholder="Enter Address">
-                  </div>
-                  <div class="form-group col-md-4 align-self-end">
-                    <button class="btn btn-primary" id="csubmit" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Okay</button>
-                    &nbsp;&nbsp;<button class="btn btn-secondary" href="#"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancel</button>
-                  </div>
-                </form>
-              </div>
+      <!-- Changable content Transporters-->
+      <div id="div_transporters">
+        <div class="col-md-12">
+          <div class="tile">
+            <h3 class="tile-title">Transporters Detail</h3>
+            <div class="tile-body">
+              <form class="row formvalidate" id="transporterForm">
+                <div class="form-group col-md-3">
+                  <label class="control-label">First Name</label>
+                  <input class="form-control" id="tfname" type="text" placeholder="Enter First Name">
+                </div>
+                <div class="form-group col-md-3">
+                  <label class="control-label">Last Name</label>
+                  <input class="form-control" id="tlname" type="text" placeholder="Enter Last Name">
+                </div>
+                <div class="form-group col-md-3">
+                  <label class="control-label">Contact No.</label>
+                  <input class="form-control" id="tcontactno" type="text" placeholder="Enter Contact Number">
+                </div>
+                <div class="form-group col-md-3">
+                  <label class="control-label">GST No</label>
+                  <input class="form-control" type="text" id="tgstno" placeholder="Enter GST  Number">
+                </div>
+                <div class="form-group col-md-8">
+                  <label class="control-label">Address</label>
+                  <input class="form-control" type="text" id="taddress" placeholder="Enter Address">
+                </div>
+                <div class="form-group col-md-4 align-self-end">
+                  <button class="btn btn-primary" id="tsubmit" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Okay</button>
+                  &nbsp;&nbsp;<button class="btn btn-secondary" href=""><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancel</button>
+                </div>
+              </form>
             </div>
-            
-            <div class="tile">
-              <div class="tile-body">
-              <table class="table table-hover table-bordered" id="sampleTableCustomer">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Position</th>
-                    <th>Office</th>
-                    <th>Age</th>
-                    <th>Start date</th>
-                    <th>Salary</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Tiger Nixon</td>
-                    <td>System Architect</td>
-                    <td>Edinburgh</td>
-                    <td>61</td>
-                    <td>2011/04/25</td>
-                    <td>$320,800</td>
-                  </tr>
-                  <tr>
-                    <td>Garrett Winters</td>
-                    <td>Accountant</td>
-                    <td>Tokyo</td>
-                    <td>63</td>
-                    <td>2011/07/25</td>
-                    <td>$170,750</td>
-                  </tr>
-                  <tr>
-                    <td>Ashton Cox</td>
-                    <td>Junior Technical Author</td>
-                    <td>San Francisco</td>
-                    <td>66</td>
-                    <td>2009/01/12</td>
-                    <td>$86,000</td>
-                  </tr>
-                  <tr>
-                    <td>Cedric Kelly</td>
-                    <td>Senior Javascript Developer</td>
-                    <td>Edinburgh</td>
-                    <td>22</td>
-                    <td>2012/03/29</td>
-                    <td>$433,060</td>
-                  </tr>
-                  <tr>
-                    <td>Airi Satou</td>
-                    <td>Accountant</td>
-                    <td>Tokyo</td>
-                    <td>33</td>
-                    <td>2008/11/28</td>
-                    <td>$162,700</td>
-                  </tr>
-                  <tr>
-                    <td>Brielle Williamson</td>
-                    <td>Integration Specialist</td>
-                    <td>New York</td>
-                    <td>61</td>
-                    <td>2012/12/02</td>
-                    <td>$372,000</td>
-                  </tr>
-                  <tr>
-                    <td>Herrod Chandler</td>
-                    <td>Sales Assistant</td>
-                    <td>San Francisco</td>
-                    <td>59</td>
-                    <td>2012/08/06</td>
-                    <td>$137,500</td>
-                  </tr>
-                  <tr>
-                    <td>Rhona Davidson</td>
-                    <td>Integration Specialist</td>
-                    <td>Tokyo</td>
-                    <td>55</td>
-                    <td>2010/10/14</td>
-                    <td>$327,900</td>
-                  </tr>
-                  <tr>
-                    <td>Colleen Hurst</td>
-                    <td>Javascript Developer</td>
-                    <td>San Francisco</td>
-                    <td>39</td>
-                    <td>2009/09/15</td>
-                    <td>$205,500</td>
-                  </tr>
-                  <tr>
-                    <td>Sonya Frost</td>
-                    <td>Software Engineer</td>
-                    <td>Edinburgh</td>
-                    <td>23</td>
-                    <td>2008/12/13</td>
-                    <td>$103,600</td>
-                  </tr>
-                  <tr>
-                    <td>Hermione Butler</td>
-                    <td>Regional Director</td>
-                    <td>London</td>
-                    <td>47</td>
-                    <td>2011/03/21</td>
-                    <td>$356,250</td>
-                  </tr>
-                  <tr>
-                    <td>Lael Greer</td>
-                    <td>Systems Administrator</td>
-                    <td>London</td>
-                    <td>21</td>
-                    <td>2009/02/27</td>
-                    <td>$103,500</td>
-                  </tr>
-                  <tr>
-                    <td>Jonas Alexander</td>
-                    <td>Developer</td>
-                    <td>San Francisco</td>
-                    <td>30</td>
-                    <td>2010/07/14</td>
-                    <td>$86,500</td>
-                  </tr>
-                  <tr>
-                    <td>Shad Decker</td>
-                    <td>Regional Director</td>
-                    <td>Edinburgh</td>
-                    <td>51</td>
-                    <td>2008/11/13</td>
-                    <td>$183,000</td>
-                  </tr>
-                  <tr>
-                    <td>Michael Bruce</td>
-                    <td>Javascript Developer</td>
-                    <td>Singapore</td>
-                    <td>29</td>
-                    <td>2011/06/27</td>
-                    <td>$183,000</td>
-                  </tr>
-                  <tr>
-                    <td>Donna Snider</td>
-                    <td>Customer Support</td>
-                    <td>New York</td>
-                    <td>27</td>
-                    <td>2011/01/25</td>
-                    <td>$112,000</td>
-                  </tr>
-                </tbody>
-              </table>
-              </div>
-            </div>            
           </div>
-        </div>
-
-        <!-- Changable content Transporters-->
-        <div id="div_transporters">
-          <div class="col-md-12">
-            <div class="tile">
-              <h3 class="tile-title">Transporters Detail</h3>
-              <div class="tile-body">
-                <form class="row formvalidate" id="transporterForm">
-                  <div class="form-group col-md-3">
-                    <label class="control-label">First Name</label>
-                    <input class="form-control" id="tfname" type="text" placeholder="Enter First Name">
-                  </div>
-                  <div class="form-group col-md-3">
-                    <label class="control-label">Last Name</label>
-                    <input class="form-control" id="tlname" type="text" placeholder="Enter Last Name">
-                  </div>
-                  <div class="form-group col-md-3">
-                    <label class="control-label">Contact No.</label>
-                    <input class="form-control" id="tcontactno" type="text" placeholder="Enter Contact Number">
-                  </div>
-                  <div class="form-group col-md-3">
-                    <label class="control-label">GST No</label>
-                    <input class="form-control" type="text" id="tgstno" placeholder="Enter GST  Number">
-                  </div>
-                  <div class="form-group col-md-8">
-                    <label class="control-label">Address</label>
-                    <input class="form-control" type="text" id="taddress" placeholder="Enter Address">
-                  </div>
-                  <div class="form-group col-md-4 align-self-end">
-                    <button class="btn btn-primary" id="tsubmit" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Okay</button>
-                    &nbsp;&nbsp;<button class="btn btn-secondary" href=""><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancel</button>
-                  </div>
-                </form>
-              </div>
+          
+          <div class="tile">
+            <div class="tile-body">
+            <table class="table table-hover table-bordered" id="sampleTableTransporter">
+              <thead>
+                <tr>
+                  <th>First Name</th>
+                  <th>Last Name</th>
+                  <th>GST No.</th>
+                  <th>Contact No.</th>
+                  <th>Address</th> 
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="TransportersData">
+                <!-- Dynamic html -->
+              </tbody>
+            </table>
             </div>
-            
-            <div class="tile">
-              <div class="tile-body">
-              <table class="table table-hover table-bordered" id="sampleTableTransporter">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Position</th>
-                    <th>Office</th>
-                    <th>Age</th>
-                    <th>Start date</th>
-                    <th>Salary</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Tiger Nixon</td>
-                    <td>System Architect</td>
-                    <td>Edinburgh</td>
-                    <td>61</td>
-                    <td>2011/04/25</td>
-                    <td>$320,800</td>
-                  </tr>
-                  <tr>
-                    <td>Garrett Winters</td>
-                    <td>Accountant</td>
-                    <td>Tokyo</td>
-                    <td>63</td>
-                    <td>2011/07/25</td>
-                    <td>$170,750</td>
-                  </tr>
-                  <tr>
-                    <td>Ashton Cox</td>
-                    <td>Junior Technical Author</td>
-                    <td>San Francisco</td>
-                    <td>66</td>
-                    <td>2009/01/12</td>
-                    <td>$86,000</td>
-                  </tr>
-                  <tr>
-                    <td>Cedric Kelly</td>
-                    <td>Senior Javascript Developer</td>
-                    <td>Edinburgh</td>
-                    <td>22</td>
-                    <td>2012/03/29</td>
-                    <td>$433,060</td>
-                  </tr>
-                  <tr>
-                    <td>Airi Satou</td>
-                    <td>Accountant</td>
-                    <td>Tokyo</td>
-                    <td>33</td>
-                    <td>2008/11/28</td>
-                    <td>$162,700</td>
-                  </tr>
-                  <tr>
-                    <td>Brielle Williamson</td>
-                    <td>Integration Specialist</td>
-                    <td>New York</td>
-                    <td>61</td>
-                    <td>2012/12/02</td>
-                    <td>$372,000</td>
-                  </tr>
-                  <tr>
-                    <td>Herrod Chandler</td>
-                    <td>Sales Assistant</td>
-                    <td>San Francisco</td>
-                    <td>59</td>
-                    <td>2012/08/06</td>
-                    <td>$137,500</td>
-                  </tr>
-                  <tr>
-                    <td>Rhona Davidson</td>
-                    <td>Integration Specialist</td>
-                    <td>Tokyo</td>
-                    <td>55</td>
-                    <td>2010/10/14</td>
-                    <td>$327,900</td>
-                  </tr>
-                  <tr>
-                    <td>Colleen Hurst</td>
-                    <td>Javascript Developer</td>
-                    <td>San Francisco</td>
-                    <td>39</td>
-                    <td>2009/09/15</td>
-                    <td>$205,500</td>
-                  </tr>
-                  <tr>
-                    <td>Sonya Frost</td>
-                    <td>Software Engineer</td>
-                    <td>Edinburgh</td>
-                    <td>23</td>
-                    <td>2008/12/13</td>
-                    <td>$103,600</td>
-                  </tr>
-                  <tr>
-                    <td>Hermione Butler</td>
-                    <td>Regional Director</td>
-                    <td>London</td>
-                    <td>47</td>
-                    <td>2011/03/21</td>
-                    <td>$356,250</td>
-                  </tr>
-                  <tr>
-                    <td>Lael Greer</td>
-                    <td>Systems Administrator</td>
-                    <td>London</td>
-                    <td>21</td>
-                    <td>2009/02/27</td>
-                    <td>$103,500</td>
-                  </tr>
-                  <tr>
-                    <td>Jonas Alexander</td>
-                    <td>Developer</td>
-                    <td>San Francisco</td>
-                    <td>30</td>
-                    <td>2010/07/14</td>
-                    <td>$86,500</td>
-                  </tr>
-                  <tr>
-                    <td>Shad Decker</td>
-                    <td>Regional Director</td>
-                    <td>Edinburgh</td>
-                    <td>51</td>
-                    <td>2008/11/13</td>
-                    <td>$183,000</td>
-                  </tr>
-                  <tr>
-                    <td>Michael Bruce</td>
-                    <td>Javascript Developer</td>
-                    <td>Singapore</td>
-                    <td>29</td>
-                    <td>2011/06/27</td>
-                    <td>$183,000</td>
-                  </tr>
-                  <tr>
-                    <td>Donna Snider</td>
-                    <td>Customer Support</td>
-                    <td>New York</td>
-                    <td>27</td>
-                    <td>2011/01/25</td>
-                    <td>$112,000</td>
-                  </tr>
-                </tbody>
-              </table>
-              </div>
-            </div>            
-          </div>
+          </div>            
         </div>
-        
-        <!-- Changable content Products-->
-        <div id="div_products">
-          <div class="col-md-12">
-            <div class="tile">
-              <h3 class="tile-title">Products Detail</h3>
-              <div class="tile-body">
-                <form class="row" id="productsForm">
-                  <div class="form-group col-md-12">
-                    <label class="control-label">Product Name</label>
-                    <input class="form-control" id="pname" type="text" placeholder="Enter Product Name">
-                  </div>
-                  <div class="form-group col-md-3">
-                    <label class="control-label">Length</label>
-                    <input class="form-control" id="length" type="text" placeholder="Enter Length">
-                  </div>
-                  <div class="form-group col-md-3">
-                    <label class="control-label">Width</label>
-                    <input class="form-control" id="width" type="text" placeholder="Enter Width">
-                  </div>
-                  <div class="form-group col-md-3">
-                    <label class="control-label">Thickness</label>
-                    <input class="form-control" type="text" id="thickness" placeholder="Enter Thickness">
-                  </div>                  
-                  <div class="form-group col-md-3 align-self-end">
-                    <button class="btn btn-primary" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Subscribe</button>
-                    &nbsp;&nbsp;<button class="btn btn-secondary" href="#"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancel</button>
-                  </div>
-                </form>
-              </div>
+      </div>
+      
+      <!-- Changable content Products-->
+      <div id="div_products">
+        <div class="col-md-12">
+          <div class="tile">
+            <h3 class="tile-title">Products Detail</h3>
+            <div class="tile-body">
+              <form class="row" id="productsForm">
+                <div class="form-group col-md-12">
+                  <label class="control-label">Product Name</label>
+                  <input class="form-control" id="pname" type="text" placeholder="Enter Product Name">
+                </div>
+                <div class="form-group col-md-3">
+                  <label class="control-label">Length</label>
+                  <input class="form-control" id="length" type="text" placeholder="Enter Length">
+                </div>
+                <div class="form-group col-md-3">
+                  <label class="control-label">Width</label>
+                  <input class="form-control" id="width" type="text" placeholder="Enter Width">
+                </div>
+                <div class="form-group col-md-3">
+                  <label class="control-label">Thickness</label>
+                  <input class="form-control" type="text" id="thickness" placeholder="Enter Thickness">
+                </div>                  
+                <div class="form-group col-md-3 align-self-end">
+                  <button class="btn btn-primary" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Okay</button>
+                  &nbsp;&nbsp;<button class="btn btn-secondary" href="#"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancel</button>
+                </div>
+              </form>
             </div>
-            
-            <div class="tile">
-              <div class="tile-body">
-              <table class="table table-hover table-bordered" id="sampleTableTransporter">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Position</th>
-                    <th>Office</th>
-                    <th>Age</th>
-                    <th>Start date</th>
-                    <th>Salary</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Tiger Nixon</td>
-                    <td>System Architect</td>
-                    <td>Edinburgh</td>
-                    <td>61</td>
-                    <td>2011/04/25</td>
-                    <td>$320,800</td>
-                  </tr>
-                  <tr>
-                    <td>Garrett Winters</td>
-                    <td>Accountant</td>
-                    <td>Tokyo</td>
-                    <td>63</td>
-                    <td>2011/07/25</td>
-                    <td>$170,750</td>
-                  </tr>
-                  <tr>
-                    <td>Ashton Cox</td>
-                    <td>Junior Technical Author</td>
-                    <td>San Francisco</td>
-                    <td>66</td>
-                    <td>2009/01/12</td>
-                    <td>$86,000</td>
-                  </tr>
-                  <tr>
-                    <td>Cedric Kelly</td>
-                    <td>Senior Javascript Developer</td>
-                    <td>Edinburgh</td>
-                    <td>22</td>
-                    <td>2012/03/29</td>
-                    <td>$433,060</td>
-                  </tr>
-                  <tr>
-                    <td>Airi Satou</td>
-                    <td>Accountant</td>
-                    <td>Tokyo</td>
-                    <td>33</td>
-                    <td>2008/11/28</td>
-                    <td>$162,700</td>
-                  </tr>
-                  <tr>
-                    <td>Brielle Williamson</td>
-                    <td>Integration Specialist</td>
-                    <td>New York</td>
-                    <td>61</td>
-                    <td>2012/12/02</td>
-                    <td>$372,000</td>
-                  </tr>
-                  <tr>
-                    <td>Herrod Chandler</td>
-                    <td>Sales Assistant</td>
-                    <td>San Francisco</td>
-                    <td>59</td>
-                    <td>2012/08/06</td>
-                    <td>$137,500</td>
-                  </tr>
-                  <tr>
-                    <td>Rhona Davidson</td>
-                    <td>Integration Specialist</td>
-                    <td>Tokyo</td>
-                    <td>55</td>
-                    <td>2010/10/14</td>
-                    <td>$327,900</td>
-                  </tr>
-                  <tr>
-                    <td>Colleen Hurst</td>
-                    <td>Javascript Developer</td>
-                    <td>San Francisco</td>
-                    <td>39</td>
-                    <td>2009/09/15</td>
-                    <td>$205,500</td>
-                  </tr>
-                  <tr>
-                    <td>Sonya Frost</td>
-                    <td>Software Engineer</td>
-                    <td>Edinburgh</td>
-                    <td>23</td>
-                    <td>2008/12/13</td>
-                    <td>$103,600</td>
-                  </tr>
-                  <tr>
-                    <td>Hermione Butler</td>
-                    <td>Regional Director</td>
-                    <td>London</td>
-                    <td>47</td>
-                    <td>2011/03/21</td>
-                    <td>$356,250</td>
-                  </tr>
-                  <tr>
-                    <td>Lael Greer</td>
-                    <td>Systems Administrator</td>
-                    <td>London</td>
-                    <td>21</td>
-                    <td>2009/02/27</td>
-                    <td>$103,500</td>
-                  </tr>
-                  <tr>
-                    <td>Jonas Alexander</td>
-                    <td>Developer</td>
-                    <td>San Francisco</td>
-                    <td>30</td>
-                    <td>2010/07/14</td>
-                    <td>$86,500</td>
-                  </tr>
-                  <tr>
-                    <td>Shad Decker</td>
-                    <td>Regional Director</td>
-                    <td>Edinburgh</td>
-                    <td>51</td>
-                    <td>2008/11/13</td>
-                    <td>$183,000</td>
-                  </tr>
-                  <tr>
-                    <td>Michael Bruce</td>
-                    <td>Javascript Developer</td>
-                    <td>Singapore</td>
-                    <td>29</td>
-                    <td>2011/06/27</td>
-                    <td>$183,000</td>
-                  </tr>
-                  <tr>
-                    <td>Donna Snider</td>
-                    <td>Customer Support</td>
-                    <td>New York</td>
-                    <td>27</td>
-                    <td>2011/01/25</td>
-                    <td>$112,000</td>
-                  </tr>
-                </tbody>
-              </table>
-              </div>
-            </div>            
           </div>
+          
+          <div class="tile">
+            <div class="tile-body">
+            <table class="table table-hover table-bordered" id="sampleTableTransporter">
+              <thead>
+                <tr>
+                  <th>Product Name</th>
+                  <th>Length</th>
+                  <th>Width</th>
+                  <th>Thickness</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="productsData">
+                <!-- dynamic html -->
+              </tbody>
+            </table>
+            </div>
+          </div>            
         </div>
+      </div>
 
-    </main>
+  </main>
 
     <script>
       //changing div functions goes here.

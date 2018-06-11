@@ -31,8 +31,8 @@ $(function(){
 	  			if(window.sessionStorage){
 	  				sessionStorage.setItem('companyid','"'+json.data.companyid+'"');
 	  				sessionStorage.setItem('username','"'+json.data.username+'"');
+	  				window.location='dashboard.html'
 	  			}
-	  			window.location='dashboard.html'
 	  		}
 	  		if(json.data.msg == 'fail'){
 	  			$('#error_msg').html("Invalid username or password.");

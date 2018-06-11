@@ -45,14 +45,23 @@ wsServer.on('request',function(request){
 
 						case "insertCustomer":
 							insertCustomer(c.data.fname,c.data.lname,c.data.contactno,c.data.gstno,c.data.address,c.data.companyid,connection);
+							getAllCustomers(c.data.companyid);
 						break;
 
 						case "insertTransporter":
 							insertTransporter(c.data.fname,c.data.lname,c.data.contactno,c.data.gstno,c.data.address,c.data.companyid,connection);
+							getAllTransporters(c.data.companyid);
 						break;
 
 						case "insertProduct":
 							insertProduct(c.data.name,c.data.length,c.data.width,c.data.thickness,c.data.companyid,connection);
+							getAllProducts(c.data.companyid);
+						break;
+
+						case "sendAll":
+							getAllCustomers(c.data.companyid);
+							getAllTransporters(c.data.companyid);
+							getAllProducts(c.data.companyid);
 						break;
 					}
 				}
@@ -71,15 +80,15 @@ wsServer.on('request',function(request){
 		function verifyUser(username,password,connection){
 			var obj;
 			var sql="SELECT companyid,username,password FROM loginmaster where username='"+username+"' and password='"+password+"';"
+			console.log(sql);
 			con.query(sql, function (err, result, fields) {
-				if (err) 
-					throw err;
+				// if (err) 
+				// 	throw err;				
 				if(result.length==1){
 					obj={
 						msg:"success",
 						companyid:result[0].companyid,
-						username:result[0].username,
-						password:result[0].password
+						username:result[0].username
 					}	
 				}
 				else{
@@ -87,7 +96,6 @@ wsServer.on('request',function(request){
 						msg:"fail"
 					}
 				}
-
 				var json=JSON.stringify({type:"login_callback",data:obj});
 					sendResponse(json,connection);
 			});				
@@ -97,8 +105,7 @@ wsServer.on('request',function(request){
 			var obj;
 			var sql="INSERT INTO customers (companyid,fname,lname,contactno,address,gstno) values("+companyid+",'"+fname+"','"+lname+"','"+contactno+"','"+address+"','"+gstno+"');";
 			con.query(sql, function (err, result, fields) {
-				if(err)
-					throw err;
+				//if(err)throw err;
 				if(result.affectedRows){
 					obj={
 						msg:'CustomerSuccess'
@@ -118,8 +125,8 @@ wsServer.on('request',function(request){
 			var obj;
 			var sql="INSERT INTO transporters (companyid,fname,lname,contactno,address,gstno) values("+companyid+",'"+fname+"','"+lname+"','"+contactno+"','"+address+"','"+gstno+"');";
 			con.query(sql, function (err, result, fields) {
-				if(err)
-					throw err;
+				// if(err)
+				// 	throw err;
 				if(result.affectedRows){
 					obj={
 						msg:'TransporterSuccess'
@@ -139,8 +146,8 @@ wsServer.on('request',function(request){
 			var obj;
 			var sql="INSERT INTO products (productname,length,width,thickness,companyid) values('"+name+"',"+length+","+width+","+thickness+","+companyid+");";
 			con.query(sql, function (err, result, fields) {
-				if(err)
-					throw err;
+				// if(err)
+				// 	throw err;
 				if(result.affectedRows){
 					obj={
 						msg:'ProductSuccess'
@@ -153,6 +160,67 @@ wsServer.on('request',function(request){
 				}
 				var json=JSON.stringify({type:"ProductInsert_callback",data:obj});
 				sendResponse(json,connection);
+			});
+		}
+
+		function getAllCustomers(companyid){
+			var arr=[];
+			var sql="SELECT * from customers where companyid="+companyid+";";
+			con.query(sql, function (err, result, fields) {
+				for(var index in result){
+					var obj={
+						customerid:result[index].customerid,
+						companyid:result[index].companyid,
+						fname:result[index].fname,
+						lname:result[index].lname,
+						contactno:result[index].contactno,
+						address:result[index].address,
+						gstno:result[index].gstno,
+					}
+					arr.push(obj); 
+				}
+				var json=JSON.stringify({type:"getAllCustomer_callback",data:arr});
+				sendResponse(json,connection);				
+			});
+		}
+
+		function getAllTransporters(companyid){
+			var arr=[];
+			var sql="SELECT * from transporters where companyid="+companyid+";";
+			con.query(sql, function (err, result, fields) {
+				for(var index in result){
+					var obj={
+						transportid:result[index].transportid,
+						companyid:result[index].companyid,
+						fname:result[index].fname,
+						lname:result[index].lname,
+						contactno:result[index].contactno,
+						address:result[index].address,
+						gstno:result[index].gstno,
+					}
+					arr.push(obj); 
+				}
+				var json=JSON.stringify({type:"getAllTransporter_callback",data:arr});
+				sendResponse(json,connection);				
+			});
+		}
+
+		function getAllProducts(companyid){
+			var arr=[];
+			var sql="SELECT * from products where companyid="+companyid+";";
+			con.query(sql, function (err, result, fields) {
+				for(var index in result){
+					var obj={
+						productid:result[index].productid,
+						productname:result[index].productname,
+						length:result[index].length,
+						width:result[index].width,
+						thickness:result[index].thickness						
+					}
+					arr.push(obj); 
+				}
+				var json=JSON.stringify({type:"getAllProducts_callback",data:arr});
+				sendResponse(json,connection);				
 			});
 		}
 
