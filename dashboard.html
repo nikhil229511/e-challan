@@ -32,32 +32,32 @@
 
   <!-- Sidebar menu-->
   <div class="app-sidebar__overlay" data-toggle="sidebar"></div>
-  <aside class="app-sidebar">
-    <div class="app-sidebar__user"><img class="app-sidebar__user-avatar" src="https://s3.amazonaws.com/uifaces/faces/twitter/jsa/48.jpg" alt="User Image">
-      <div>
-        <p class="app-sidebar__user-name">John Doe</p>
-        <p class="app-sidebar__user-designation">Software Developer</p>
+    <aside class="app-sidebar">
+      <div class="app-sidebar__user"><img class="app-sidebar__user-avatar" src="Assets/images/48.jpg" alt="User Image">
+        <div>
+          <p class="app-sidebar__user-name">John Doe</p>
+          <p class="app-sidebar__user-designation">Software Developer</p>
+        </div>
       </div>
-    </div>
-    <ul class="app-menu">
-      <li><a class="app-menu__item active" style="cursor: pointer;" onclick='showDashboard();'><i class="app-menu__icon fa fa-dashboard"></i><span class="app-menu__label">Dashboard</span></a></li>
-      <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon fa fa-laptop"></i><span class="app-menu__label">Masters</span><i class="treeview-indicator fa fa-angle-right"></i></a>
-        <ul class="treeview-menu">
-          <li><a class="treeview-item" style="cursor: pointer;" onclick='showCustomers();'><i class="icon fa fa-circle-o"></i> Customer Master</a></li>
-          <li><a class="treeview-item" style="cursor: pointer;" onclick='showProducts();' rel="noopener"><i class="icon fa fa-circle-o"></i> Product Master</a></li>
-          <li><a class="treeview-item" style="cursor: pointer;" onclick='showTransporters();' rel="noopener"><i class="icon fa fa-circle-o"></i> Transport Master</a></li>            
-        </ul>
-      </li>
-      <li><a class="app-menu__item" href="#"><i class="app-menu__icon fa fa-edit"></i><span class="app-menu__label">Challan</span></a></li>
-      <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon fa fa-th-list "></i><span class="app-menu__label">Reports</span><i class="treeview-indicator fa fa-angle-right"></i></a>
-        <ul class="treeview-menu">
-          <li><a class="treeview-item" href="#"><i class="icon fa fa-circle-o"></i> Challan No.-wise</a></li>
-          <li><a class="treeview-item" href="#"><i class="icon fa fa-circle-o"></i>Date-wise</a></li>
-          <li><a class="treeview-item" href="#"><i class="icon fa fa-circle-o"></i>Customer-wise</a></li>
-        </ul>
-      </li>        
-    </ul>
-  </aside>
+      <ul class="app-menu">
+        <li><a class="app-menu__item active" style="cursor: pointer;" onclick='showDashboard();'><i class="app-menu__icon fa fa-dashboard"></i><span class="app-menu__label">Dashboard</span></a></li>
+        <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon fa fa-laptop"></i><span class="app-menu__label">Masters</span><i class="treeview-indicator fa fa-angle-right"></i></a>
+          <ul class="treeview-menu">
+            <li><a class="treeview-item" style="cursor: pointer;" onclick='showCustomers();'><i class="icon fa fa-circle-o"></i> Customer Master</a></li>
+            <li><a class="treeview-item" style="cursor: pointer;" onclick='showProducts();' rel="noopener"><i class="icon fa fa-circle-o"></i> Product Master</a></li>
+            <li><a class="treeview-item" style="cursor: pointer;" onclick='showTransporters();' rel="noopener"><i class="icon fa fa-circle-o"></i> Transport Master</a></li>            
+          </ul>
+        </li>
+        <li><a class="app-menu__item" href="#"><i class="app-menu__icon fa fa-edit"></i><span class="app-menu__label">Challan</span></a></li>
+        <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon fa fa-th-list "></i><span class="app-menu__label">Reports</span><i class="treeview-indicator fa fa-angle-right"></i></a>
+          <ul class="treeview-menu">
+            <li><a class="treeview-item" href="#"><i class="icon fa fa-circle-o"></i> Challan No.-wise</a></li>
+            <li><a class="treeview-item" href="#"><i class="icon fa fa-circle-o"></i>Date-wise</a></li>
+            <li><a class="treeview-item" href="#"><i class="icon fa fa-circle-o"></i>Customer-wise</a></li>
+          </ul>
+        </li>        
+      </ul>
+    </aside>
   <!-- side menu -->
 
 
@@ -65,8 +65,7 @@
   	<!-- page title -->
   	<div class="app-title">
     	<div>
-    		<h1><i class="fa fa-dashboard"></i> Welcome <strong><em>{username}</em></strong></h1>
-    		<!-- <p>A free and open source Bootstrap 4 admin template</p> -->
+    		<h1><i class="fa fa-dashboard"></i> Welcome <span id="titleUsername"></span></h1>
     	</div>
       <ul class="app-breadcrumb breadcrumb">
         <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
@@ -80,7 +79,7 @@
       	<div class="row user">
         	<div class="col-md-12">
           		<div class="profile">
-            		<div class="info"><img class="user-img" src="https://s3.amazonaws.com/uifaces/faces/twitter/jsa/128.jpg">
+            		<div class="info"><img class="user-img" src="Assets/images/128.jpg">
               			<h4>John Doe</h4>
   	            		<p>Software Developer</p>
             		</div>
@@ -116,10 +115,11 @@
                 <div class="form-group col-md-8">
                   <label class="control-label">Address</label>
                   <input class="form-control" id="caddress" type="text" name="caddress" placeholder="Enter Address">
+                  <input id="ccustomerid" type="hidden" name="customerid">
                 </div>
                 <div class="form-group col-md-4 align-self-end">
                   <button class="btn btn-primary" id="csubmit" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Okay</button>
-                  &nbsp;&nbsp;<button class="btn btn-secondary" href="#"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancel</button>
+                  &nbsp;&nbsp;<button class="btn btn-danger" href="#"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancel</button>
                 </div>
               </form>
             </div>
@@ -173,10 +173,11 @@
                 <div class="form-group col-md-8">
                   <label class="control-label">Address</label>
                   <input class="form-control" type="text" id="taddress" placeholder="Enter Address">
+                  <input id="ttransportid" type="hidden" name="transportid" value='-1'>
                 </div>
                 <div class="form-group col-md-4 align-self-end">
                   <button class="btn btn-primary" id="tsubmit" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Okay</button>
-                  &nbsp;&nbsp;<button class="btn btn-secondary" href=""><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancel</button>
+                  &nbsp;&nbsp;<button class="btn btn-danger" href=""><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancel</button>
                 </div>
               </form>
             </div>
@@ -226,10 +227,11 @@
                 <div class="form-group col-md-3">
                   <label class="control-label">Thickness</label>
                   <input class="form-control" type="text" id="thickness" placeholder="Enter Thickness">
+                  <input id="productid" type="hidden" name="productid">
                 </div>                  
                 <div class="form-group col-md-3 align-self-end">
                   <button class="btn btn-primary" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Okay</button>
-                  &nbsp;&nbsp;<button class="btn btn-secondary" href="#"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancel</button>
+                  &nbsp;&nbsp;<button class="btn btn-danger" href="#"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancel</button>
                 </div>
               </form>
             </div>

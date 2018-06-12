@@ -1,5 +1,6 @@
 "use strict";
 
+
 $(function(){
 
 	window.WebSocket = window.WebSocket || window.MozWebSocket ;
@@ -13,10 +14,12 @@ $(function(){
 			console.log("Unable to connect to server. Please try again.");
 		}
 	},3000);
-	if(sessionStorage.getItem('companyid') ==null || sessionStorage.getItem('username') ==null){
+	if(sessionStorage.getItem('companyid') ==null && sessionStorage.getItem('username') ==null){
 		window.location='login.html'
 	}
 	var connection = new WebSocket('ws://localhost:5005/');
+	var htmlString="<strong><em>"+sessionStorage.getItem('username')+"</em></strong>";
+	$('#titleUsername').html(htmlString);
 	
 	connection.onopen = function (message) {
 		console.log("connected");
@@ -27,34 +30,62 @@ $(function(){
 		connection.send(json);
 	};
 
-	connection.onclose=function(){
-
-	};
-
 	connection.onmessage = function (message) {
 	  	var json = JSON.parse(message.data);
 	  	
 	  	if(json.type == "customerInsert_callback") {
-	  		if(json.data.msg== 'CustomerSuccess'){
+	  		if(json.data.msg== 'CustomerInsertSuccess'){
 	  			alert('Record saved successfully.');
 	  		}
-	  		if(json.data.msg == 'CustomerFail'){
+	  		if(json.data.msg == 'CustomerInsertFail'){
+	  			alert('Some Error Occured.');	
+	  		}
+	  	}
+	  	else if(json.type == "customerUpdate_callback") {
+	  		if(json.data.msg== 'CustomerUpdateSuccess'){
+	  			alert('Record updated successfully.');
+	  		}
+	  		if(json.data.msg == 'CustomerUpdateFail'){
+	  			alert('Some Error Occured.');	
+	  		}
+	  	}
+	  	else if(json.type == "customerDelete_callback") {
+	  		if(json.data.msg== 'CustomerDeleteSuccess'){
+	  			alert('Record Deleted successfully.');
+	  		}
+	  		if(json.data.msg == 'CustomerDeleteFail'){
 	  			alert('Some Error Occured.');	
 	  		}
 	  	}
 	  	else if(json.type == "TransporterInsert_callback") {
-	  		if(json.data.msg== 'TransporterSuccess'){
+	  		if(json.data.msg== 'TransporterInsertSuccess'){
 	  			alert('Record saved successfully.');
 	  		}
-	  		if(json.data.msg == 'TransporterFail'){
+	  		if(json.data.msg == 'TransporterInsertFail'){
+	  			alert('Some Error Occured.');	
+	  		}
+	  	}
+	  	else if(json.type == "TransporterUpdate_callback") {
+	  		if(json.data.msg== 'TransporterUpdateSuccess'){
+	  			alert('Record Updated successfully.');
+	  		}
+	  		if(json.data.msg == 'TransporterUpdateFail'){
 	  			alert('Some Error Occured.');	
 	  		}
 	  	}
 	  	else if(json.type == "ProductInsert_callback") {
-	  		if(json.data.msg== 'ProductSuccess'){
+	  		if(json.data.msg== 'ProductInsertSuccess'){
 	  			alert('Record saved successfully.');
 	  		}
-	  		if(json.data.msg == 'ProductFail'){
+	  		if(json.data.msg == 'ProductInsertFail'){
+	  			alert('Some Error Occured.');	
+	  		}
+	  	}
+	  	else if(json.type == "ProductUpdate_callback") {
+	  		if(json.data.msg== 'ProductUpdateSuccess'){
+	  			alert('Record updated successfully.');
+	  		}
+	  		if(json.data.msg == 'ProductUpdateFail'){
 	  			alert('Some Error Occured.');	
 	  		}
 	  	}
@@ -67,7 +98,9 @@ $(function(){
 	  			htmlString +='<td>'+json.data[i].gstno+'</td>';
 	  			htmlString +='<td>'+json.data[i].contactno+'</td>';
 	  			htmlString +='<td>'+json.data[i].address+'</td>';
-	  			htmlString +='<td><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-trash" aria-hidden="true"></i></td>';
+	  			htmlString +="<td><a href='#' onclick=updateCustomer("+json.data[i].customerid+","+json.data[i].companyid+",'"+json.data[i].fname+"','"+json.data[i].lname+"','"+json.data[i].contactno+"','"+json.data[i].gstno+"','"+encodeURIComponent(json.data[i].address) +"'); >";
+	  			htmlString +='<i class="fa fa-pencil" aria-hidden="true"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+	  			htmlString +='<a href="#" onclick=deleteCustomer('+ json.data[i].customerid +')><i class="fa fa-trash" aria-hidden="true"></i></a></td>';
 	  			htmlString +='</tr>';
 	  		}
 	  		$('#CustomersData').html(htmlString);
@@ -81,7 +114,9 @@ $(function(){
 	  			htmlString +='<td>'+json.data[i].gstno+'</td>';
 	  			htmlString +='<td>'+json.data[i].contactno+'</td>';
 	  			htmlString +='<td>'+json.data[i].address+'</td>';
-	  			htmlString +='<td><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-trash" aria-hidden="true"></i></td>';
+	  			htmlString +="<td><a href='#' onclick=updateTransporter("+json.data[i].transportid+","+json.data[i].companyid+",'"+json.data[i].fname+"','"+json.data[i].lname+"','"+json.data[i].contactno+"','"+json.data[i].gstno+"','"+encodeURIComponent(json.data[i].address) +"'); >";
+	  			htmlString +='<i class="fa fa-pencil" aria-hidden="true"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+	  			htmlString +='<a href="#" ><i class="fa fa-trash" aria-hidden="true"></i></a></td>';
 	  			htmlString +='</tr>';
 	  		}
 	  		$('#TransportersData').html(htmlString);
@@ -94,11 +129,15 @@ $(function(){
 	  			htmlString +='<td>'+json.data[i].length+'</td>';	
 	  			htmlString +='<td>'+json.data[i].width+'</td>';
 	  			htmlString +='<td>'+json.data[i].thickness+'</td>';
-	  			htmlString +='<td><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-trash" aria-hidden="true"></i></td>';
+	  			htmlString +="<td><a href='#' onclick=updateProduct("+json.data[i].productid+",'"+encodeURIComponent(json.data[i].productname)+"',"+json.data[i].length+","+json.data[i].width+","+json.data[i].thickness+"); >";
+	  			htmlString +='<i class="fa fa-pencil" aria-hidden="true"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+	  			htmlString +='<a href="#" ><i class="fa fa-trash" aria-hidden="true"></i></a></td>';
 	  			htmlString +='</tr>';
 	  		}
 	  		$('#productsData').html(htmlString);
 	  	}
+
+
 	};
 
 	//initial display div setting
@@ -111,7 +150,9 @@ $(function(){
 		$(this).parent().sibling().find('[class="active"]').removeClass('active');
 		$(this).addClass('active');
 	});*/
-
+	$('a[href="#"]').click(function (event) { // where href are blank
+	   event.preventDefault();
+	});
 	/*validation Customer*/
 	$('#customerForm').validate({
 		rules:{
@@ -157,8 +198,9 @@ $(function(){
 		var ccontactno=$('#ccontactno').val();
 		var cgstno=$('#cgstno').val();
 		var caddress=$('#caddress').val();
-
+		var ccustomerid=$('#ccustomerid').val();
 		var obj={
+			customerid:ccustomerid,
 			fname : cfname,
 			lname : clname,
 			contactno:ccontactno,
@@ -166,8 +208,22 @@ $(function(){
 			address: caddress,
 			companyid: sessionStorage.getItem('companyid')
 		};
-		
-		var json=JSON.stringify({usertype: "insertCustomer", data:obj});
+		var json;
+		if($('#ccustomerid').val()==null){
+			json=JSON.stringify({usertype: "insertCustomer", data:obj});	
+		}
+		else{
+			json=JSON.stringify({usertype: "updateCustomer", data:obj});
+		}
+		connection.send(json);
+	}
+
+	function deleteCustomer(customerid){
+		var obj={
+			customerid:ccustomerid,
+			companyid:sessionStorage.getItem('companyid')
+		}
+		var json=JSON.stringify({usertype: "deleteCustomer", data:obj});
 		connection.send(json);
 	}
 	
@@ -216,8 +272,10 @@ $(function(){
 		var tcontactno=$('#tcontactno').val();
 		var tgstno=$('#tgstno').val();
 		var taddress=$('#taddress').val();
+		var ttransportid=$('#ttransportid').val();
 
 		var obj={
+			transportid:ttransportid,
 			fname : tfname,
 			lname : tlname,
 			contactno:tcontactno,
@@ -226,7 +284,11 @@ $(function(){
 			companyid: sessionStorage.getItem('companyid')
 		};
 		
-		var json=JSON.stringify({usertype: "insertTransporter", data:obj});
+		var json;
+		if($('#ttransportid').val()=='-1')
+			json=JSON.stringify({usertype: "insertTransporter", data:obj});
+		else
+			json=JSON.stringify({usertype: "updateTransporter", data:obj});
 		connection.send(json);
 	}
 
@@ -273,16 +335,48 @@ $(function(){
 		var length=$('#length').val();
 		var width=$('#width').val();
 		var thickness=$('#thickness').val();
-
+		var productid=$('#productid').val();
+		
 		var obj={
+			productid:productid,
 			name:name,
 			length:length,
 			width:width,
 			thickness:thickness,
 			companyid: sessionStorage.getItem('companyid')
 		}
-		var json=JSON.stringify({usertype: "insertProduct", data:obj});
+		var json;
+		if($('#productid').val() == null)
+			json=JSON.stringify({usertype: "insertProduct", data:obj});
+		else
+			json=JSON.stringify({usertype: "updateProduct", data:obj});
 		connection.send(json);
 	}
 
 });
+
+function updateCustomer(customerid,companyid,fname,lname,contactno,gstno,address){
+	$('#ccustomerid').val(customerid);
+	$('#cfname').val(fname);
+	$('#clname').val(lname);
+	$('#ccontactno').val(contactno);
+	$('#cgstno').val(gstno);
+	$('#caddress').val(decodeURIComponent(address));
+}
+
+function updateTransporter(transportid,companyid,fname,lname,contactno,gstno,address){
+	$('#ttransportid').val(transportid);
+	$('#tfname').val(fname);
+	$('#tlname').val(lname);
+	$('#tcontactno').val(contactno);
+	$('#tgstno').val(gstno);
+	$('#taddress').val(decodeURIComponent(address));
+}
+
+function updateProduct(productid,productname,length,width,thickness){
+	$('#productid').val(productid);
+	$('#pname').val(decodeURIComponent(productname));
+	$('#length').val(length);
+	$('#width').val(width);
+	$('#thickness').val(thickness);
+}

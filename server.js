@@ -48,13 +48,33 @@ wsServer.on('request',function(request){
 							getAllCustomers(c.data.companyid);
 						break;
 
+						case "updateCustomer":
+							updateCustomer(c.data.customerid,c.data.fname,c.data.lname,c.data.contactno,c.data.gstno,c.data.address,c.data.companyid,connection);
+							getAllCustomers(c.data.companyid);
+						break;
+
+						case "deleteCustomer":
+							deleteCustomer(c.data.customerid,c.data.companyid,connection);
+							getAllCustomers(c.data.companyid);
+						break;
+
 						case "insertTransporter":
 							insertTransporter(c.data.fname,c.data.lname,c.data.contactno,c.data.gstno,c.data.address,c.data.companyid,connection);
 							getAllTransporters(c.data.companyid);
 						break;
 
+						case "updateTransporter":
+							updateTransporter(c.data.transportid,c.data.fname,c.data.lname,c.data.contactno,c.data.gstno,c.data.address,c.data.companyid,connection);
+							getAllTransporters(c.data.companyid);
+						break;
+
 						case "insertProduct":
 							insertProduct(c.data.name,c.data.length,c.data.width,c.data.thickness,c.data.companyid,connection);
+							getAllProducts(c.data.companyid);
+						break;
+
+						case "updateProduct":
+							updateProduct(c.data.productid,c.data.name,c.data.length,c.data.width,c.data.thickness,c.data.companyid,connection);
 							getAllProducts(c.data.companyid);
 						break;
 
@@ -80,10 +100,7 @@ wsServer.on('request',function(request){
 		function verifyUser(username,password,connection){
 			var obj;
 			var sql="SELECT companyid,username,password FROM loginmaster where username='"+username+"' and password='"+password+"';"
-			console.log(sql);
 			con.query(sql, function (err, result, fields) {
-				// if (err) 
-				// 	throw err;				
 				if(result.length==1){
 					obj={
 						msg:"success",
@@ -105,15 +122,14 @@ wsServer.on('request',function(request){
 			var obj;
 			var sql="INSERT INTO customers (companyid,fname,lname,contactno,address,gstno) values("+companyid+",'"+fname+"','"+lname+"','"+contactno+"','"+address+"','"+gstno+"');";
 			con.query(sql, function (err, result, fields) {
-				//if(err)throw err;
 				if(result.affectedRows){
 					obj={
-						msg:'CustomerSuccess'
+						msg:'CustomerInsertSuccess'
 					}								
 				}
 				else{
 					obj={
-						msg:'CustomerFail'
+						msg:'CustomerInsertFail'
 					}
 				}
 				var json=JSON.stringify({type:"customerInsert_callback",data:obj});
@@ -121,26 +137,82 @@ wsServer.on('request',function(request){
 			});
 		}
 
-		function insertTransporter(fname,lname,contactno,gstno,address,companyid,connection){
+		function updateCustomer(customerid,fname,lname,contactno,gstno,address,companyid,connection){
 			var obj;
-			var sql="INSERT INTO transporters (companyid,fname,lname,contactno,address,gstno) values("+companyid+",'"+fname+"','"+lname+"','"+contactno+"','"+address+"','"+gstno+"');";
+			var sql="UPDATE customers set fname='"+fname+"',lname='"+lname+"',contactno='"+contactno+"',address='"+address+"',gstno='"+gstno+"' WHERE customerid="+customerid+" AND companyid="+companyid+";";
 			con.query(sql, function (err, result, fields) {
-				// if(err)
-				// 	throw err;
 				if(result.affectedRows){
 					obj={
-						msg:'TransporterSuccess'
+						msg:'CustomerUpdateSuccess'
 					}								
 				}
 				else{
 					obj={
-						msg:'TransporterFail'
+						msg:'CustomerUpdateFail'
+					}
+				}
+				var json=JSON.stringify({type:"customerUpdate_callback",data:obj});
+				sendResponse(json,connection);
+			});	
+		}
+		function deleteCustomer(customerid,companyid,connection){
+			var obj;
+			var sql="DELETE FROM customers WHERE customerid="+customerid+"AND companyid="+companyid+";";
+			
+			con.query(sql, function (err, result, fields) {
+				if(result.affectedRows){
+					obj={
+						msg:'CustomerDeleteSuccess'
+					}								
+				}
+				else{
+					obj={
+						msg:'CustomerDeleteFail'
+					}
+				}
+				var json=JSON.stringify({type:"customerDelete_callback",data:obj});
+				sendResponse(json,connection);
+			});		
+		}
+		function insertTransporter(fname,lname,contactno,gstno,address,companyid,connection){
+			var obj;
+			var sql="INSERT INTO transporters (companyid,fname,lname,contactno,address,gstno) values("+companyid+",'"+fname+"','"+lname+"','"+contactno+"','"+address+"','"+gstno+"');";
+			console.log(sql);
+			con.query(sql, function (err, result, fields) {
+				console.log(result);
+				/*if(result.affectedRows){
+					obj={
+						msg:'TransporterInsertSuccess'
+					}								
+				}
+				else{
+					obj={
+						msg:'TransporterInsertFail'
 					}
 				}
 				var json=JSON.stringify({type:"TransporterInsert_callback",data:obj});
+				sendResponse(json,connection);*/
+			});
+		}
+		function updateTransporter(transportid,fname,lname,contactno,gstno,address,companyid,connection){
+			var obj;
+			var sql="UPDATE transporters set fname='"+fname+"',lname='"+lname+"',contactno='"+contactno+"',address='"+address+"',gstno='"+gstno+"' WHERE transportid="+transportid+" AND companyid="+companyid+";";
+			con.query(sql, function (err, result, fields) {
+				if(result.affectedRows){
+					obj={
+						msg:'TransporterUpdateSuccess'
+					}								
+				}
+				else{
+					obj={
+						msg:'TransporterUpdateFail'
+					}
+				}
+				var json=JSON.stringify({type:"TransporterUpdate_callback",data:obj});
 				sendResponse(json,connection);
 			});
 		}
+
 
 		function insertProduct(name,length,width,thickness,companyid,connection){
 			var obj;
@@ -150,15 +222,35 @@ wsServer.on('request',function(request){
 				// 	throw err;
 				if(result.affectedRows){
 					obj={
-						msg:'ProductSuccess'
+						msg:'ProductInsertSuccess'
 					}								
 				}
 				else{
 					obj={
-						msg:'ProductFail'
+						msg:'ProductInsertFail'
 					}
 				}
 				var json=JSON.stringify({type:"ProductInsert_callback",data:obj});
+				sendResponse(json,connection);
+			});
+		}
+
+		function updateProduct(productid,name,length,width,thickness,companyid,connection){
+			var obj;
+			var sql="UPDATE products set productname='"+name+"',length='"+length+"',width='"+width+"',thickness='"+thickness+"' WHERE productid="+productid+" AND companyid="+companyid+";";
+			console.log(sql);
+			con.query(sql, function (err, result, fields) {
+				if(result.affectedRows){
+					obj={
+						msg:'ProductUpdateSuccess'
+					}								
+				}
+				else{
+					obj={
+						msg:'ProductUpdateFail'
+					}
+				}
+				var json=JSON.stringify({type:"ProductUpdate_callback",data:obj});
 				sendResponse(json,connection);
 			});
 		}
