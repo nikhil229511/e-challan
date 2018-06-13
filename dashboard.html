@@ -115,11 +115,11 @@
                 <div class="form-group col-md-8">
                   <label class="control-label">Address</label>
                   <input class="form-control" id="caddress" type="text" name="caddress" placeholder="Enter Address">
-                  <input id="ccustomerid" type="hidden" name="customerid">
+                  <input id="ccustomerid" type="hidden" name="customerid" value='-1'>
                 </div>
                 <div class="form-group col-md-4 align-self-end">
                   <button class="btn btn-primary" id="csubmit" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Okay</button>
-                  &nbsp;&nbsp;<button class="btn btn-danger" href="#"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancel</button>
+                  &nbsp;&nbsp;<button class="btn btn-danger"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancel</button>
                 </div>
               </form>
             </div>
@@ -177,7 +177,7 @@
                 </div>
                 <div class="form-group col-md-4 align-self-end">
                   <button class="btn btn-primary" id="tsubmit" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Okay</button>
-                  &nbsp;&nbsp;<button class="btn btn-danger" href=""><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancel</button>
+                  <button class="btn btn-danger" ><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancel</button>
                 </div>
               </form>
             </div>
@@ -227,11 +227,11 @@
                 <div class="form-group col-md-3">
                   <label class="control-label">Thickness</label>
                   <input class="form-control" type="text" id="thickness" placeholder="Enter Thickness">
-                  <input id="productid" type="hidden" name="productid">
+                  <input id="productid" type="hidden"  value='-1' name="productid">
                 </div>                  
                 <div class="form-group col-md-3 align-self-end">
                   <button class="btn btn-primary" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Okay</button>
-                  &nbsp;&nbsp;<button class="btn btn-danger" href="#"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancel</button>
+                  <button class="btn btn-danger" ><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancel</button>
                 </div>
               </form>
             </div>
@@ -306,5 +306,8 @@
     
     <script type="text/javascript" src="dashboard.js"></script>
     <script type="text/javascript">$('#sampleTableTransporter').DataTable();</script>
+    <!-- notification -->
+    <script type="text/javascript" src="js/plugins/bootstrap-notify.min.js"></script>
+    <!-- <script type="text/javascript" src="js/plugins/sweetalert.min.js"></script> -->
 </body>
 </html>

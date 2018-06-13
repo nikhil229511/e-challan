@@ -35,58 +35,74 @@ $(function(){
 	  	
 	  	if(json.type == "customerInsert_callback") {
 	  		if(json.data.msg== 'CustomerInsertSuccess'){
-	  			alert('Record saved successfully.');
+	  			notifyInsert();
 	  		}
-	  		if(json.data.msg == 'CustomerInsertFail'){
-	  			alert('Some Error Occured.');	
+	  		else if(json.data.msg == 'CustomerInsertFail'){
+	  			notifyFail();
 	  		}
 	  	}
 	  	else if(json.type == "customerUpdate_callback") {
 	  		if(json.data.msg== 'CustomerUpdateSuccess'){
-	  			alert('Record updated successfully.');
+	  			notifyUpdate();
 	  		}
-	  		if(json.data.msg == 'CustomerUpdateFail'){
-	  			alert('Some Error Occured.');	
+	  		else if(json.data.msg == 'CustomerUpdateFail'){
+	  			notifyFail();
 	  		}
 	  	}
 	  	else if(json.type == "customerDelete_callback") {
 	  		if(json.data.msg== 'CustomerDeleteSuccess'){
-	  			alert('Record Deleted successfully.');
+	  			notifyDelete();
 	  		}
-	  		if(json.data.msg == 'CustomerDeleteFail'){
-	  			alert('Some Error Occured.');	
+	  		else if(json.data.msg == 'CustomerDeleteFail'){
+	  			notifyFail();
 	  		}
 	  	}
 	  	else if(json.type == "TransporterInsert_callback") {
 	  		if(json.data.msg== 'TransporterInsertSuccess'){
-	  			alert('Record saved successfully.');
+	  			notifyInsert();
 	  		}
-	  		if(json.data.msg == 'TransporterInsertFail'){
-	  			alert('Some Error Occured.');	
+	  		else if(json.data.msg == 'TransporterInsertFail'){
+	  			notifyFail();
 	  		}
 	  	}
 	  	else if(json.type == "TransporterUpdate_callback") {
 	  		if(json.data.msg== 'TransporterUpdateSuccess'){
-	  			alert('Record Updated successfully.');
+	  			notifyUpdate();
 	  		}
-	  		if(json.data.msg == 'TransporterUpdateFail'){
-	  			alert('Some Error Occured.');	
+	  		else if(json.data.msg == 'TransporterUpdateFail'){
+	  			notifyFail();
+	  		}
+	  	}
+	  	else if(json.type == "TransporterDelete_callback") {
+	  		if(json.data.msg== 'TransporterDeleteSuccess'){
+	  			notifyDelete();
+	  		}
+	  		else if(json.data.msg == 'TransporterDeleteFail'){
+	  			notifyFail();
 	  		}
 	  	}
 	  	else if(json.type == "ProductInsert_callback") {
 	  		if(json.data.msg== 'ProductInsertSuccess'){
-	  			alert('Record saved successfully.');
+	  			notifyInsert();
 	  		}
-	  		if(json.data.msg == 'ProductInsertFail'){
-	  			alert('Some Error Occured.');	
+	  		else if(json.data.msg == 'ProductInsertFail'){
+	  			notifyFail();
 	  		}
 	  	}
 	  	else if(json.type == "ProductUpdate_callback") {
 	  		if(json.data.msg== 'ProductUpdateSuccess'){
-	  			alert('Record updated successfully.');
+	  			notifyUpdate();
 	  		}
-	  		if(json.data.msg == 'ProductUpdateFail'){
-	  			alert('Some Error Occured.');	
+	  		else if(json.data.msg == 'ProductUpdateFail'){
+	  			notifyFail();
+	  		}
+	  	}
+	  	else if(json.type == "ProductDelete_callback") {
+	  		if(json.data.msg== 'ProductDeleteSuccess'){
+	  			notifyDelete();
+	  		}
+	  		else if(json.data.msg == 'ProductDeleteFail'){
+	  			notifyFail();
 	  		}
 	  	}
 	  	else if(json.type == "getAllCustomer_callback"){
@@ -100,7 +116,7 @@ $(function(){
 	  			htmlString +='<td>'+json.data[i].address+'</td>';
 	  			htmlString +="<td><a href='#' onclick=updateCustomer("+json.data[i].customerid+","+json.data[i].companyid+",'"+json.data[i].fname+"','"+json.data[i].lname+"','"+json.data[i].contactno+"','"+json.data[i].gstno+"','"+encodeURIComponent(json.data[i].address) +"'); >";
 	  			htmlString +='<i class="fa fa-pencil" aria-hidden="true"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-	  			htmlString +='<a href="#" onclick=deleteCustomer('+ json.data[i].customerid +')><i class="fa fa-trash" aria-hidden="true"></i></a></td>';
+	  			htmlString +='<a href="#" class="deleteC" id='+json.data[i].customerid+'><i class="fa fa-trash" aria-hidden="true"></i></a></td>';
 	  			htmlString +='</tr>';
 	  		}
 	  		$('#CustomersData').html(htmlString);
@@ -116,7 +132,7 @@ $(function(){
 	  			htmlString +='<td>'+json.data[i].address+'</td>';
 	  			htmlString +="<td><a href='#' onclick=updateTransporter("+json.data[i].transportid+","+json.data[i].companyid+",'"+json.data[i].fname+"','"+json.data[i].lname+"','"+json.data[i].contactno+"','"+json.data[i].gstno+"','"+encodeURIComponent(json.data[i].address) +"'); >";
 	  			htmlString +='<i class="fa fa-pencil" aria-hidden="true"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-	  			htmlString +='<a href="#" ><i class="fa fa-trash" aria-hidden="true"></i></a></td>';
+	  			htmlString +='<a href="#" class="deleteT" id='+json.data[i].transportid+'><i class="fa fa-trash" aria-hidden="true"></i></a></td>';
 	  			htmlString +='</tr>';
 	  		}
 	  		$('#TransportersData').html(htmlString);
@@ -131,11 +147,24 @@ $(function(){
 	  			htmlString +='<td>'+json.data[i].thickness+'</td>';
 	  			htmlString +="<td><a href='#' onclick=updateProduct("+json.data[i].productid+",'"+encodeURIComponent(json.data[i].productname)+"',"+json.data[i].length+","+json.data[i].width+","+json.data[i].thickness+"); >";
 	  			htmlString +='<i class="fa fa-pencil" aria-hidden="true"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-	  			htmlString +='<a href="#" ><i class="fa fa-trash" aria-hidden="true"></i></a></td>';
+	  			htmlString +='<a href="#" class="deleteP" id='+json.data[i].productid+'><i class="fa fa-trash" aria-hidden="true"></i></a></td>';
 	  			htmlString +='</tr>';
 	  		}
 	  		$('#productsData').html(htmlString);
 	  	}
+
+	  	$('.deleteC').unbind().click(function(){
+			deleteCustomer($(this).attr("id"));
+		});
+
+		$('.deleteT').unbind().click(function(){
+			deleteTransporter($(this).attr("id"));
+		});
+
+		$('.deleteP').unbind().click(function(){
+			deleteProduct($(this).attr("id"));
+		});
+	
 
 
 	};
@@ -153,7 +182,8 @@ $(function(){
 	$('a[href="#"]').click(function (event) { // where href are blank
 	   event.preventDefault();
 	});
-	/*validation Customer*/
+	
+	// validation Customer
 	$('#customerForm').validate({
 		rules:{
 			cfname:{
@@ -209,7 +239,7 @@ $(function(){
 			companyid: sessionStorage.getItem('companyid')
 		};
 		var json;
-		if($('#ccustomerid').val()==null){
+		if($('#ccustomerid').val()=='-1'){
 			json=JSON.stringify({usertype: "insertCustomer", data:obj});	
 		}
 		else{
@@ -220,14 +250,14 @@ $(function(){
 
 	function deleteCustomer(customerid){
 		var obj={
-			customerid:ccustomerid,
+			customerid:customerid,
 			companyid:sessionStorage.getItem('companyid')
 		}
 		var json=JSON.stringify({usertype: "deleteCustomer", data:obj});
 		connection.send(json);
 	}
 	
-	/*validation Transporter*/
+	// validation Transporter
 	$('#transporterForm').validate({
 		rules:{
 			tfname:{
@@ -292,6 +322,16 @@ $(function(){
 		connection.send(json);
 	}
 
+	function deleteTransporter(transportid){
+		var obj={
+			transportid:transportid,
+			companyid:sessionStorage.getItem('companyid')
+		}
+		var json=JSON.stringify({usertype: "deleteTransporter", data:obj});
+		connection.send(json);
+	}
+
+	// validation Transporter
 	$('#productsForm').validate({
 		rules:{
 			pname:{
@@ -346,10 +386,19 @@ $(function(){
 			companyid: sessionStorage.getItem('companyid')
 		}
 		var json;
-		if($('#productid').val() == null)
+		if($('#productid').val() == '-1')
 			json=JSON.stringify({usertype: "insertProduct", data:obj});
 		else
 			json=JSON.stringify({usertype: "updateProduct", data:obj});
+		connection.send(json);
+	}
+
+	function deleteProduct(productid){
+		var obj={
+			productid:productid,
+			companyid:sessionStorage.getItem('companyid')
+		}
+		var json=JSON.stringify({usertype: "deleteProduct", data:obj});
 		connection.send(json);
 	}
 
@@ -380,3 +429,40 @@ function updateProduct(productid,productname,length,width,thickness){
 	$('#width').val(width);
 	$('#thickness').val(thickness);
 }
+
+function notifyUpdate(){
+    $.notify({
+      	title: "Update Complete : ",
+      	message: "Something cool is just updated!",
+      	icon: 'fa fa-check' 
+    },{
+      	type: "success"
+    });
+};
+function notifyInsert(){
+    $.notify({
+      	title: "Insert Complete : ",
+      	message: "Something cool is just Inserted!",
+      	icon: 'fa fa-check' 
+    },{
+      	type: "success"
+    });
+};
+function notifyDelete(){
+    $.notify({
+      	title: "Delete Complete : ",
+      	message: "Something cool is just Deleted!",
+      	icon: 'fa fa-check' 
+    },{
+      	type: "success"
+    });
+};
+function notifyFail(){
+    $.notify({
+      	title: "Error : ",
+      	message: "Something went Wrong!",
+      	icon: 'fa fa-check' 
+    },{
+      	type: "danger"
+    });
+};

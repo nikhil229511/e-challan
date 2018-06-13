@@ -68,6 +68,11 @@ wsServer.on('request',function(request){
 							getAllTransporters(c.data.companyid);
 						break;
 
+						case "deleteTransporter":
+							deleteTransporter(c.data.transportid,c.data.companyid,connection);
+							getAllTransporters(c.data.companyid);
+						break;
+
 						case "insertProduct":
 							insertProduct(c.data.name,c.data.length,c.data.width,c.data.thickness,c.data.companyid,connection);
 							getAllProducts(c.data.companyid);
@@ -75,6 +80,11 @@ wsServer.on('request',function(request){
 
 						case "updateProduct":
 							updateProduct(c.data.productid,c.data.name,c.data.length,c.data.width,c.data.thickness,c.data.companyid,connection);
+							getAllProducts(c.data.companyid);
+						break;
+
+						case "deleteProduct":
+							deleteProduct(c.data.productid,c.data.companyid,connection);
 							getAllProducts(c.data.companyid);
 						break;
 
@@ -155,10 +165,10 @@ wsServer.on('request',function(request){
 				sendResponse(json,connection);
 			});	
 		}
+
 		function deleteCustomer(customerid,companyid,connection){
 			var obj;
-			var sql="DELETE FROM customers WHERE customerid="+customerid+"AND companyid="+companyid+";";
-			
+			var sql="DELETE FROM customers WHERE customerid="+customerid+" AND companyid="+companyid+";";
 			con.query(sql, function (err, result, fields) {
 				if(result.affectedRows){
 					obj={
@@ -174,13 +184,12 @@ wsServer.on('request',function(request){
 				sendResponse(json,connection);
 			});		
 		}
+
 		function insertTransporter(fname,lname,contactno,gstno,address,companyid,connection){
 			var obj;
 			var sql="INSERT INTO transporters (companyid,fname,lname,contactno,address,gstno) values("+companyid+",'"+fname+"','"+lname+"','"+contactno+"','"+address+"','"+gstno+"');";
-			console.log(sql);
 			con.query(sql, function (err, result, fields) {
-				console.log(result);
-				/*if(result.affectedRows){
+				if(result.affectedRows){
 					obj={
 						msg:'TransporterInsertSuccess'
 					}								
@@ -191,9 +200,10 @@ wsServer.on('request',function(request){
 					}
 				}
 				var json=JSON.stringify({type:"TransporterInsert_callback",data:obj});
-				sendResponse(json,connection);*/
+				sendResponse(json,connection);
 			});
 		}
+
 		function updateTransporter(transportid,fname,lname,contactno,gstno,address,companyid,connection){
 			var obj;
 			var sql="UPDATE transporters set fname='"+fname+"',lname='"+lname+"',contactno='"+contactno+"',address='"+address+"',gstno='"+gstno+"' WHERE transportid="+transportid+" AND companyid="+companyid+";";
@@ -212,7 +222,25 @@ wsServer.on('request',function(request){
 				sendResponse(json,connection);
 			});
 		}
-
+		
+		function deleteTransporter(transportid,companyid,connection){
+			var obj;
+			var sql="DELETE FROM transporters WHERE transportid="+transportid+" AND companyid="+companyid+";";
+			con.query(sql, function (err, result, fields) {
+				if(result.affectedRows){
+					obj={
+						msg:'TransporterDeleteSuccess'
+					}								
+				}
+				else{
+					obj={
+						msg:'TransporterDeleteFail'
+					}
+				}
+				var json=JSON.stringify({type:"TransporterDelete_callback",data:obj});
+				sendResponse(json,connection);
+			});
+		}
 
 		function insertProduct(name,length,width,thickness,companyid,connection){
 			var obj;
@@ -251,6 +279,25 @@ wsServer.on('request',function(request){
 					}
 				}
 				var json=JSON.stringify({type:"ProductUpdate_callback",data:obj});
+				sendResponse(json,connection);
+			});
+		}
+
+		function deleteProduct(productid,companyid,connection){
+			var obj;
+			var sql="DELETE FROM products WHERE productid="+productid+" AND companyid="+companyid+";";
+			con.query(sql, function (err, result, fields) {
+				if(result.affectedRows){
+					obj={
+						msg:'ProductDeleteSuccess'
+					}								
+				}
+				else{
+					obj={
+						msg:'ProductDeleteFail'
+					}
+				}
+				var json=JSON.stringify({type:"ProductDelete_callback",data:obj});
 				sendResponse(json,connection);
 			});
 		}
