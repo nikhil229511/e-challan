@@ -48,7 +48,8 @@
             <li><a class="treeview-item" style="cursor: pointer;" onclick='showTransporters();' rel="noopener"><i class="icon fa fa-circle-o"></i> Transport Master</a></li>            
           </ul>
         </li>
-        <li><a class="app-menu__item" href="#"><i class="app-menu__icon fa fa-edit"></i><span class="app-menu__label">Challan</span></a></li>
+        <li><a class="app-menu__item" style="cursor: pointer;" onclick='showSalesChallan();'><i class="app-menu__icon fa fa-edit"></i><span class="app-menu__label">Sales Challan</span></a></li>
+        <li><a class="app-menu__item" style="cursor: pointer;" onclick='showSalesReturnChallan();'><i class="app-menu__icon fa fa-edit"></i><span class="app-menu__label">Sales-Return Challan</span></a></li>
         <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon fa fa-th-list "></i><span class="app-menu__label">Reports</span><i class="treeview-indicator fa fa-angle-right"></i></a>
           <ul class="treeview-menu">
             <li><a class="treeview-item" href="#"><i class="icon fa fa-circle-o"></i> Challan No.-wise</a></li>
@@ -62,17 +63,13 @@
 
 
   <main class="app-content">
-  	<!-- page title -->
-  	<div class="app-title">
-    	<div>
-    		<h1><i class="fa fa-dashboard"></i> Welcome <span id="titleUsername"></span></h1>
+    	<!-- page title -->
+    	<div class="app-title">
+      	<div>
+      		<h1><i class="fa fa-dashboard"></i> Welcome <span id="titleUsername"></span></h1>
+      	</div>
     	</div>
-      <ul class="app-breadcrumb breadcrumb">
-        <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
-        <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
-      </ul>
-  	</div>
-    <!-- page title -->
+      <!-- page title -->
 
     	<!-- Changable content Dashboard-->
     	<div id="div_dashboard">
@@ -239,7 +236,7 @@
           
           <div class="tile">
             <div class="tile-body">
-            <table class="table table-hover table-bordered" id="sampleTableTransporter">
+            <table class="table table-hover table-bordered" id="sampleTableProduct">
               <thead>
                 <tr>
                   <th>Product Name</th>
@@ -258,6 +255,125 @@
         </div>
       </div>
 
+      <!-- Changable content sales challan-->
+      <div id="div_sales_challan">
+        <button id="loadProducts" type="submit">load prducts</button>
+        <div class="col-md-12">
+          <h3 class="tile-title">Sales Challan</h3>
+          <div class="tile"> 
+            <div class="tile-body">
+              <form class="row" id="">
+                <div class="form-group col-md-2">
+                  <label class="control-label">Challan No.</label>
+                  <input class="form-control" id="schallanno" type="text" disabled>
+                </div>
+                <div class="form-group col-md-3">
+                  <label class="control-label">Date</label>
+                  <input class="form-control" id="length" type="text" placeholder="Enter Length">
+                </div>    
+              </form>
+            </div>
+          </div>
+
+          <div class="tile">            
+            <div class="tile-body">
+              <form class="row" id="">
+                <div class="form-group col-md-7">
+                  <label class="control-label">Item Name</label>
+                  <select class="form-control" id="loadProductsDropdown">
+                    
+                  </select>                              
+                </div>
+                <div class="form-group col-md-2">
+                  <label class="control-label">Quantity</label>
+                  <input class="form-control" id="length" type="text" placeholder="Enter Length">
+                </div>
+                <div class="form-group col-md-2">
+                  <label class="control-label">Rate</label>
+                  <input class="form-control" id="length" type="text" placeholder="Enter Length">
+                </div>
+                <div class="form-group col-md-1">
+                  <a href="" class="control-label"><i style="margin-top: 25px;" class="fa fa-plus-square fa-3x" aria-hidden="true"></i></a>
+                </div>    
+              </form>
+            </div>
+          </div>
+
+          <div class="tile">
+            <div class="tile-body">
+            <table class="table table-hover table-bordered" id="sampleTableSalesChallan">
+              <thead>
+                <tr>
+                  <th>Item Name</th>
+                  <th>Dimension</th>
+                  <th>Quanitiy</th>
+                  <th>Rate</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="salesChallanData">
+                <!-- dynamic html -->
+              </tbody>
+            </table>
+            </div>
+          </div>            
+        </div>
+      </div>
+
+      <!-- Changable content sales return challan-->
+      <div id="div_sales_return_challan">
+        <div class="col-md-12">
+          <div class="tile">
+            <h3 class="tile-title">Sales Return Challan</h3>
+            <div class="tile-body">
+              <form class="row" id="productsForm">
+                <div class="form-group col-md-12">
+                  <label class="control-label">Product Name</label>
+                  <input class="form-control" id="pname" type="text" placeholder="Enter Product Name">
+                </div>
+                <div class="form-group col-md-3">
+                  <label class="control-label">Length</label>
+                  <input class="form-control" id="length" type="text" placeholder="Enter Length">
+                </div>
+                <div class="form-group col-md-3">
+                  <label class="control-label">Width</label>
+                  <input class="form-control" id="width" type="text" placeholder="Enter Width">
+                </div>
+                <div class="form-group col-md-3">
+                  <label class="control-label">Thickness</label>
+                  <input class="form-control" type="text" id="thickness" placeholder="Enter Thickness">
+                  <input id="productid" type="hidden"  value='-1' name="productid">
+                </div>                  
+                <div class="form-group col-md-3 align-self-end">
+                  <button class="btn btn-primary" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Okay</button>
+                  <button class="btn btn-danger" ><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancel</button>
+                </div>
+              </form>
+            </div>
+          </div>
+          
+          <div class="tile">
+            <div class="tile-body">
+            <table class="table table-hover table-bordered" id="sampleTableProduct">
+              <thead>
+                <tr>
+                  <th>Product Name</th>
+                  <th>Length</th>
+                  <th>Width</th>
+                  <th>Thickness</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="productsData">
+                <!-- dynamic html -->
+              </tbody>
+            </table>
+            </div>
+          </div>            
+        </div>
+      </div>
+
+
   </main>
 
     <script>
@@ -267,6 +383,8 @@
         $('#div_customers').hide();
         $('#div_transporters').hide();
         $('#div_products').hide();
+        $('#div_sales_challan').hide();
+        $('#div_sales_return_challan').hide();
       }
 
       function showCustomers(){
@@ -274,6 +392,8 @@
         $('#div_customers').show();
         $('#div_transporters').hide();
         $('#div_products').hide();
+        $('#div_sales_challan').hide();
+        $('#div_sales_return_challan').hide();
       }
 
       function showTransporters(){
@@ -281,6 +401,8 @@
         $('#div_customers').hide();
         $('#div_transporters').show();
         $('#div_products').hide();
+        $('#div_sales_challan').hide();
+        $('#div_sales_return_challan').hide();
       }
 
       function showProducts(){
@@ -288,7 +410,26 @@
         $('#div_customers').hide();
         $('#div_transporters').hide();
         $('#div_products').show(); 
+        $('#div_sales_challan').hide();
+        $('#div_sales_return_challan').hide();
       }
+      function showSalesChallan(){
+        $('#div_sales_challan').show();
+        $('#div_dashboard').hide();
+        $('#div_customers').hide();
+        $('#div_transporters').hide();
+        $('#div_products').hide(); 
+        $('#div_sales_return_challan').hide();
+      }
+      function showSalesReturnChallan(){
+        $('#div_sales_challan').hide();
+        $('#div_dashboard').hide();
+        $('#div_customers').hide();
+        $('#div_transporters').hide();
+        $('#div_products').hide(); 
+        $('#div_sales_return_challan').show(); 
+      }
+
     </script>
 
     <!-- Essential javascripts for application to work-->
@@ -306,6 +447,8 @@
     
     <script type="text/javascript" src="dashboard.js"></script>
     <script type="text/javascript">$('#sampleTableTransporter').DataTable();</script>
+
+    <script type="text/javascript">$('#sampleTableProduct').DataTable();</script>
     <!-- notification -->
     <script type="text/javascript" src="js/plugins/bootstrap-notify.min.js"></script>
     <!-- <script type="text/javascript" src="js/plugins/sweetalert.min.js"></script> -->

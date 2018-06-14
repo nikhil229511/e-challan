@@ -88,6 +88,10 @@ wsServer.on('request',function(request){
 							getAllProducts(c.data.companyid);
 						break;
 
+						case "LoadProduct":
+							getAllProductList(c.data.companyid);
+						break;
+
 						case "sendAll":
 							getAllCustomers(c.data.companyid);
 							getAllTransporters(c.data.companyid);
@@ -359,6 +363,25 @@ wsServer.on('request',function(request){
 					arr.push(obj); 
 				}
 				var json=JSON.stringify({type:"getAllProducts_callback",data:arr});
+				sendResponse(json,connection);				
+			});
+		}
+
+		function getAllProductList(companyid){
+			var arr=[];
+			var sql="SELECT * from products where companyid="+companyid+";";
+			con.query(sql, function (err, result, fields) {
+				for(var index in result){
+					var obj={
+						productid:result[index].productid,
+						productname:result[index].productname,
+						length:result[index].length,
+						width:result[index].width,
+						thickness:result[index].thickness						
+					}
+					arr.push(obj); 
+				}
+				var json=JSON.stringify({type:"getAllProductList_callback",data:arr});
 				sendResponse(json,connection);				
 			});
 		}

@@ -1,6 +1,4 @@
 "use strict";
-
-
 $(function(){
 
 	window.WebSocket = window.WebSocket || window.MozWebSocket ;
@@ -152,6 +150,15 @@ $(function(){
 	  		}
 	  		$('#productsData').html(htmlString);
 	  	}
+	  	else if(json.type == "getAllProductList_callback"){
+	  		console.log('getAllProductList_callback');
+	  		var htmlString="";
+	  		for(var i=0;i<json.data.length;i++){
+	  			htmlString +='<option value='+json.data[i].productid+'>'+json.data[i].productname+' ( '+json.data[i].length+' * '+json.data[i].width+' * '+json.data[i].thickness+' ) </option>';
+	  		}
+	  		$('#loadProductsDropdown').append(htmlString);
+	  	}
+	  	//
 
 	  	$('.deleteC').unbind().click(function(){
 			deleteCustomer($(this).attr("id"));
@@ -164,8 +171,10 @@ $(function(){
 		$('.deleteP').unbind().click(function(){
 			deleteProduct($(this).attr("id"));
 		});
-	
 
+		$('#loadProducts').unbind().click(function(){
+			loadAllProducts();
+		});
 
 	};
 
@@ -174,6 +183,12 @@ $(function(){
 	$('#div_customers').hide();
 	$('#div_transporters').hide();
 	$('#div_products').hide();
+	$('#div_sales_challan').hide();
+	$('#div_sales_return_challan').hide();
+
+	// $('#div_sales_challan').on('show',function(){
+	// 	alert('hi');
+	// });
 
 	/*$('.app-menu > li > a').click(function(){
 		$(this).parent().sibling().find('[class="active"]').removeClass('active');
@@ -222,6 +237,11 @@ $(function(){
 		}
 	});
 
+
+
+	function showProducts(){
+		alert('show products');
+	}
 	function insertCustomer(){
 		var cfname=$('#cfname').val();
 		var clname=$('#clname').val();
@@ -399,6 +419,15 @@ $(function(){
 			companyid:sessionStorage.getItem('companyid')
 		}
 		var json=JSON.stringify({usertype: "deleteProduct", data:obj});
+		connection.send(json);
+	}
+
+	function loadAllProducts(){
+		var obj={
+			productid:productid,
+			companyid:sessionStorage.getItem('companyid')
+		}
+		var json=JSON.stringify({usertype: "LoadProduct", data:obj});
 		connection.send(json);
 	}
 
