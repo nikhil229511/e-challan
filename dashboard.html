@@ -443,7 +443,11 @@
     <!-- Data table plugin-->
     <script type="text/javascript" src="js/plugins/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="js/plugins/dataTables.bootstrap.min.js"></script>
-    <script type="text/javascript">$('#sampleTableCustomer').DataTable();</script>
+    <script type="text/javascript">
+    $('#sampleTableCustomer').dataTable( {
+    "paging": true
+    });
+  </script>
     
     <script type="text/javascript" src="dashboard.js"></script>
     <script type="text/javascript">$('#sampleTableTransporter').DataTable();</script>
