@@ -1,4 +1,10 @@
 "use strict";
+
+
+$(document).ready(function() {
+
+});
+
 $(function(){
 
 	window.WebSocket = window.WebSocket || window.MozWebSocket ;
@@ -6,7 +12,6 @@ $(function(){
 		alert("Sorry! Your browser doesn't support WebSocket.");
 		return;
 	}
-
 	setInterval(function(){
 		if(connection.readyState!==1){
 			console.log("Unable to connect to server. Please try again.");
@@ -27,7 +32,6 @@ $(function(){
 		var json=JSON.stringify({usertype:"sendAll",data:obj});
 		connection.send(json);
 	};
-
 	connection.onmessage = function (message) {
 	  	var json = JSON.parse(message.data);
 	  	
@@ -151,15 +155,25 @@ $(function(){
 	  		$('#productsData').html(htmlString);
 	  	}
 	  	else if(json.type == "getAllProductList_callback"){
-	  		console.log('getAllProductList_callback');
+	  		$('#loadProductsDropdown').empty();
 	  		var htmlString="";
 	  		for(var i=0;i<json.data.length;i++){
 	  			htmlString +='<option value='+json.data[i].productid+'>'+json.data[i].productname+' ( '+json.data[i].length+' * '+json.data[i].width+' * '+json.data[i].thickness+' ) </option>';
 	  		}
 	  		$('#loadProductsDropdown').append(htmlString);
 	  	}
-	  	//
-
+	  	else if(json.type == "getAllCustomerList_callback"){
+	  		$('#scustomername').empty();
+	  		var htmlString="";
+	  		for(var i=0;i<json.data.length;i++){
+	  			htmlString +='<option value='+json.data[i].customerid+'>'+json.data[i].fname+' '+json.data[i].lname+'</option>';
+	  		}
+	  		$('#scustomername').append(htmlString);
+	  	}
+	  	else if(json.type == "getSalesChallanNo_callback"){
+	  		$('#schallanno').val(json.data.challanno+1);
+	  	}
+	  	
 	  	$('.deleteC').unbind().click(function(){
 			deleteCustomer($(this).attr("id"));
 		});
@@ -172,9 +186,15 @@ $(function(){
 			deleteProduct($(this).attr("id"));
 		});
 
-		$('#loadProducts').unbind().click(function(){
-			loadAllProducts();
-		});
+		$('#salesChallanDiv').click(function(){
+	    	$('#div_sales_challan').show("slow", function() {
+	    		loadAllProductsandChallanNo();
+	    	});	
+	    });
+
+	    // $('#loadProductsDropdown').on('change',function(){
+	    // 	alert(this.value);
+	    // })
 
 	};
 
@@ -186,10 +206,6 @@ $(function(){
 	$('#div_sales_challan').hide();
 	$('#div_sales_return_challan').hide();
 
-	// $('#div_sales_challan').on('show',function(){
-	// 	alert('hi');
-	// });
-
 	/*$('.app-menu > li > a').click(function(){
 		$(this).parent().sibling().find('[class="active"]').removeClass('active');
 		$(this).addClass('active');
@@ -197,50 +213,61 @@ $(function(){
 	$('a[href="#"]').click(function (event) { // where href are blank
 	   event.preventDefault();
 	});
-	
+
 	// validation Customer
-	$('#customerForm').validate({
-		rules:{
-			cfname:{
-				required: true
-			},
-			clname:{
-				required:true
-			},
-			ccontactno: {
-				required: true,
-				maxlength: 10,
-				minlength: 10
-			},
-			cgstno:{
-				minlength:15,
-				maxlength:15
-			},
-			caddress:"required"
-		},
-		messages:{
-			cfname: "Enter First Name.",
-			clname: "Enter Last Name.",
-			ccontactno:{
-				required:"Enter Contact Number.",
-				maxlength:"Please Enter Valid Number of 10 Digit.",
-				minlength:"Please Enter Valid Number of 10 Digit."
-			},
-			cgstno:{
-				maxlength:"Please Enter Valid GST Number of 15 Digit.",
-				minlength:"Please Enter Valid GST Number of 15 Digit."	
-			},
-			caddress:"Enter Address."
-		},
-		submitHandler:function(){
-			insertCustomer();
+	$('#csubmit').click(validateCustomer);
+	$('#clearCustomer').click(clearCustomer);	
+	function clearCustomer(event){
+		event.preventDefault();
+		$('#cfname').val("");
+		$('#clname').val("");
+		$('#ccontactno').val("");
+		$('#cgstno').val("");
+		$('#caddress').val("");
+		$('#ccustomerid').val('-1');	
+	}
+	function validateCustomer(event){
+		event.preventDefault();
+		var msg='';
+		var flag=0;
+		var cfname=$('#cfname').val();
+		var clname=$('#clname').val();
+		var ccontactno=$('#ccontactno').val();
+		var cgstno=$('#cgstno').val();
+		var caddress=$('#caddress').val();
+		var ccustomerid=$('#ccustomerid').val();
+		
+		if(cfname =='' || cfname == null){
+			flag=1;
+			msg="Enter First Name.";
 		}
-	});
-
-
-
-	function showProducts(){
-		alert('show products');
+		else if(clname == '' || clname== null){
+			flag=1;
+			msg="Enter Last Name.";
+		}
+		else if(ccontactno == '' || ccontactno== null){
+			flag=1;
+			msg="Enter Contact Number."
+		}
+		else if(ccontactno.length!=10 || !ccontactno.match(/^\d+$/)){
+			flag=1;
+			msg="Contact Number should be exactly 10 numbers.."	
+		}
+		else if(caddress == '' || caddress== null){
+			flag=1;
+			msg="Enter Address."			
+		}
+		else if(cgstno.length !=0){
+			if(cgstno.length!=15){
+				flag=1;
+				msg="GST number should be exactly 15 characters.."		
+			}
+		}
+		if(flag == 0)
+			insertCustomer();
+		else{
+			notifyValidateError(msg);
+		}
 	}
 	function insertCustomer(){
 		var cfname=$('#cfname').val();
@@ -267,7 +294,6 @@ $(function(){
 		}
 		connection.send(json);
 	}
-
 	function deleteCustomer(customerid){
 		var obj={
 			customerid:customerid,
@@ -276,46 +302,64 @@ $(function(){
 		var json=JSON.stringify({usertype: "deleteCustomer", data:obj});
 		connection.send(json);
 	}
-	
-	// validation Transporter
-	$('#transporterForm').validate({
-		rules:{
-			tfname:{
-				required: true
-			},
-			tlname:{
-				required:true
-			},
-			tcontactno: {
-				required: true,
-				maxlength: 10,
-				minlength: 10
-			},
-			tgstno:{
-				minlength:15,
-				maxlength:15
-			},
-			taddress:"required"
-		},
-		messages:{
-			tfname: "Enter First Name.",
-			tlname: "Enter Last Name.",
-			tcontactno:{
-				required:"Enter Contact Number.",
-				maxlength:"Please Enter Valid Contact Number of 10 Digit.",
-				minlength:"Please Enter Valid Contact Number of 10 Digit."
-			},
-			tgstno:{
-				maxlength:"Please Enter Valid GST Number of 15 Digit.",
-				minlength:"Please Enter Valid GST Number of 15 Digit."	
-			},
-			taddress:"Enter Address."
-		},
-		submitHandler:function(){
-			insertTransporter();
-		}
-	});
 
+	// validation Transporter
+	$('#tsubmit').click(validateTransporter);
+	$('#clearTransporter').click(clearTransporter);
+	function clearTransporter(event){
+		event.preventDefault();
+		$('#tfname').val("");
+		$('#tlname').val("");
+		$('#tcontactno').val("");
+		$('#tgstno').val("");
+		$('#taddress').val("");
+		$('#ttransportid').val('-1');
+	}
+	function validateTransporter(event){
+		event.preventDefault();
+		var msg='';
+		var flag=0;
+		
+		var tfname=$('#tfname').val();
+		var tlname=$('#tlname').val();
+		var tcontactno=$('#tcontactno').val();
+		var tgstno=$('#tgstno').val();
+		var taddress=$('#taddress').val();
+		var ttransportid=$('#ttransportid').val();
+
+		if(tfname =='' || tfname == null){
+			flag=1;
+			msg="Enter First Name.";
+		}
+		else if(tlname == '' || tlname== null){
+			flag=1;
+			msg="Enter Last Name.";
+		}
+		else if(tcontactno == '' || tcontactno== null){
+			flag=1;
+			msg="Enter Contact Number."
+		}
+		else if(tcontactno.length!=10 || !tcontactno.match(/^\d+$/)){
+			flag=1;
+			msg="Contact Number should be exactly 10 Numbers.."	
+		}
+		else if(taddress == '' || taddress== null){
+			flag=1;
+			msg="Enter Address."			
+		}
+		else if(tgstno.length !=0){
+			if(tgstno.length!=15){
+				flag=1;
+				msg="GST number should be exactly 15 characters.."		
+			}
+		}
+
+		if(flag == 0)
+			insertTransporter();
+		else{
+			notifyValidateError(msg);
+		}
+	}
 	function insertTransporter(){
 		var tfname=$('#tfname').val();
 		var tlname=$('#tlname').val();
@@ -341,7 +385,6 @@ $(function(){
 			json=JSON.stringify({usertype: "updateTransporter", data:obj});
 		connection.send(json);
 	}
-
 	function deleteTransporter(transportid){
 		var obj={
 			transportid:transportid,
@@ -351,45 +394,61 @@ $(function(){
 		connection.send(json);
 	}
 
-	// validation Transporter
-	$('#productsForm').validate({
-		rules:{
-			pname:{
-				required: true
-			},
-			length:{
-				required:true,
-				number : true
-			},
-			width: {
-				required: true,
-				number : true
-			},
-			thickness:{
-				required:true,
-				number : true
-			}
-		},
-		messages:{
-			pname: "Enter Product Name.",
-			length:{
-				required: "Enter Length.",	
-				number : "Length Should Only be a Number."
-			},
-			width:{
-				required: "Enter Width.",	
-				number : "Width Should Only be a Number."
-			},
-			thickness:{
-				required: "Enter Thickness.",	
-				number : "Thickness Should Only be a Number."
-			}
-		},
-		submitHandler:function(){
-			insertProduct();
-		}
-	});
+	// validation Product
+	$('#psubmit').click(validateProduct);
+	$('#clearProduct').click(clearProduct);
+	function clearProduct(even){
+		event.preventDefault();
+		$('#pname').val("");
+		$('#length').val("");
+		$('#width').val("");
+		$('#thickness').val("");
+		$('#productid').val('-1');
+	}
+	function validateProduct(){
+		event.preventDefault();
+		var msg='';
+		var flag=0;
+		
+		var name=$('#pname').val();
+		var len=$('#length').val();
+		var width=$('#width').val();
+		var thickness=$('#thickness').val();
+		var productid=$('#productid').val();
 
+		if(name =='' || name == null){
+			flag=1;
+			msg="Enter Product Name.";
+		}
+		else if(len == '' || len == null){
+			flag=1;
+			msg="Enter Length.";
+		}
+		else if(!len.match(/^\d+$/)){
+			flag=1;
+			msg="Length Should be Number.";
+		}
+		else if(width == '' || width== null){
+			flag=1;
+			msg="Enter Width.";
+		}
+		else if(!width.match(/^\d+$/)){
+			flag=1;
+			msg="width Should be Number.";
+		}else if(thickness == '' || thickness== null){
+			flag=1;
+			msg="Enter Thickness.";			
+		}
+		else if(!thickness.match(/^\d+$/)){
+			flag=1;
+			msg="Thickness Should be Number.";
+		}
+		if(flag == 0)
+			insertProduct();
+		else{
+			notifyValidateError(msg);
+		}
+	}
 	function insertProduct(){
 		var name=$('#pname').val();
 		var length=$('#length').val();
@@ -412,7 +471,6 @@ $(function(){
 			json=JSON.stringify({usertype: "updateProduct", data:obj});
 		connection.send(json);
 	}
-
 	function deleteProduct(productid){
 		var obj={
 			productid:productid,
@@ -421,16 +479,14 @@ $(function(){
 		var json=JSON.stringify({usertype: "deleteProduct", data:obj});
 		connection.send(json);
 	}
-
-	function loadAllProducts(){
+	function loadAllProductsandChallanNo(){
 		var obj={
 			productid:productid,
 			companyid:sessionStorage.getItem('companyid')
 		}
-		var json=JSON.stringify({usertype: "LoadProduct", data:obj});
+		var json=JSON.stringify({usertype: "LoadSalesChallan", data:obj});
 		connection.send(json);
 	}
-
 });
 
 function updateCustomer(customerid,companyid,fname,lname,contactno,gstno,address){
@@ -441,7 +497,6 @@ function updateCustomer(customerid,companyid,fname,lname,contactno,gstno,address
 	$('#cgstno').val(gstno);
 	$('#caddress').val(decodeURIComponent(address));
 }
-
 function updateTransporter(transportid,companyid,fname,lname,contactno,gstno,address){
 	$('#ttransportid').val(transportid);
 	$('#tfname').val(fname);
@@ -450,7 +505,6 @@ function updateTransporter(transportid,companyid,fname,lname,contactno,gstno,add
 	$('#tgstno').val(gstno);
 	$('#taddress').val(decodeURIComponent(address));
 }
-
 function updateProduct(productid,productname,length,width,thickness){
 	$('#productid').val(productid);
 	$('#pname').val(decodeURIComponent(productname));
@@ -458,7 +512,6 @@ function updateProduct(productid,productname,length,width,thickness){
 	$('#width').val(width);
 	$('#thickness').val(thickness);
 }
-
 function notifyUpdate(){
     $.notify({
       	title: "Update Complete : ",
@@ -490,6 +543,15 @@ function notifyFail(){
     $.notify({
       	title: "Error : ",
       	message: "Something went Wrong!",
+      	icon: 'fa fa-check' 
+    },{
+      	type: "danger"
+    });
+};
+function notifyValidateError(msg){
+    $.notify({
+      	title: "Error : ",
+      	message: msg,
       	icon: 'fa fa-check' 
     },{
       	type: "danger"

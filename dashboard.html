@@ -6,8 +6,101 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>E-challan Dashboard</title>
 	<link rel="stylesheet" type="text/css" href="css/main.css">
+  <!-- <link rel="stylesheet" type="text/css" href="css/invoice.css"> -->
 	<!-- external -->
 	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <style type="text/css">
+    article, article address, table.meta, table.inventory { margin: 0 0 3em; }
+
+    table.inventory { clear: both; width: 100%; }
+    table.inventory th { font-weight: bold; text-align: center; }
+
+    table.inventory td:nth-child(1) { width: 26%; }
+    table.inventory td:nth-child(2) { width: 38%; }
+    table.inventory td:nth-child(3) { text-align: right; width: 12%; }
+    table.inventory td:nth-child(4) { text-align: right; width: 12%; }
+    table.inventory td:nth-child(5) { text-align: right; width: 12%; }
+
+    /*table css*/
+    table { font-size: 90%; table-layout: fixed; width: 100%; }
+    table { border-collapse: separate; border-spacing: 2px; }
+    th, td { border-width: 1px; padding: 0.5em; position: relative; text-align: left; }
+    th, td { border-radius: 0.25em; border-style: solid; }
+    th { background: #EEE; border-color: #BBB; }
+    td { border-color: #DDD; }
+
+    h1 { font: bold 100% sans-serif; letter-spacing:0.5em; text-align: center; text-transform: uppercase;}
+    table.balance { float: right; width: 36%; }
+    table.balance:after { clear: both; content: ""; display: table; }
+
+    table.balance th, table.balance td { width: 50%; }
+    table.balance td { text-align: right; }
+
+    /*for + and - button*/
+    .add, .cut
+    {
+      border-width: 1px;
+      display: block;
+      font-size: .8rem;
+      padding: 0.25em 0.5em;  
+      float: left;
+      text-align: center;
+      width: 0.6em;
+    }
+
+    .add, .cut
+    {
+      background: #9AF;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+      background-image: -moz-linear-gradient(#00ADEE 5%, #0078A5 100%);
+      background-image: -webkit-linear-gradient(#00ADEE 5%, #0078A5 100%);
+      border-radius: 0.5em;
+      border-color: #0076A3;
+      color: #FFF;
+      cursor: pointer;
+      font-weight: bold;
+      text-shadow: 0 -1px 2px rgba(0,0,0,0.333);
+    }
+
+    .add { margin: -2.5em 0 0; }
+
+    .add:hover { background: #00ADEE; }
+
+    .cut { opacity: 0; position: absolute; top: 0; left: -1.5em; }
+    .cut { -webkit-transition: opacity 100ms ease-in; }
+
+    tr:hover .cut { opacity: 1; }
+
+    @media print {
+      * { -webkit-print-color-adjust: exact; }
+      html { background: none; padding: 0; }
+      body { box-shadow: none; margin: 0; }
+      span:empty { display: none; }
+      .add, .cut { display: none; }
+    }
+
+    @page { margin: 0; }
+
+
+    /*style for horizontal rule tag*/
+    hr.style-eight {
+        overflow: visible; /* For IE */
+        padding: 0;
+        border: none;
+        border-top: medium double #333;
+        color: #333;
+        text-align: center;
+    }
+    hr.style-eight:after {
+        content: "§";
+        display: inline-block;
+        position: relative;
+        top: -0.7em;
+        font-size: 1.5em;
+        padding: 0 0.25em;
+        background: white;
+    }
+  </style>
 </head>
 
 <body class="app sidebar-mini rtl">
@@ -48,7 +141,7 @@
             <li><a class="treeview-item" style="cursor: pointer;" onclick='showTransporters();' rel="noopener"><i class="icon fa fa-circle-o"></i> Transport Master</a></li>            
           </ul>
         </li>
-        <li><a class="app-menu__item" style="cursor: pointer;" onclick='showSalesChallan();'><i class="app-menu__icon fa fa-edit"></i><span class="app-menu__label">Sales Challan</span></a></li>
+        <li><a class="app-menu__item" id="salesChallanDiv"style="cursor: pointer;" onclick='showSalesChallan();'><i class="app-menu__icon fa fa-edit"></i><span class="app-menu__label">Sales Challan</span></a></li>
         <li><a class="app-menu__item" style="cursor: pointer;" onclick='showSalesReturnChallan();'><i class="app-menu__icon fa fa-edit"></i><span class="app-menu__label">Sales-Return Challan</span></a></li>
         <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon fa fa-th-list "></i><span class="app-menu__label">Reports</span><i class="treeview-indicator fa fa-angle-right"></i></a>
           <ul class="treeview-menu">
@@ -91,6 +184,7 @@
         <div class="col-md-12">
           <div class="tile">
             <h3 class="tile-title">Customers Detail</h3>
+            <h6 id="errorMsg" style="color: red;"></h6>
             <div class="tile-body">
               <form class="row formvalidate" id="customerForm">
                 <div class="form-group col-md-3">
@@ -116,7 +210,7 @@
                 </div>
                 <div class="form-group col-md-4 align-self-end">
                   <button class="btn btn-primary" id="csubmit" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Okay</button>
-                  &nbsp;&nbsp;<button class="btn btn-danger"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancel</button>
+                  &nbsp;&nbsp;<button id="clearCustomer" class="btn btn-danger"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancel</button>
                 </div>
               </form>
             </div>
@@ -174,7 +268,7 @@
                 </div>
                 <div class="form-group col-md-4 align-self-end">
                   <button class="btn btn-primary" id="tsubmit" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Okay</button>
-                  <button class="btn btn-danger" ><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancel</button>
+                  <button class="btn btn-danger" id="clearTransporter"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancel</button>
                 </div>
               </form>
             </div>
@@ -208,7 +302,7 @@
           <div class="tile">
             <h3 class="tile-title">Products Detail</h3>
             <div class="tile-body">
-              <form class="row" id="productsForm">
+              <form class="row formvalidate" method="POST" id="productsForm">
                 <div class="form-group col-md-12">
                   <label class="control-label">Product Name</label>
                   <input class="form-control" id="pname" type="text" placeholder="Enter Product Name">
@@ -227,8 +321,8 @@
                   <input id="productid" type="hidden"  value='-1' name="productid">
                 </div>                  
                 <div class="form-group col-md-3 align-self-end">
-                  <button class="btn btn-primary" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Okay</button>
-                  <button class="btn btn-danger" ><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancel</button>
+                  <button class="btn btn-primary" id="psubmit" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Okay</button>
+                  <button class="btn btn-danger" id="clearProduct"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancel</button>
                 </div>
               </form>
             </div>
@@ -256,8 +350,7 @@
       </div>
 
       <!-- Changable content sales challan-->
-      <div id="div_sales_challan">
-        <button id="loadProducts" type="submit">load prducts</button>
+      <!-- <div id="div_sales_challan">
         <div class="col-md-12">
           <h3 class="tile-title">Sales Challan</h3>
           <div class="tile"> 
@@ -269,7 +362,7 @@
                 </div>
                 <div class="form-group col-md-3">
                   <label class="control-label">Date</label>
-                  <input class="form-control" id="length" type="text" placeholder="Enter Length">
+                  <input class="form-control" id="demoDate" type="text" placeholder="Select Date">
                 </div>    
               </form>
             </div>
@@ -280,8 +373,7 @@
               <form class="row" id="">
                 <div class="form-group col-md-7">
                   <label class="control-label">Item Name</label>
-                  <select class="form-control" id="loadProductsDropdown">
-                    
+                  <select class="form-control" name="productid" id="loadProductsDropdown">
                   </select>                              
                 </div>
                 <div class="form-group col-md-2">
@@ -312,14 +404,101 @@
                 </tr>
               </thead>
               <tbody id="salesChallanData">
-                <!-- dynamic html -->
+    
               </tbody>
             </table>
             </div>
           </div>            
         </div>
+      </div> -->
+
+      <div id="div_sales_challan">
+        <div class="col-md-12">
+          <!-- invisible table added for the working of the  + and - button.
+          Please do not remove it or change it. -->
+          <table class="meta" style="display: none;">
+            
+            <td><span id="prefix" contenteditable>$</span></td>
+          </table>
+          <!-- invisivle table end -->
+          <h3 class="tile-title">Sales Challan</h3>
+          <div class="tile"> 
+            <div class="tile-body">
+              <form class="row" id="">                
+                <div class="form-group col-md-5">
+                  <label class="control-label">Customer Name.</label>
+                  <select class="form-control" id="scustomername">
+                  </select>
+                </div>
+                <div class="form-group col-md-3">
+                  <label class="control-label">Date</label>
+                  <input class="form-control" id="demoDate" type="text" placeholder="Select Date">
+                </div>
+                <div class="form-group col-md-2">
+                  <label class="control-label">Challan No.</label>
+                  <input class="form-control" id="schallanno" type="text" disabled>
+                </div>                
+              </form>
+            </div>
+          </div>
+
+          <div class="tile">            
+            <div class="tile-body">
+              <!-- taken content -->
+              <table class="inventory">
+                <thead>
+                  <tr>
+                    <th><span>Item name</span></th>
+                    <th><span>Unit</span></th>
+                    <th><span>Quantity</span></th>
+                    <th><span>Rate</span></th> 
+                    <th><span>Price</span></th> 
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <a class="cut">-</a>
+                      <span style="width: 100%" id="loadProductsDropdown">                        
+                      </span>
+                    </td>
+                    <td><span contenteditable>Experience Review</span></td>
+                    <td><span contenteditable>4</span></td>                    
+                    <td><span data-prefix>$</span><span contenteditable>150.00</span></td>
+                    <td><span data-prefix>$</span><span contenteditable></span></td>                    
+                  </tr>
+                </tbody>
+              </table>
+              <a class="add">+</a>
+              <table class="balance">
+                <tr>
+                  <th><span contenteditable>Total</span></th>
+                  <td><span data-prefix>$</span><span>600.00</span></td>
+                </tr>
+                <tr>
+                  <th><span contenteditable>Amount Paid</span></th>
+                  <td><span data-prefix>$</span><span contenteditable>0.00</span></td>
+                </tr>
+                <tr>
+                  <th><span contenteditable>Balance Due</span></th>
+                  <td><span data-prefix>$</span><span>600.00</span></td>
+                </tr>
+              </table>
+              <aside>
+                <br><br><br><br><br>
+                <hr class="style-eight">
+                <h1><span contenteditable>Additional Notes</span></h1>
+                <div contenteditable>
+                  <p>A finance charge of 1.5% will be made on unpaid balances after 30 days.</p>
+                </div>
+              </aside>        
+        </div>
       </div>
 
+                      
+        </div>
+      </div>
+      
       <!-- Changable content sales return challan-->
       <div id="div_sales_return_challan">
         <div class="col-md-12">
@@ -372,7 +551,6 @@
           </div>            
         </div>
       </div>
-
 
   </main>
 
@@ -429,7 +607,6 @@
         $('#div_products').hide(); 
         $('#div_sales_return_challan').show(); 
       }
-
     </script>
 
     <!-- Essential javascripts for application to work-->
@@ -437,19 +614,38 @@
     <script src="js/popper.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/main.js"></script>
-    <script src="js/jquery.validate.min.js"></script>
+    <!-- <script src="js/jquery.validate.min.js"></script> -->
     <!-- The javascript plugin to display page loading on top-->
     <script src="js/plugins/pace.min.js"></script>
     <!-- Data table plugin-->
     <script type="text/javascript" src="js/plugins/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="js/plugins/dataTables.bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/plugins/bootstrap-datepicker.min.js"></script>
+    <script type="text/javascript" src="js/plugins/select2.min.js"></script>
     <script type="text/javascript">
     $('#sampleTableCustomer').dataTable( {
-    "paging": true
+      "paging": true
     });
-  </script>
+
+    $('#demoDate').datepicker({
+        format: "dd/mm/yyyy",
+        autoclose: true,
+        todayHighlight: true
+    });
+    
+    $('#loadProductsDropdown').select2({
+      placeholder: 'Select an Item'
+    });
+
+    $('#scustomername').select2({
+      placeholder: 'Select Customer'
+    });
+    </script>
     
     <script type="text/javascript" src="dashboard.js"></script>
+
+    <script type="text/javascript" src="js/invoice.js"></script>
+    
     <script type="text/javascript">$('#sampleTableTransporter').DataTable();</script>
 
     <script type="text/javascript">$('#sampleTableProduct').DataTable();</script>

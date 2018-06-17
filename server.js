@@ -88,8 +88,10 @@ wsServer.on('request',function(request){
 							getAllProducts(c.data.companyid);
 						break;
 
-						case "LoadProduct":
+						case "LoadSalesChallan":
 							getAllProductList(c.data.companyid);
+							getSalesChallanNo(c.data.companyid);
+							getAllCustomerList(c.data.companyid);
 						break;
 
 						case "sendAll":
@@ -382,6 +384,35 @@ wsServer.on('request',function(request){
 					arr.push(obj); 
 				}
 				var json=JSON.stringify({type:"getAllProductList_callback",data:arr});
+				sendResponse(json,connection);				
+			});
+		}
+
+		function getSalesChallanNo(companyid){
+			var sql="SELECT companyid as 'companyid', MAX(challanno) AS 'LastChallan' FROM   challanmaster where companyid="+companyid+" GROUP BY companyid";
+			con.query(sql, function (err, result, fields) {
+				var obj={
+					companyid:result[0].companyid,
+					challanno:result[0].LastChallan
+				}
+				var json=JSON.stringify({type:"getSalesChallanNo_callback",data:obj});
+				sendResponse(json,connection);
+			});
+		}
+
+		function getAllCustomerList(companyid){
+			var arr=[];
+			var sql="SELECT fname,lname,customerid from customers where companyid="+companyid+";";
+			con.query(sql, function (err, result, fields) {
+				for(var index in result){
+					var obj={
+						customerid 		: 	result[index].customerid,
+						fname 			: 	result[index].fname,
+						lname 			: 	result[index].lname,						
+					}
+					arr.push(obj); 
+				}
+				var json=JSON.stringify({type:"getAllCustomerList_callback",data:arr});
 				sendResponse(json,connection);				
 			});
 		}
