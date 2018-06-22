@@ -88,16 +88,37 @@ wsServer.on('request',function(request){
 							getAllProducts(c.data.companyid);
 						break;
 
+						case "insertUnit":
+							insertUnit(c.data.name,c.data.offset,c.data.companyid,connection);
+							getAllUnits(c.data.companyid);
+						break;
+
+						case "updateUnit":
+							updateUnit(c.data.unitid,c.data.name,c.data.offset,c.data.companyid,connection);
+							getAllUnits(c.data.companyid);
+						break;
+
+						case "deleteUnit":
+							deleteUnit(c.data.unitid,c.data.companyid,connection);
+							getAllUnits(c.data.companyid);
+						break;
+
 						case "LoadSalesChallan":
 							getAllProductList(c.data.companyid);
 							getSalesChallanNo(c.data.companyid);
 							getAllCustomerList(c.data.companyid);
+							getAllUnitsList(c.data.companyid);
+						break;
+
+						case "insertSalesChallan":
+							insertSalesChallan(c.companyid,c.customerid,c.challanno,c.date,c.total,c.data,connection);
 						break;
 
 						case "sendAll":
 							getAllCustomers(c.data.companyid);
 							getAllTransporters(c.data.companyid);
 							getAllProducts(c.data.companyid);
+							getAllUnits(c.data.companyid);
 						break;
 					}
 				}
@@ -308,6 +329,65 @@ wsServer.on('request',function(request){
 			});
 		}
 
+		function insertUnit(name,offset,companyid,connection){
+			var obj;
+			var sql="INSERT INTO unitmaster (unitname,offset,companyid) values('"+name+"',"+offset+","+companyid+");";
+			//console.log(sql);
+			con.query(sql, function (err, result, fields) {
+				if(result.affectedRows){
+					obj={
+						msg:'UnitInsertSuccess'
+					}								
+				}
+				else{
+					obj={
+						msg:'UnitInsertFail'
+					}
+				}
+				var json=JSON.stringify({type:"insertUnit_callback",data:obj});
+				sendResponse(json,connection);
+			});
+		}
+
+		function updateUnit(unitid,name,offset,companyid,connection){
+			var obj;
+			var sql="UPDATE unitmaster set unitname='"+name+"',offset="+offset+" WHERE unitid="+unitid+" AND companyid="+companyid+";";
+			console.log(sql);
+			con.query(sql, function (err, result, fields) {
+				if(result.affectedRows){
+					obj={
+						msg:'UnitUpdateSuccess'
+					}								
+				}
+				else{
+					obj={
+						msg:'UnitUpdateFail'
+					}
+				}
+				var json=JSON.stringify({type:"UnitUpdate_callback",data:obj});
+				sendResponse(json,connection);
+			});
+		}
+
+		function deleteUnit(unitid,companyid,connection){
+			var obj;
+			var sql="DELETE FROM unitmaster WHERE unitid="+unitid+" AND companyid="+companyid+";";
+			con.query(sql, function (err, result, fields) {
+				if(result.affectedRows){
+					obj={
+						msg:'UnitDeleteSuccess'
+					}								
+				}
+				else{
+					obj={
+						msg:'UnitDeleteFail'
+					}
+				}
+				var json=JSON.stringify({type:"UnitDelete_callback",data:obj});
+				sendResponse(json,connection);
+			});
+		}
+
 		function getAllCustomers(companyid){
 			var arr=[];
 			var sql="SELECT * from customers where companyid="+companyid+";";
@@ -413,6 +493,68 @@ wsServer.on('request',function(request){
 					arr.push(obj); 
 				}
 				var json=JSON.stringify({type:"getAllCustomerList_callback",data:arr});
+				sendResponse(json,connection);				
+			});
+		}
+
+		function getAllUnitsList(companyid){
+			var arr=[];
+			var sql="SELECT Unitid,unitname,offset from unitmaster where companyid="+companyid+";";
+			con.query(sql, function (err, result, fields) {
+				for(var index in result){
+					var obj={
+						unitid 			: 	result[index].unitid,
+						unitname 		: 	result[index].unitname,
+						offset 			: 	result[index].offset,						
+					}
+					arr.push(obj); 
+				}
+				var json=JSON.stringify({type:"getAllUnitList_callback",data:arr});
+				sendResponse(json,connection);				
+			});
+		}
+
+		function insertSalesChallan(companyid,customerid,challanno,date,total,product_arr,connection){
+			var obj,challanid=0;
+			var sql="INSERT INTO challandetail (challanid,productid,unit,quantity,rate,price) values";
+			for(var i=0;i<product_arr.length;i++){
+				if(i==product_arr.length-1)
+					sql += "("+challanid+","+product_arr[i].productid+",'"+product_arr[i].unit+"',"+product_arr[i].qty+","+product_arr[i].rate+","+product_arr[i].price+")";
+				else
+					sql += "("+challanid+","+product_arr[i].productid+",'"+product_arr[i].unit+"',"+product_arr[i].qty+","+product_arr[i].rate+","+product_arr[i].price+"),";
+			}
+			console.log(sql);
+			con.query(sql, function (err, result, fields) {
+				console.log('====================');
+				console.log(result);
+				console.log('====================');
+				if(result.affectedRows){
+					obj={
+						msg:'insertSalesChallanSuccess'
+					}								
+				}
+				else{
+					obj={
+						msg:'insertSalesChallanFail'
+					}
+				}
+				var json=JSON.stringify({type:"insertSalesChallan_callback",data:obj});
+				sendResponse(json,connection);
+			});
+		}
+		function getAllUnits(companyid){
+			var arr=[];
+			var sql="SELECT * from unitmaster where companyid="+companyid+";";
+			con.query(sql, function (err, result, fields) {
+				for(var index in result){
+					var obj={
+						unitid:result[index].unitid,
+						unitname:result[index].unitname,
+						offset:result[index].offset,						
+					}
+					arr.push(obj); 
+				}
+				var json=JSON.stringify({type:"getAllUnits_callback",data:arr});
 				sendResponse(json,connection);				
 			});
 		}

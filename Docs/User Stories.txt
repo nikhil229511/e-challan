@@ -35,3 +35,7 @@ Note - maintain details of the parties
 -**************Product details
 30 mm HW Flush door 80*32 78*32
 unit (sq mt,sq ft)
+
+
+sq feet (x*y*z)/144
+sq mt.	(x*y*z)/10.765

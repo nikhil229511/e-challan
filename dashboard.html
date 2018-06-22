@@ -22,7 +22,7 @@
     table.inventory td:nth-child(5) { text-align: right; width: 12%; }
 
     /*table css*/
-    table { font-size: 90%; table-layout: fixed; width: 100%; }
+    table { font-size: 90%; width: 100%; }
     table { border-collapse: separate; border-spacing: 2px; }
     th, td { border-width: 1px; padding: 0.5em; position: relative; text-align: left; }
     th, td { border-radius: 0.25em; border-style: solid; }
@@ -37,7 +37,7 @@
     table.balance td { text-align: right; }
 
     /*for + and - button*/
-    .add, .cut
+    .sadd, .scut
     {
       border-width: 1px;
       display: block;
@@ -48,7 +48,7 @@
       width: 0.6em;
     }
 
-    .add, .cut
+    .sadd, .scut
     {
       background: #9AF;
       box-shadow: 0 1px 2px rgba(0,0,0,0.2);
@@ -62,21 +62,16 @@
       text-shadow: 0 -1px 2px rgba(0,0,0,0.333);
     }
 
-    .add { margin: -2.5em 0 0; }
+    .sadd { margin: -2.5em 0 0; }
 
-    .add:hover { background: #00ADEE; }
-
-    .cut { opacity: 0; position: absolute; top: 0; left: -1.5em; }
-    .cut { -webkit-transition: opacity 100ms ease-in; }
-
-    tr:hover .cut { opacity: 1; }
+    .sadd:hover { background: #00ADEE; }
 
     @media print {
       * { -webkit-print-color-adjust: exact; }
       html { background: none; padding: 0; }
       body { box-shadow: none; margin: 0; }
       span:empty { display: none; }
-      .add, .cut { display: none; }
+      .sadd, .scut { display: none; }
     }
 
     @page { margin: 0; }
@@ -138,7 +133,8 @@
           <ul class="treeview-menu">
             <li><a class="treeview-item" style="cursor: pointer;" onclick='showCustomers();'><i class="icon fa fa-circle-o"></i> Customer Master</a></li>
             <li><a class="treeview-item" style="cursor: pointer;" onclick='showProducts();' rel="noopener"><i class="icon fa fa-circle-o"></i> Product Master</a></li>
-            <li><a class="treeview-item" style="cursor: pointer;" onclick='showTransporters();' rel="noopener"><i class="icon fa fa-circle-o"></i> Transport Master</a></li>            
+            <li><a class="treeview-item" style="cursor: pointer;" onclick='showTransporters();' rel="noopener"><i class="icon fa fa-circle-o"></i> Transport Master</a></li>
+            <li><a class="treeview-item" style="cursor: pointer;" onclick='showUnits();' rel="noopener"><i class="icon fa fa-circle-o"></i> Unit Master</a></li>            
           </ul>
         </li>
         <li><a class="app-menu__item" id="salesChallanDiv"style="cursor: pointer;" onclick='showSalesChallan();'><i class="app-menu__icon fa fa-edit"></i><span class="app-menu__label">Sales Challan</span></a></li>
@@ -349,78 +345,52 @@
         </div>
       </div>
 
-      <!-- Changable content sales challan-->
-      <!-- <div id="div_sales_challan">
+      <!-- Changable content Units-->
+      <div id="div_units">
         <div class="col-md-12">
-          <h3 class="tile-title">Sales Challan</h3>
-          <div class="tile"> 
+          <div class="tile">
+            <h3 class="tile-title">Units Detail</h3>
             <div class="tile-body">
-              <form class="row" id="">
-                <div class="form-group col-md-2">
-                  <label class="control-label">Challan No.</label>
-                  <input class="form-control" id="schallanno" type="text" disabled>
+              <form class="row formvalidate" method="POST" id="productsForm">
+                <div class="form-group col-md-3">
+                  <label class="control-label">Unit Name</label>
+                  <input class="form-control" id="uname" type="text" placeholder="Enter Unit Name">
                 </div>
                 <div class="form-group col-md-3">
-                  <label class="control-label">Date</label>
-                  <input class="form-control" id="demoDate" type="text" placeholder="Select Date">
-                </div>    
+                  <label class="control-label">Offset</label>
+                  <input class="form-control" id="uoffset" type="text" placeholder="Enter Offset value.">
+                  <input id="unitid" type="hidden"  value='-1' name="unitid">
+                </div>                
+                <div class="form-group col-md-3 align-self-end">
+                  <button class="btn btn-primary" id="usubmit" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Okay</button>&nbsp;&nbsp;&nbsp;&nbsp;
+                  <button class="btn btn-danger" id="clearUnit"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancel</button>
+                </div>
               </form>
             </div>
           </div>
-
-          <div class="tile">            
-            <div class="tile-body">
-              <form class="row" id="">
-                <div class="form-group col-md-7">
-                  <label class="control-label">Item Name</label>
-                  <select class="form-control" name="productid" id="loadProductsDropdown">
-                  </select>                              
-                </div>
-                <div class="form-group col-md-2">
-                  <label class="control-label">Quantity</label>
-                  <input class="form-control" id="length" type="text" placeholder="Enter Length">
-                </div>
-                <div class="form-group col-md-2">
-                  <label class="control-label">Rate</label>
-                  <input class="form-control" id="length" type="text" placeholder="Enter Length">
-                </div>
-                <div class="form-group col-md-1">
-                  <a href="" class="control-label"><i style="margin-top: 25px;" class="fa fa-plus-square fa-3x" aria-hidden="true"></i></a>
-                </div>    
-              </form>
-            </div>
-          </div>
-
+          
           <div class="tile">
             <div class="tile-body">
-            <table class="table table-hover table-bordered" id="sampleTableSalesChallan">
+            <table class="table table-hover table-bordered" id="sampleTableUnit">
               <thead>
                 <tr>
-                  <th>Item Name</th>
-                  <th>Dimension</th>
-                  <th>Quanitiy</th>
-                  <th>Rate</th>
+                  <th>Unit Name</th>
+                  <th>Offset</th>                  
                   <th>Action</th>
                 </tr>
               </thead>
-              <tbody id="salesChallanData">
-    
+              <tbody id="unitsData">
+                <!-- dynamic html -->
               </tbody>
             </table>
             </div>
           </div>            
         </div>
-      </div> -->
+      </div>
 
+      <!-- Changable content sales challan-->
       <div id="div_sales_challan">
         <div class="col-md-12">
-          <!-- invisible table added for the working of the  + and - button.
-          Please do not remove it or change it. -->
-          <table class="meta" style="display: none;">
-            
-            <td><span id="prefix" contenteditable>$</span></td>
-          </table>
-          <!-- invisivle table end -->
           <h3 class="tile-title">Sales Challan</h3>
           <div class="tile"> 
             <div class="tile-body">
@@ -432,7 +402,7 @@
                 </div>
                 <div class="form-group col-md-3">
                   <label class="control-label">Date</label>
-                  <input class="form-control" id="demoDate" type="text" placeholder="Select Date">
+                  <input class="form-control" id="sDate" type="text" placeholder="Select Date">
                 </div>
                 <div class="form-group col-md-2">
                   <label class="control-label">Challan No.</label>
@@ -444,32 +414,110 @@
 
           <div class="tile">            
             <div class="tile-body">
-              <!-- taken content -->
+              <table id="sTable" class="inventory">
+                <thead>
+                  <tr>
+                    <th>Item name</th>
+                    <th>Unit</th>
+                    <th>Quantity</th>
+                    <th>Rate</th> 
+                    <th>Price</th>
+                    <th>Action</th> 
+                  </tr>
+                </thead>
+                <tbody id="scontainer">
+                <tr id="row" class="product_row">
+                  <td>     
+                    <select class="form-control fd" id="loadProductsDropdown" name="loadProductsDropdown"></select>
+                  </td>
+                  <td>     
+                    <select class="form-control fd" id="loadUnitDropdown" name="loadUnitDropdown"></select>
+                  </td>
+                  <!-- <td><input type="text" id="sunit" name="sunit" class="form-control"></td> -->
+                  <td><input type="text" id="squantity" name="squantity" class="form-control"></td>
+                  <td><input type="text" id="srate" name="srate" class="form-control"></td>
+                  <td><input type="text" id="sprice" name="sprice" class="form-control"></td>
+                  <td style="align-items: center;">
+                    <a class="sadd" style="margin-top:5px;width: 28px;"><i class="fa fa-plus fa-fw"></i></a> 
+                    <a class="scut" style="margin-left:5px;margin-top:5px;width: 28px;"><i class="fa fa-minus fa-fw"></i></a>
+                  </td>                   
+                </tr>
+                </tbody>
+              </table>
+              <table class="balance">
+                <tr>
+                  <th><span>Total</span></th>
+                  <td><span data-prefix>$</span><span>600.00</span></td>
+                </tr>              
+              </table>
+              <aside>
+                <br><br><br><br><br>
+                <hr class="style-eight">
+                <p contenteditable>A finance charge of 1.5% will be made on unpaid balances after 30 days.</p>
+                <button class="btn btn-primary" id="ssubmit" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Okay</button>
+                <button class="btn btn-danger" id="clearsaleschallan"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancel</button>
+              </aside>        
+        </div>
+        </div>               
+        </div>
+      </div>
+      
+      <!-- Changable content sales return challan-->
+      <div id="div_sales_return_challan">
+        <div class="col-md-12">
+          <h3 class="tile-title">Sales Return Challan</h3>
+          <div class="tile"> 
+            <div class="tile-body">
+              <form class="row" id="">                
+                <div class="form-group col-md-5">
+                  <label class="control-label">Customer Name.</label>
+                  <select class="form-control" id="scustomername">
+                  </select>
+                </div>
+                <div class="form-group col-md-3">
+                  <label class="control-label">Date</label>
+                  <input class="form-control" id="srDate" type="text" placeholder="Select Date">
+                </div>
+                <div class="form-group col-md-2">
+                  <label class="control-label">Challan No.</label>
+                  <input class="form-control" id="srchallanno" type="text" disabled>
+                </div>                
+              </form>
+            </div>
+          </div>
+
+          <div class="tile">            
+            <div class="tile-body">
+              <!-- var html = $('#row').html();
+              $('.inventory>tbody').append(html); -->
               <table class="inventory">
                 <thead>
                   <tr>
-                    <th><span>Item name</span></th>
-                    <th><span>Unit</span></th>
-                    <th><span>Quantity</span></th>
-                    <th><span>Rate</span></th> 
-                    <th><span>Price</span></th> 
+                    <th>Item name</th>
+                    <th>Unit</th>
+                    <th>Quantity</th>
+                    <th>Rate</th> 
+                    <th>Price</th>
+                    <th>Action</th> 
                   </tr>
                 </thead>
-                <tbody>
-                  <tr>
-                    <td>
-                      <a class="cut">-</a>
-                      <span style="width: 100%" id="loadProductsDropdown">                        
-                      </span>
-                    </td>
-                    <td><span contenteditable>Experience Review</span></td>
-                    <td><span contenteditable>4</span></td>                    
-                    <td><span data-prefix>$</span><span contenteditable>150.00</span></td>
-                    <td><span data-prefix>$</span><span contenteditable></span></td>                    
-                  </tr>
+                <tbody id="scontainer">
+                <tr id="row">
+                  <td id="srcustomernamedropdown">     
+                    <select class="form-control" id="loadProductsDropdown" name="srloadProductsDropdown">
+                    </select>
+                  </td>
+                  <td><input type="text" name="srunit" class="form-control"></td>
+                  <td><input type="text" name="srquantity" class="form-control"></td>
+                  <td><input type="text" name="srrate" class="form-control"></td>
+                  <td><input type="text" name="srprice" class="form-control"></td>
+                  <td style="align-items: center;">
+                    <a class="sradd" style="margin-top:5px;width: 28px;"><i class="fa fa-plus fa-fw"></i></a> 
+                    <a class="srcut" style="margin-left:5px;margin-top:5px;width: 28px;"><i class="fa fa-minus fa-fw"></i></a>
+                  </td>                   
+                </tr>
                 </tbody>
               </table>
-              <a class="add">+</a>
               <table class="balance">
                 <tr>
                   <th><span contenteditable>Total</span></th>
@@ -495,63 +543,6 @@
         </div>
       </div>
 
-                      
-        </div>
-      </div>
-      
-      <!-- Changable content sales return challan-->
-      <div id="div_sales_return_challan">
-        <div class="col-md-12">
-          <div class="tile">
-            <h3 class="tile-title">Sales Return Challan</h3>
-            <div class="tile-body">
-              <form class="row" id="productsForm">
-                <div class="form-group col-md-12">
-                  <label class="control-label">Product Name</label>
-                  <input class="form-control" id="pname" type="text" placeholder="Enter Product Name">
-                </div>
-                <div class="form-group col-md-3">
-                  <label class="control-label">Length</label>
-                  <input class="form-control" id="length" type="text" placeholder="Enter Length">
-                </div>
-                <div class="form-group col-md-3">
-                  <label class="control-label">Width</label>
-                  <input class="form-control" id="width" type="text" placeholder="Enter Width">
-                </div>
-                <div class="form-group col-md-3">
-                  <label class="control-label">Thickness</label>
-                  <input class="form-control" type="text" id="thickness" placeholder="Enter Thickness">
-                  <input id="productid" type="hidden"  value='-1' name="productid">
-                </div>                  
-                <div class="form-group col-md-3 align-self-end">
-                  <button class="btn btn-primary" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Okay</button>
-                  <button class="btn btn-danger" ><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancel</button>
-                </div>
-              </form>
-            </div>
-          </div>
-          
-          <div class="tile">
-            <div class="tile-body">
-            <table class="table table-hover table-bordered" id="sampleTableProduct">
-              <thead>
-                <tr>
-                  <th>Product Name</th>
-                  <th>Length</th>
-                  <th>Width</th>
-                  <th>Thickness</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody id="productsData">
-                <!-- dynamic html -->
-              </tbody>
-            </table>
-            </div>
-          </div>            
-        </div>
-      </div>
-
   </main>
 
     <script>
@@ -563,6 +554,7 @@
         $('#div_products').hide();
         $('#div_sales_challan').hide();
         $('#div_sales_return_challan').hide();
+        $('#div_units').hide();
       }
 
       function showCustomers(){
@@ -572,12 +564,24 @@
         $('#div_products').hide();
         $('#div_sales_challan').hide();
         $('#div_sales_return_challan').hide();
+        $('#div_units').hide();
       }
 
       function showTransporters(){
         $('#div_dashboard').hide();
         $('#div_customers').hide();
         $('#div_transporters').show();
+        $('#div_products').hide();
+        $('#div_sales_challan').hide();
+        $('#div_sales_return_challan').hide();
+        $('#div_units').hide();
+      }
+
+      function showUnits(){
+        $('#div_units').show();
+        $('#div_dashboard').hide();
+        $('#div_customers').hide();
+        $('#div_transporters').hide();
         $('#div_products').hide();
         $('#div_sales_challan').hide();
         $('#div_sales_return_challan').hide();
@@ -590,6 +594,7 @@
         $('#div_products').show(); 
         $('#div_sales_challan').hide();
         $('#div_sales_return_challan').hide();
+        $('#div_units').hide();
       }
       function showSalesChallan(){
         $('#div_sales_challan').show();
@@ -598,6 +603,7 @@
         $('#div_transporters').hide();
         $('#div_products').hide(); 
         $('#div_sales_return_challan').hide();
+        $('#div_units').hide();
       }
       function showSalesReturnChallan(){
         $('#div_sales_challan').hide();
@@ -606,6 +612,7 @@
         $('#div_transporters').hide();
         $('#div_products').hide(); 
         $('#div_sales_return_challan').show(); 
+        $('#div_units').hide();
       }
     </script>
 
@@ -614,7 +621,7 @@
     <script src="js/popper.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/main.js"></script>
-    <!-- <script src="js/jquery.validate.min.js"></script> -->
+    
     <!-- The javascript plugin to display page loading on top-->
     <script src="js/plugins/pace.min.js"></script>
     <!-- Data table plugin-->
@@ -623,32 +630,31 @@
     <script type="text/javascript" src="js/plugins/bootstrap-datepicker.min.js"></script>
     <script type="text/javascript" src="js/plugins/select2.min.js"></script>
     <script type="text/javascript">
-    $('#sampleTableCustomer').dataTable( {
-      "paging": true
-    });
-
-    $('#demoDate').datepicker({
-        format: "dd/mm/yyyy",
-        autoclose: true,
-        todayHighlight: true
-    });
-    
-    $('#loadProductsDropdown').select2({
-      placeholder: 'Select an Item'
-    });
-
-    $('#scustomername').select2({
-      placeholder: 'Select Customer'
-    });
+      $('#sampleTableCustomer').dataTable( {
+        
+        "paging": true
+      });
+      $('#sDate').datepicker({
+          format: "dd/mm/yyyy",
+          autoclose: true,
+          todayHighlight: true
+      });
+      
+      $('#scustomername').select2({
+       
+        placeholder: 'Select Customer'
+      });
     </script>
     
     <script type="text/javascript" src="dashboard.js"></script>
 
-    <script type="text/javascript" src="js/invoice.js"></script>
+    <!-- <script type="text/javascript" src="js/invoice.js"></script> -->
     
     <script type="text/javascript">$('#sampleTableTransporter').DataTable();</script>
 
     <script type="text/javascript">$('#sampleTableProduct').DataTable();</script>
+    <script type="text/javascript">$('#sampleTableUnit').DataTable();</script>
+    
     <!-- notification -->
     <script type="text/javascript" src="js/plugins/bootstrap-notify.min.js"></script>
     <!-- <script type="text/javascript" src="js/plugins/sweetalert.min.js"></script> -->

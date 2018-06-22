@@ -1,6 +1,7 @@
 "use strict";
-
-
+var row_id = 1;
+var productList=[];
+var unitList=[];
 $(document).ready(function() {
 
 });
@@ -107,6 +108,31 @@ $(function(){
 	  			notifyFail();
 	  		}
 	  	}
+	  	else if(json.type == "insertUnit_callback") {
+	  		if(json.data.msg== 'UnitInsertSuccess'){
+	  			notifyInsert();
+	  		}
+	  		else if(json.data.msg == 'UnitInsertFail'){
+	  			notifyFail();
+	  		}
+	  	}
+	  	else if(json.type == "UnitUpdate_callback") {
+	  		if(json.data.msg== 'UnitUpdateSuccess'){
+	  			notifyUpdate();
+	  		}
+	  		else if(json.data.msg == 'UnitUpdateFail'){
+	  			notifyFail();
+	  		}
+	  	}
+	  	else if(json.type == "UnitDelete_callback") {
+	  		if(json.data.msg== 'UnitDeleteSuccess'){
+	  			notifyDelete();
+	  		}
+	  		else if(json.data.msg == 'UnitDeleteFail'){
+	  			notifyFail();
+	  		}
+	  	}
+	  	
 	  	else if(json.type == "getAllCustomer_callback"){
 	  		var htmlString="";
 	  		for(var i=0;i<json.data.length;i++){
@@ -154,10 +180,32 @@ $(function(){
 	  		}
 	  		$('#productsData').html(htmlString);
 	  	}
-	  	else if(json.type == "getAllProductList_callback"){
-	  		$('#loadProductsDropdown').empty();
+	  	else if(json.type == "getAllUnits_callback"){
 	  		var htmlString="";
 	  		for(var i=0;i<json.data.length;i++){
+	  			htmlString +='<tr>';
+	  			htmlString +='<td>'+json.data[i].unitname+'</td>';
+	  			htmlString +='<td>'+json.data[i].offset+'</td>';	
+	  			htmlString +="<td><a href='#' onclick=updateUnit("+json.data[i].unitid+",'"+encodeURIComponent(json.data[i].unitname)+"',"+json.data[i].offset+"); >";
+	  			htmlString +='<i class="fa fa-pencil" aria-hidden="true"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+	  			htmlString +='<a href="#" class="deleteU" id='+json.data[i].unitid+'><i class="fa fa-trash" aria-hidden="true"></i></a></td>';
+	  			htmlString +='</tr>';
+	  		}
+	  		$('#unitsData').html(htmlString);
+	  	}
+	  	else if(json.type == "getAllProductList_callback"){
+	  		$('#loadProductsDropdown').empty();
+	  		var htmlString="<option value='-1'>Select Item</option>";
+	  		productList=[];
+	  		for(var i=0;i<json.data.length;i++){
+	  			var obj={
+	  				productid:json.data[i].productid,
+	  				productname:json.data[i].productname,
+	  				length:json.data[i].length,
+	  				width:json.data[i].width,
+	  				thickness:json.data[i].thickness
+	  			}
+	  			productList.push(obj);
 	  			htmlString +='<option value='+json.data[i].productid+'>'+json.data[i].productname+' ( '+json.data[i].length+' * '+json.data[i].width+' * '+json.data[i].thickness+' ) </option>';
 	  		}
 	  		$('#loadProductsDropdown').append(htmlString);
@@ -171,9 +219,33 @@ $(function(){
 	  		$('#scustomername').append(htmlString);
 	  	}
 	  	else if(json.type == "getSalesChallanNo_callback"){
+	  		
 	  		$('#schallanno').val(json.data.challanno+1);
 	  	}
-	  	
+	  	else if(json.type == "getAllUnitList_callback"){
+	  		$('#loadUnitDropdown').empty();
+	  		var htmlString="<option value='-1'>Select Item</option>";
+	  		unitList=[];
+	  		for(var i=0;i<json.data.length;i++){
+	  			var obj={
+	  				unitid:json.data[i].unitid,
+	  				unitname:json.data[i].unitname,
+	  				offset:json.data[i].offset,	  				
+	  			}
+	  			unitList.push(obj);
+	  			htmlString +='<option value='+json.data[i].unitid+'>'+json.data[i].unitname+'</option>';
+	  		}
+	  		$('#loadUnitDropdown').append(htmlString);
+	  	}
+	  	else if(json.type == "insertSalesChallan_callback"){
+	  		if(json.data.msg== 'insertSalesChallanSuccess'){
+	  			notifyInsert();
+	  		}
+	  		else if(json.data.msg == 'insertSalesChallanFail'){
+	  			notifyFail();
+	  		}
+	  	}	  	
+
 	  	$('.deleteC').unbind().click(function(){
 			deleteCustomer($(this).attr("id"));
 		});
@@ -186,16 +258,24 @@ $(function(){
 			deleteProduct($(this).attr("id"));
 		});
 
+		$('.deleteU').unbind().click(function(){
+			deleteUnit($(this).attr("id"));
+		});
+
 		$('#salesChallanDiv').click(function(){
 	    	$('#div_sales_challan').show("slow", function() {
 	    		loadAllProductsandChallanNo();
 	    	});	
 	    });
 
-	    // $('#loadProductsDropdown').on('change',function(){
-	    // 	alert(this.value);
-	    // })
+		$(document).unbind().on('click','.sadd',function(){
+	      	addSalesRow();
+	    });
 
+	    $(document).on('click','.scut',function(){
+	      	$(this).parent().parent().remove();
+	    	//alert('sd');
+	    });
 	};
 
 	//initial display div setting
@@ -205,11 +285,8 @@ $(function(){
 	$('#div_products').hide();
 	$('#div_sales_challan').hide();
 	$('#div_sales_return_challan').hide();
+	$('#div_units').hide();
 
-	/*$('.app-menu > li > a').click(function(){
-		$(this).parent().sibling().find('[class="active"]').removeClass('active');
-		$(this).addClass('active');
-	});*/
 	$('a[href="#"]').click(function (event) { // where href are blank
 	   event.preventDefault();
 	});
@@ -487,13 +564,127 @@ $(function(){
 		var json=JSON.stringify({usertype: "LoadSalesChallan", data:obj});
 		connection.send(json);
 	}
+
+	//validate Unit
+	$('#clearUnit').click(clearUnit);
+	$('#usubmit').click(validateUnit);
+	function clearUnit(event){
+		event.preventDefault();
+		$('#uname').val("");
+		$('#uoffset').val("");
+		$('#unitid').val('-1');
+	}
+	function validateUnit(){
+		event.preventDefault();
+		var msg='';
+		var flag=0;
+		
+		var name=$('#uname').val();
+		var offset=$('#uoffset').val();
+		var unitid=$('#unitid').val();
+
+		if(name =='' || name == null){
+			flag=1;
+			msg="Enter Unit Name.";
+		}
+		else if(offset == '' || offset == null){
+			flag=1;
+			msg="Enter Offset Value.";
+		}
+		else if(!offset.match(/^(?=.+)(?:[1-9]\d*|0)?(?:\.\d+)?$/)){
+			flag=1;
+			msg="Offset Should be Number.";
+		}
+		
+		if(flag == 0)
+			insertUnit();
+		else{
+			notifyValidateError(msg);
+		}
+	}
+	function insertUnit(){
+		var name=$('#uname').val();
+		var offset=$('#uoffset').val();
+		var unitid=$('#unitid').val();
+		var obj={
+			unitid:unitid,
+			name:name,
+			offset:offset,
+			companyid: sessionStorage.getItem('companyid')
+		}
+		var json;
+		if($('#unitid').val() == '-1')
+			json=JSON.stringify({usertype: "insertUnit", data:obj});
+		else
+			json=JSON.stringify({usertype: "updateUnit", data:obj});
+		connection.send(json);
+	}
+	function deleteUnit(unitid){
+		var obj={
+			unitid:unitid,
+			companyid:sessionStorage.getItem('companyid')
+		}
+		var json=JSON.stringify({usertype: "deleteUnit", data:obj});
+		connection.send(json);
+	}
+
+	//Sales challan validate
+	$('#ssubmit').click(insertSalesChallan);
+	function insertSalesChallan(){
+		var salesProductlist=[];
+		var total=0;
+		
+		var companyid=sessionStorage.getItem('companyid');
+		var customerid=$('#scustomername').val();
+		var date=$('#sDate').val();
+		var challanno=$('#schallanno').val();
+		
+		$('.product_row').each(function(){
+			var obj={
+				productid : $(this).find('#loadProductsDropdown').val(),
+				unit    : $(this).find('#sunit').val(),
+				qty     : $(this).find('#squantity').val(),
+				rate    : $(this).find('#srate').val(),
+				price   : $(this).find('#sprice').val()
+			}
+			total += parseInt(obj.price);
+			
+			salesProductlist.push(obj);
+        });
+
+        var json=JSON.stringify({usertype: "insertSalesChallan",companyid:companyid,customerid:customerid,challanno:challanno,date:date,total:total,data:salesProductlist});
+        console.log(json);
+        connection.send(json);
+	}
 });
+
+
+function addSalesRow(){
+  	var htmlString='<option value="-1">Select Item</option>';
+	for(var index in productList)
+		htmlString +='<option value='+productList[index].productid+'>'+productList[index].productname+' ( '+productList[index].length+' * '+productList[index].width+' * '+productList[index].thickness+' ) </option>';
+	
+	var htmlStringUnit='<option value="-1">Select Unit</option>';
+	for(var index in unitList)
+		htmlStringUnit +='<option value='+unitList[index].unitid+'>'+unitList[index].unitname+'</option>';
+
+	var html = "<tr id='row' class='product_row'><td><select class='form-control' id='loadProductsDropdown' name='loadProductsDropdown'>"+htmlString+"</select></td>";
+    	html +=	"<td><select class='form-control' id='loadUnitDropdown' name='loadUnitDropdown'>"+htmlStringUnit+"</select></td>"
+        html +=	"<td><input id='squantity' type='text' name='squantity' class='form-control'></td>";                    
+        html +=	"<td><input id='srate' type='text' name='srate' class='form-control'></td>";
+        html +=	"<td><input id='sprice' type='text' name='sprice' class='form-control'></td>";
+        html +=	"<td style='align-items: center;'>";
+        html +=	"<a class='sadd' style='margin-top:5px;width: 28px;'><i class='fa fa-plus fa-fw'></i></a>";
+        html +=	"<a class='scut' style='margin-left:5px;margin-top:5px;width: 28px;'><i class='fa fa-minus fa-fw'></i></a>";
+        html +=	"</td></tr>";
+	$('#scontainer').append(html);
+}
 
 function updateCustomer(customerid,companyid,fname,lname,contactno,gstno,address){
 	$('#ccustomerid').val(customerid);
 	$('#cfname').val(fname);
 	$('#clname').val(lname);
-	$('#ccontactno').val(contactno);
+	$('#ccontactno').val(contactno);	
 	$('#cgstno').val(gstno);
 	$('#caddress').val(decodeURIComponent(address));
 }
@@ -512,6 +703,12 @@ function updateProduct(productid,productname,length,width,thickness){
 	$('#width').val(width);
 	$('#thickness').val(thickness);
 }
+function updateUnit(unitid,unitname,offset){
+	$('#unitid').val(unitid);
+	$('#uname').val(decodeURIComponent(unitname));
+	$('#uoffset').val(offset);
+}
+
 function notifyUpdate(){
     $.notify({
       	title: "Update Complete : ",

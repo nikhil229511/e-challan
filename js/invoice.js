@@ -171,6 +171,8 @@ function onContentLoad() {
 
 		if (e.target.matchesSelector('.add')) {
 			document.querySelector('table.inventory tbody').appendChild(generateTableRow());
+			// var html = $('#row').html();
+			// $('.inventory>tbody').append(html);
 		}
 		else if (e.target.className == 'cut') {
 			row = e.target.ancestorQuerySelector('tr');
