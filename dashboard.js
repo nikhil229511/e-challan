@@ -24,7 +24,7 @@ $(function(){
 	var connection = new WebSocket('ws://localhost:5005/');
 	var htmlString="<strong><em>"+sessionStorage.getItem('username')+"</em></strong>";
 	$('#titleUsername').html(htmlString);
-	
+
 	connection.onopen = function (message) {
 		console.log("connected");
 		var obj={
@@ -132,7 +132,14 @@ $(function(){
 	  			notifyFail();
 	  		}
 	  	}
-	  	
+	  	else if(json.type == "insertSalesChallan_callback") {
+	  		if(json.data.msg== 'ChallanInsertSuccess'){
+	  			notifyInsert();
+	  		}
+	  		else if(json.data.msg == 'ChallanInsertFail'){
+	  			notifyFail();
+	  		}
+	  	}	
 	  	else if(json.type == "getAllCustomer_callback"){
 	  		var htmlString="";
 	  		for(var i=0;i<json.data.length;i++){
@@ -203,10 +210,11 @@ $(function(){
 	  				productname:json.data[i].productname,
 	  				length:json.data[i].length,
 	  				width:json.data[i].width,
-	  				thickness:json.data[i].thickness
+	  				thickness:json.data[i].thickness,
+	  				totol_offset: (json.data[i].length * json.data[i].width)
 	  			}
 	  			productList.push(obj);
-	  			htmlString +='<option value='+json.data[i].productid+'>'+json.data[i].productname+' ( '+json.data[i].length+' * '+json.data[i].width+' * '+json.data[i].thickness+' ) </option>';
+	  			htmlString +='<option data-value='+obj.totol_offset+' value='+json.data[i].productid+'>'+json.data[i].productname+' ( '+json.data[i].length+' * '+json.data[i].width+' * '+json.data[i].thickness+' ) </option>';
 	  		}
 	  		$('#loadProductsDropdown').append(htmlString);
 	  	}
@@ -233,7 +241,8 @@ $(function(){
 	  				offset:json.data[i].offset,	  				
 	  			}
 	  			unitList.push(obj);
-	  			htmlString +='<option value='+json.data[i].unitid+'>'+json.data[i].unitname+'</option>';
+	  			//console.log(obj); 
+	  			htmlString +='<option data-offset='+json.data[i].offset+' value='+json.data[i].unitid+'>'+json.data[i].unitname+'</option>';
 	  		}
 	  		$('#loadUnitDropdown').append(htmlString);
 	  	}
@@ -257,7 +266,7 @@ $(function(){
 		$('.deleteP').unbind().click(function(){
 			deleteProduct($(this).attr("id"));
 		});
-
+		
 		$('.deleteU').unbind().click(function(){
 			deleteUnit($(this).attr("id"));
 		});
@@ -270,11 +279,16 @@ $(function(){
 
 		$(document).unbind().on('click','.sadd',function(){
 	      	addSalesRow();
+	      	$('#loadUnitDropdown').val($('#loadUnitDropdown option:first').val());
+	      	$('#loadProductsDropdown').val($('#loadProductsDropdown option:first').val());
+	      	$('#srate').val("");
+	      	$('#squantity').val("");
+	      	$('#sprice').val("");   	
 	    });
 
 	    $(document).on('click','.scut',function(){
-	      	$(this).parent().parent().remove();
-	    	//alert('sd');
+	      	
+	      	$(this).parent().parent().remove();	    	
 	    });
 	};
 
@@ -627,8 +641,7 @@ $(function(){
 		var json=JSON.stringify({usertype: "deleteUnit", data:obj});
 		connection.send(json);
 	}
-
-	//Sales challan validate
+	
 	$('#ssubmit').click(insertSalesChallan);
 	function insertSalesChallan(){
 		var salesProductlist=[];
@@ -639,45 +652,89 @@ $(function(){
 		var date=$('#sDate').val();
 		var challanno=$('#schallanno').val();
 		
-		$('.product_row').each(function(){
+		$('.itemRow').each(function(){
+			var tds=$(this).find('td');
+			var prodid,unit,qty,rate,price;
+			tds.each(function(){
+				if($(this).attr('data-Productid')){
+					prodid=$(this).attr('data-Productid');
+				}
+				else if($(this).attr('data-unit')){
+					unit=$(this).attr('data-unit');
+				}
+				else if($(this).attr('data-qty')){
+					qty=$(this).attr('data-qty');
+				}
+				else if($(this).attr('data-rate')){
+					rate=$(this).attr('data-rate');
+				}
+				else if($(this).attr('data-price')){
+					price=$(this).attr('data-price');
+				}	
+			});
 			var obj={
-				productid : $(this).find('#loadProductsDropdown').val(),
-				unit    : $(this).find('#sunit').val(),
-				qty     : $(this).find('#squantity').val(),
-				rate    : $(this).find('#srate').val(),
-				price   : $(this).find('#sprice').val()
+				productid : prodid,
+				unit      : unit,
+				qty       : qty,
+				rate      : rate,
+				price     : price
 			}
 			total += parseInt(obj.price);
-			
-			salesProductlist.push(obj);
-        });
-
-        var json=JSON.stringify({usertype: "insertSalesChallan",companyid:companyid,customerid:customerid,challanno:challanno,date:date,total:total,data:salesProductlist});
-        console.log(json);
+			salesProductlist.push(obj);	
+		});
+		var json=JSON.stringify({usertype: "insertSalesChallan",companyid:companyid,customerid:customerid,challanno:challanno,date:date,total:total,data:salesProductlist});
+        console.log('sales chalan json : '+json);
         connection.send(json);
 	}
+
+	$('#clearsaleschallan').click(clearsaleschallan);
+	function clearsaleschallan(){
+		//alert('hi');
+		$('#div_sales_challan').hide();
+		$('#div_dashboard').show();
+	}
+
 });
 
+var ans,qty,measurement,offset,rate;
+$('.calculate').change(function(){
+	if($('option:selected', this).attr('data-value'))
+		measurement = $('option:selected', this).attr('data-value');
+	if($('option:selected', this).attr('data-offset'))
+		offset=$('option:selected', this).attr('data-offset');
+	if($('#squantity').val())
+		qty=$('#squantity').val();
+	if($('#srate').val())
+		rate=$('#srate').val();
+	ans=(measurement/offset)*qty*rate;
+	ans=ans.toFixed(2);
+	$('#sprice').val(ans);
+});
 
 function addSalesRow(){
-  	var htmlString='<option value="-1">Select Item</option>';
-	for(var index in productList)
-		htmlString +='<option value='+productList[index].productid+'>'+productList[index].productname+' ( '+productList[index].length+' * '+productList[index].width+' * '+productList[index].thickness+' ) </option>';
-	
-	var htmlStringUnit='<option value="-1">Select Unit</option>';
-	for(var index in unitList)
-		htmlStringUnit +='<option value='+unitList[index].unitid+'>'+unitList[index].unitname+'</option>';
+	var itemid    =$("#loadProductsDropdown option:selected").val();
+	var itemName  =$("#loadProductsDropdown option:selected").text();
+	var itemUnit  =$("#loadUnitDropdown option:selected").text();
+	var itemQty   =$('#squantity').val();
+	var itemRate  =$('#srate').val();
+	var itemPrice =$('#sprice').val();
 
-	var html = "<tr id='row' class='product_row'><td><select class='form-control' id='loadProductsDropdown' name='loadProductsDropdown'>"+htmlString+"</select></td>";
-    	html +=	"<td><select class='form-control' id='loadUnitDropdown' name='loadUnitDropdown'>"+htmlStringUnit+"</select></td>"
-        html +=	"<td><input id='squantity' type='text' name='squantity' class='form-control'></td>";                    
-        html +=	"<td><input id='srate' type='text' name='srate' class='form-control'></td>";
-        html +=	"<td><input id='sprice' type='text' name='sprice' class='form-control'></td>";
+	var itemMeasurement = $('#loadProductsDropdown option:selected').attr('data-value');
+	var itemOffset=$('#loadUnitDropdown option:selected').attr('data-offset');
+
+	var html  = "<tr class='itemRow'>";
+		html +=	"<td id='itemid' data-ProductId="+itemid+">"+itemName+"</td>";
+    	html +=	"<td id='itemunit' data-unit="+itemUnit+">"+itemUnit+"</td>"
+        html +=	"<td id='itemqty' data-qty="+itemQty+" style='text-align:right;'>"+itemQty+"</td>";                    
+        html +=	"<td id='itemrate' data-rate="+itemRate+" style='text-align:right;'><span data-prefix>₹</span>"+itemRate+"</td>";
+        html +=	"<td id='itemprice' data-price="+itemPrice+" style='text-align:right;'><span data-prefix>₹</span>"+itemPrice+"</td>";
         html +=	"<td style='align-items: center;'>";
-        html +=	"<a class='sadd' style='margin-top:5px;width: 28px;'><i class='fa fa-plus fa-fw'></i></a>";
-        html +=	"<a class='scut' style='margin-left:5px;margin-top:5px;width: 28px;'><i class='fa fa-minus fa-fw'></i></a>";
-        html +=	"</td></tr>";
-	$('#scontainer').append(html);
+        //html +=	"<i class='fa fa-pencil' aria-hidden='true'></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+        html +=	"<a class='scut'><i class='fa fa-trash' aria-hidden='true'></i></a>";
+        html +=	"</td>";
+        html += "</tr>";
+
+    $('#listSalesChallan').append(html);
 }
 
 function updateCustomer(customerid,companyid,fname,lname,contactno,gstno,address){

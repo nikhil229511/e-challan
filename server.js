@@ -1,5 +1,6 @@
 "use strict";
 
+var async=require('async');
 var mysql=require('mysql');
 var WebSocketServer = require('websocket').server;
 var http=require('http');
@@ -111,6 +112,7 @@ wsServer.on('request',function(request){
 						break;
 
 						case "insertSalesChallan":
+							//console.log(c.date);							
 							insertSalesChallan(c.companyid,c.customerid,c.challanno,c.date,c.total,c.data,connection);
 						break;
 
@@ -499,7 +501,7 @@ wsServer.on('request',function(request){
 
 		function getAllUnitsList(companyid){
 			var arr=[];
-			var sql="SELECT Unitid,unitname,offset from unitmaster where companyid="+companyid+";";
+			var sql="SELECT unitid,unitname,offset from unitmaster where companyid="+companyid+";";
 			con.query(sql, function (err, result, fields) {
 				for(var index in result){
 					var obj={
@@ -515,28 +517,77 @@ wsServer.on('request',function(request){
 		}
 
 		function insertSalesChallan(companyid,customerid,challanno,date,total,product_arr,connection){
-			var obj,challanid=0;
-			var sql="INSERT INTO challandetail (challanid,productid,unit,quantity,rate,price) values";
-			for(var i=0;i<product_arr.length;i++){
-				if(i==product_arr.length-1)
-					sql += "("+challanid+","+product_arr[i].productid+",'"+product_arr[i].unit+"',"+product_arr[i].qty+","+product_arr[i].rate+","+product_arr[i].price+")";
-				else
-					sql += "("+challanid+","+product_arr[i].productid+",'"+product_arr[i].unit+"',"+product_arr[i].qty+","+product_arr[i].rate+","+product_arr[i].price+"),";
-			}
-			console.log(sql);
-			con.query(sql, function (err, result, fields) {
-				console.log('====================');
-				console.log(result);
-				console.log('====================');
-				if(result.affectedRows){
-					obj={
-						msg:'insertSalesChallanSuccess'
-					}								
-				}
-				else{
-					obj={
-						msg:'insertSalesChallanFail'
+			var challanid,obj;
+			async.series([
+				function(callback){
+		            var sql="START TRANSACTION";
+		            con.query(sql, function (err, result) {
+		                if (err){        
+		                    obj={
+								msg:'ChallanInsertFail'
+							}
+							var json=JSON.stringify({type:"insertSalesChallan_callback",data:obj});
+							sendResponse(json,connection);
+							return false;
+		                }else
+		                    callback(null,'succes1');    
+		            });		            
+		        },
+		        function(callback){
+		            var sql="INSERT INTO challanmaster(companyid,customerid,challanno,date,total) values ("+companyid+","+customerid+","+challanno+",'"+date+"',"+total+");";
+		            con.query(sql, function (err, result) {
+		                if (err){        
+		                    obj={
+								msg:'ChallanInsertFail'
+							}
+							var json=JSON.stringify({type:"insertSalesChallan_callback",data:obj});
+							sendResponse(json,connection);
+							return false;
+		                }else{
+		                    challanid=result.insertId;
+		                    callback(null,'succes2');    
+		                }
+		            });		            
+		        },
+		        function(callback){
+		            var sql="INSERT INTO challandetail (challanid,productid,unit,quantity,rate,price) values";
+		            for(var i=0;i<product_arr.length;i++){
+						if(i==product_arr.length-1)
+							sql += "("+challanid+","+product_arr[i].productid+",'"+product_arr[i].unit+"',"+product_arr[i].qty+","+product_arr[i].rate+","+product_arr[i].price+")";
+						else
+							sql += "("+challanid+","+product_arr[i].productid+",'"+product_arr[i].unit+"',"+product_arr[i].qty+","+product_arr[i].rate+","+product_arr[i].price+"),";
 					}
+		            con.query(sql, function (err, result) {
+		                if (err){        
+		                    obj={
+								msg:'ChallanInsertFail'
+							}
+							var json=JSON.stringify({type:"insertSalesChallan_callback",data:obj});
+							sendResponse(json,connection);
+							return false;
+		                }else{
+		                    callback(null,'succes2');    
+		                }
+		            });		            
+		        },
+		        function(callback){
+		            var sql="COMMIT";
+		            con.query(sql, function (err, result) {
+		                if (err){        
+		                    obj={
+								msg:'ChallanInsertFail'
+							}
+							var json=JSON.stringify({type:"insertSalesChallan_callback",data:obj});
+							sendResponse(json,connection);
+							return false;
+		                }else
+		                    callback(null,'success4');
+		            });		           
+		        }	
+			],
+			function(){
+				obj={
+					msg:'ChallanInsertSuccess'
 				}
 				var json=JSON.stringify({type:"insertSalesChallan_callback",data:obj});
 				sendResponse(json,connection);
@@ -563,7 +614,4 @@ wsServer.on('request',function(request){
 			connection.send(json);
 			console.log('(S) => ' + json);
 		}
-	//}
-	//main_function();
-
 });

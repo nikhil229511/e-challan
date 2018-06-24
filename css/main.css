@@ -15134,7 +15134,7 @@ be a descendant of the grid when it is being dragged.
   -webkit-box-flex: 1;
       -ms-flex: 1;
           flex: 1;
-  background-image: url(http://placeimg.com/1200/300/nature);
+  background-image: url(../Assets/images/dashboardCover.jpg);
   background-size: cover;
   background-position: center;
   min-height: 300px;

@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "mysql": "^2.15.0",
-    "websocket": "^1.0.26"
+    "websocket": "^1.0.26",
+    "async": "^2.6.0"
   }
 }

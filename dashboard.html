@@ -10,16 +10,17 @@
 	<!-- external -->
 	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <style type="text/css">
-    article, article address, table.meta, table.inventory { margin: 0 0 3em; }
+    article, article address, table.meta, table.inventory { margin: 0 0 0em; }
 
     table.inventory { clear: both; width: 100%; }
     table.inventory th { font-weight: bold; text-align: center; }
 
-    table.inventory td:nth-child(1) { width: 26%; }
-    table.inventory td:nth-child(2) { width: 38%; }
-    table.inventory td:nth-child(3) { text-align: right; width: 12%; }
-    table.inventory td:nth-child(4) { text-align: right; width: 12%; }
-    table.inventory td:nth-child(5) { text-align: right; width: 12%; }
+    table.inventory td:nth-child(1) { width: 45%; }
+    table.inventory td:nth-child(2) { width: 12%; }
+    table.inventory td:nth-child(3) { text-align: right; width: 10%; }
+    table.inventory td:nth-child(4) { text-align: right; width: 10%; }
+    table.inventory td:nth-child(5) { text-align: right; width: 10%; }
+    table.inventory td:nth-child(6) { text-align: right; width: 1%; }
 
     /*table css*/
     table { font-size: 90%; width: 100%; }
@@ -45,7 +46,7 @@
       padding: 0.25em 0.5em;  
       float: left;
       text-align: center;
-      width: 0.6em;
+      width: 2em;
     }
 
     .sadd, .scut
@@ -410,11 +411,40 @@
                 </div>                
               </form>
             </div>
+            <table id="sTable" class="inventory">
+              <thead>
+                <tr>
+                  <th>Item name</th>
+                  <th>Unit</th>
+                  <th>Quantity</th>
+                  <th>Rate</th> 
+                  <th>Price</th>
+                  <th>Action</th> 
+                </tr>
+              </thead>
+              <tbody id="scontainer">
+              <tr id="row">
+                <td>     
+                  <select class="form-control fd calculate" id="loadProductsDropdown" name="loadProductsDropdown"></select>
+                </td>
+                <td>     
+                  <select class="form-control fd calculate" id="loadUnitDropdown" name="loadUnitDropdown"></select>
+                </td>
+                <!-- <td><input type="text" id="sunit" name="sunit" class="form-control"></td> -->
+                <td><input type="text" id="squantity" name="squantity" class="form-control calculate"></td>
+                <td><input type="text" id="srate" name="srate" class="form-control calculate"></td>
+                <td><input type="text" id="sprice" name="sprice" class="form-control" disabled></td>
+                <td style="align-items: center;">
+                  <a class="sadd" style="margin-top:5px;width: 28px;"><i class="fa fa-plus fa-fw"></i></a> 
+                </td>                   
+              </tr>
+              </tbody>
+            </table>
           </div>
 
           <div class="tile">            
-            <div class="tile-body">
-              <table id="sTable" class="inventory">
+            <div class="tile-body">            
+              <table>
                 <thead>
                   <tr>
                     <th>Item name</th>
@@ -425,40 +455,25 @@
                     <th>Action</th> 
                   </tr>
                 </thead>
-                <tbody id="scontainer">
-                <tr id="row" class="product_row">
-                  <td>     
-                    <select class="form-control fd" id="loadProductsDropdown" name="loadProductsDropdown"></select>
-                  </td>
-                  <td>     
-                    <select class="form-control fd" id="loadUnitDropdown" name="loadUnitDropdown"></select>
-                  </td>
-                  <!-- <td><input type="text" id="sunit" name="sunit" class="form-control"></td> -->
-                  <td><input type="text" id="squantity" name="squantity" class="form-control"></td>
-                  <td><input type="text" id="srate" name="srate" class="form-control"></td>
-                  <td><input type="text" id="sprice" name="sprice" class="form-control"></td>
-                  <td style="align-items: center;">
-                    <a class="sadd" style="margin-top:5px;width: 28px;"><i class="fa fa-plus fa-fw"></i></a> 
-                    <a class="scut" style="margin-left:5px;margin-top:5px;width: 28px;"><i class="fa fa-minus fa-fw"></i></a>
-                  </td>                   
-                </tr>
+                <tbody id='listSalesChallan'>
+                    <!-- Dynamic html for sales challan items table -->
                 </tbody>
               </table>
+              <br>
               <table class="balance">
                 <tr>
                   <th><span>Total</span></th>
-                  <td><span data-prefix>$</span><span>600.00</span></td>
+                  <td><span data-prefix>₹</span><span id='grandTotal'></span></td>
                 </tr>              
               </table>
               <aside>
                 <br><br><br><br><br>
                 <hr class="style-eight">
-                <p contenteditable>A finance charge of 1.5% will be made on unpaid balances after 30 days.</p>
                 <button class="btn btn-primary" id="ssubmit" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Okay</button>
                 <button class="btn btn-danger" id="clearsaleschallan"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancel</button>
               </aside>        
-        </div>
-        </div>               
+            </div>
+          </div>               
         </div>
       </div>
       
@@ -471,7 +486,7 @@
               <form class="row" id="">                
                 <div class="form-group col-md-5">
                   <label class="control-label">Customer Name.</label>
-                  <select class="form-control" id="scustomername">
+                  <select class="form-control" id="srcustomername">
                   </select>
                 </div>
                 <div class="form-group col-md-3">
@@ -484,13 +499,40 @@
                 </div>                
               </form>
             </div>
+            <table id="srTable" class="inventory">
+              <thead>
+                <tr>
+                  <th>Item name</th>
+                  <th>Unit</th>
+                  <th>Quantity</th>
+                  <th>Rate</th> 
+                  <th>Price</th>
+                  <th>Action</th> 
+                </tr>
+              </thead>
+              <tbody id="srcontainer">
+              <tr id="row">
+                <td>     
+                  <select class="form-control fd calculate" id="loadProductsDropdown" name="loadProductsDropdown"></select>
+                </td>
+                <td>     
+                  <select class="form-control fd calculate" id="loadUnitDropdown" name="loadUnitDropdown"></select>
+                </td>
+                <!-- <td><input type="text" id="sunit" name="sunit" class="form-control"></td> -->
+                <td><input type="text" id="srquantity" name="srquantity" class="form-control calculate"></td>
+                <td><input type="text" id="srrate" name="srrate" class="form-control calculate"></td>
+                <td><input type="text" id="srprice" name="srprice" class="form-control" disabled></td>
+                <td style="align-items: center;">
+                  <a class="sadd" style="margin-top:5px;width: 28px;"><i class="fa fa-plus fa-fw"></i></a> 
+                </td>                   
+              </tr>
+              </tbody>
+            </table>
           </div>
 
           <div class="tile">            
-            <div class="tile-body">
-              <!-- var html = $('#row').html();
-              $('.inventory>tbody').append(html); -->
-              <table class="inventory">
+            <div class="tile-body">            
+              <table>
                 <thead>
                   <tr>
                     <th>Item name</th>
@@ -501,45 +543,25 @@
                     <th>Action</th> 
                   </tr>
                 </thead>
-                <tbody id="scontainer">
-                <tr id="row">
-                  <td id="srcustomernamedropdown">     
-                    <select class="form-control" id="loadProductsDropdown" name="srloadProductsDropdown">
-                    </select>
-                  </td>
-                  <td><input type="text" name="srunit" class="form-control"></td>
-                  <td><input type="text" name="srquantity" class="form-control"></td>
-                  <td><input type="text" name="srrate" class="form-control"></td>
-                  <td><input type="text" name="srprice" class="form-control"></td>
-                  <td style="align-items: center;">
-                    <a class="sradd" style="margin-top:5px;width: 28px;"><i class="fa fa-plus fa-fw"></i></a> 
-                    <a class="srcut" style="margin-left:5px;margin-top:5px;width: 28px;"><i class="fa fa-minus fa-fw"></i></a>
-                  </td>                   
-                </tr>
+                <tbody id='listSalesReturnChallan'>
+                    <!-- Dynamic html for sales challan items table -->
                 </tbody>
               </table>
+              <br>
               <table class="balance">
                 <tr>
-                  <th><span contenteditable>Total</span></th>
-                  <td><span data-prefix>$</span><span>600.00</span></td>
-                </tr>
-                <tr>
-                  <th><span contenteditable>Amount Paid</span></th>
-                  <td><span data-prefix>$</span><span contenteditable>0.00</span></td>
-                </tr>
-                <tr>
-                  <th><span contenteditable>Balance Due</span></th>
-                  <td><span data-prefix>$</span><span>600.00</span></td>
-                </tr>
+                  <th><span>Total</span></th>
+                  <td><span data-prefix>₹</span><span id='srgrandTotal'></span></td>
+                </tr>              
               </table>
               <aside>
                 <br><br><br><br><br>
                 <hr class="style-eight">
-                <h1><span contenteditable>Additional Notes</span></h1>
-                <div contenteditable>
-                  <p>A finance charge of 1.5% will be made on unpaid balances after 30 days.</p>
-                </div>
+                <button class="btn btn-primary" id="srsubmit" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Okay</button>
+                <button class="btn btn-danger" id="clearsalesreturnchallan"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancel</button>
               </aside>        
+            </div>
+          </div>               
         </div>
       </div>
 
@@ -629,11 +651,14 @@
     <script type="text/javascript" src="js/plugins/dataTables.bootstrap.min.js"></script>
     <script type="text/javascript" src="js/plugins/bootstrap-datepicker.min.js"></script>
     <script type="text/javascript" src="js/plugins/select2.min.js"></script>
+    <script type="text/javascript" src="dashboard.js"></script>
+
+    <!-- <script type="text/javascript" src="js/invoice.js"></script> -->
     <script type="text/javascript">
-      $('#sampleTableCustomer').dataTable( {
-        
+      $('#sampleTableCustomer').dataTable({
         "paging": true
       });
+
       $('#sDate').datepicker({
           format: "dd/mm/yyyy",
           autoclose: true,
@@ -641,15 +666,9 @@
       });
       
       $('#scustomername').select2({
-       
         placeholder: 'Select Customer'
       });
     </script>
-    
-    <script type="text/javascript" src="dashboard.js"></script>
-
-    <!-- <script type="text/javascript" src="js/invoice.js"></script> -->
-    
     <script type="text/javascript">$('#sampleTableTransporter').DataTable();</script>
 
     <script type="text/javascript">$('#sampleTableProduct').DataTable();</script>
