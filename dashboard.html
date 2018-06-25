@@ -38,7 +38,7 @@
     table.balance td { text-align: right; }
 
     /*for + and - button*/
-    .sadd, .scut
+    .sadd,.sradd, .scut
     {
       border-width: 1px;
       display: block;
@@ -49,7 +49,7 @@
       width: 2em;
     }
 
-    .sadd, .scut
+    .sadd, .scut,.sradd
     {
       background: #9AF;
       box-shadow: 0 1px 2px rgba(0,0,0,0.2);
@@ -63,16 +63,16 @@
       text-shadow: 0 -1px 2px rgba(0,0,0,0.333);
     }
 
-    .sadd { margin: -2.5em 0 0; }
+    .sadd,.sradd{ margin: -2.5em 0 0; }
 
-    .sadd:hover { background: #00ADEE; }
+    .sadd:hover ,.sradd:hover { background: #00ADEE; }
 
     @media print {
       * { -webkit-print-color-adjust: exact; }
       html { background: none; padding: 0; }
       body { box-shadow: none; margin: 0; }
       span:empty { display: none; }
-      .sadd, .scut { display: none; }
+      .sadd,.sradd, .scut { display: none; }
     }
 
     @page { margin: 0; }
@@ -138,8 +138,9 @@
             <li><a class="treeview-item" style="cursor: pointer;" onclick='showUnits();' rel="noopener"><i class="icon fa fa-circle-o"></i> Unit Master</a></li>            
           </ul>
         </li>
-        <li><a class="app-menu__item" id="salesChallanDiv"style="cursor: pointer;" onclick='showSalesChallan();'><i class="app-menu__icon fa fa-edit"></i><span class="app-menu__label">Sales Challan</span></a></li>
-        <li><a class="app-menu__item" style="cursor: pointer;" onclick='showSalesReturnChallan();'><i class="app-menu__icon fa fa-edit"></i><span class="app-menu__label">Sales-Return Challan</span></a></li>
+        <li><a class="app-menu__item" id="salesChallanDiv" style="cursor: pointer;" onclick='showSalesChallan();'><i class="app-menu__icon fa fa-edit"></i><span class="app-menu__label">Sales Challan</span></a></li>
+        <li><a class="app-menu__item" id="
+          " style="cursor: pointer;" onclick='showSalesReturnChallan();'><i class="app-menu__icon fa fa-edit"></i><span class="app-menu__label">Sales-Return Challan</span></a></li>
         <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon fa fa-th-list "></i><span class="app-menu__label">Reports</span><i class="treeview-indicator fa fa-angle-right"></i></a>
           <ul class="treeview-menu">
             <li><a class="treeview-item" href="#"><i class="icon fa fa-circle-o"></i> Challan No.-wise</a></li>
@@ -513,17 +514,17 @@
               <tbody id="srcontainer">
               <tr id="row">
                 <td>     
-                  <select class="form-control fd calculate" id="loadProductsDropdown" name="loadProductsDropdown"></select>
+                  <select class="form-control fd calculatesr" id="loadProductsDropdownsr" name="loadProductsDropdownsr"></select>
                 </td>
                 <td>     
-                  <select class="form-control fd calculate" id="loadUnitDropdown" name="loadUnitDropdown"></select>
+                  <select class="form-control fd calculatesr" id="loadUnitDropdownsr" name="loadUnitDropdownsr"></select>
                 </td>
                 <!-- <td><input type="text" id="sunit" name="sunit" class="form-control"></td> -->
-                <td><input type="text" id="srquantity" name="srquantity" class="form-control calculate"></td>
-                <td><input type="text" id="srrate" name="srrate" class="form-control calculate"></td>
+                <td><input type="text" id="srquantity" name="srquantity" class="form-control calculatesr"></td>
+                <td><input type="text" id="srrate" name="srrate" class="form-control calculatesr"></td>
                 <td><input type="text" id="srprice" name="srprice" class="form-control" disabled></td>
                 <td style="align-items: center;">
-                  <a class="sadd" style="margin-top:5px;width: 28px;"><i class="fa fa-plus fa-fw"></i></a> 
+                  <a class="sradd" style="margin-top:5px;width: 28px;"><i class="fa fa-plus fa-fw"></i></a> 
                 </td>                   
               </tr>
               </tbody>
@@ -628,12 +629,12 @@
         $('#div_units').hide();
       }
       function showSalesReturnChallan(){
+        $('#div_sales_return_challan').show(); 
         $('#div_sales_challan').hide();
         $('#div_dashboard').hide();
         $('#div_customers').hide();
         $('#div_transporters').hide();
         $('#div_products').hide(); 
-        $('#div_sales_return_challan').show(); 
         $('#div_units').hide();
       }
     </script>
@@ -664,9 +665,10 @@
           autoclose: true,
           todayHighlight: true
       });
-      
-      $('#scustomername').select2({
-        placeholder: 'Select Customer'
+      $('#srDate').datepicker({
+          format: "dd/mm/yyyy",
+          autoclose: true,
+          todayHighlight: true
       });
     </script>
     <script type="text/javascript">$('#sampleTableTransporter').DataTable();</script>
@@ -676,6 +678,5 @@
     
     <!-- notification -->
     <script type="text/javascript" src="js/plugins/bootstrap-notify.min.js"></script>
-    <!-- <script type="text/javascript" src="js/plugins/sweetalert.min.js"></script> -->
 </body>
 </html>

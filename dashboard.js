@@ -139,6 +139,14 @@ $(function(){
 	  		else if(json.data.msg == 'ChallanInsertFail'){
 	  			notifyFail();
 	  		}
+	  	}
+	  	else if(json.type == "insertSalesReturnChallan_callback") {
+	  		if(json.data.msg== 'ChallanReturnInsertSuccess'){
+	  			notifyInsert();
+	  		}
+	  		else if(json.data.msg == 'ChallanReturnInsertFail'){
+	  			notifyFail();
+	  		}
 	  	}	
 	  	else if(json.type == "getAllCustomer_callback"){
 	  		var htmlString="";
@@ -202,6 +210,7 @@ $(function(){
 	  	}
 	  	else if(json.type == "getAllProductList_callback"){
 	  		$('#loadProductsDropdown').empty();
+	  		$('#loadProductsDropdownsr').empty();
 	  		var htmlString="<option value='-1'>Select Item</option>";
 	  		productList=[];
 	  		for(var i=0;i<json.data.length;i++){
@@ -217,21 +226,29 @@ $(function(){
 	  			htmlString +='<option data-value='+obj.totol_offset+' value='+json.data[i].productid+'>'+json.data[i].productname+' ( '+json.data[i].length+' * '+json.data[i].width+' * '+json.data[i].thickness+' ) </option>';
 	  		}
 	  		$('#loadProductsDropdown').append(htmlString);
+	  		$('#loadProductsDropdownsr').append(htmlString);
 	  	}
 	  	else if(json.type == "getAllCustomerList_callback"){
 	  		$('#scustomername').empty();
-	  		var htmlString="";
+	  		$('#srcustomername').empty();
+	  		var htmlString="<option value='-1'>Select Customer</option>";
 	  		for(var i=0;i<json.data.length;i++){
 	  			htmlString +='<option value='+json.data[i].customerid+'>'+json.data[i].fname+' '+json.data[i].lname+'</option>';
 	  		}
 	  		$('#scustomername').append(htmlString);
+	  		$('#srcustomername').append(htmlString);
 	  	}
 	  	else if(json.type == "getSalesChallanNo_callback"){
 	  		
 	  		$('#schallanno').val(json.data.challanno+1);
 	  	}
+	  	else if(json.type == "getSalesReturnChallanNo_callback"){
+	  		
+	  		$('#srchallanno').val(json.data.challanno+1);
+	  	}
 	  	else if(json.type == "getAllUnitList_callback"){
 	  		$('#loadUnitDropdown').empty();
+	  		$('#loadUnitDropdownsr').empty();
 	  		var htmlString="<option value='-1'>Select Item</option>";
 	  		unitList=[];
 	  		for(var i=0;i<json.data.length;i++){
@@ -240,11 +257,11 @@ $(function(){
 	  				unitname:json.data[i].unitname,
 	  				offset:json.data[i].offset,	  				
 	  			}
-	  			unitList.push(obj);
-	  			//console.log(obj); 
+	  			unitList.push(obj); 
 	  			htmlString +='<option data-offset='+json.data[i].offset+' value='+json.data[i].unitid+'>'+json.data[i].unitname+'</option>';
 	  		}
 	  		$('#loadUnitDropdown').append(htmlString);
+	  		$('#loadUnitDropdownsr').append(htmlString);
 	  	}
 	  	else if(json.type == "insertSalesChallan_callback"){
 	  		if(json.data.msg== 'insertSalesChallanSuccess'){
@@ -271,11 +288,19 @@ $(function(){
 			deleteUnit($(this).attr("id"));
 		});
 
-		$('#salesChallanDiv').click(function(){
+		$('#salesChallanDiv').unbind().click(function(){
 	    	$('#div_sales_challan').show("slow", function() {
+	    		//alert('hello');
 	    		loadAllProductsandChallanNo();
 	    	});	
 	    });
+
+	    /*$('#salesReturnChallanDiv').unbind().click(function(){
+	    	$('#div_sales_return_challan').show("slow", function() {
+	    		//alert('hi');
+	    		loadAllProductsandChallanNosr();
+	    	});	
+	    });*/
 
 		$(document).unbind().on('click','.sadd',function(){
 	      	addSalesRow();
@@ -284,6 +309,15 @@ $(function(){
 	      	$('#srate').val("");
 	      	$('#squantity').val("");
 	      	$('#sprice').val("");   	
+	    });
+
+	    $(document).unbind().on('click','.sradd',function(){
+	      	addSalesReturnRow();
+	      	$('#loadUnitDropdownsr').val($('#loadUnitDropdownsr option:first').val());
+	      	$('#loadProductsDropdownsr').val($('#loadProductsDropdownsr option:first').val());
+	      	$('#srrate').val("");
+	      	$('#srquantity').val("");
+	      	$('#srprice').val("");   	
 	    });
 
 	    $(document).on('click','.scut',function(){
@@ -572,12 +606,18 @@ $(function(){
 	}
 	function loadAllProductsandChallanNo(){
 		var obj={
-			productid:productid,
 			companyid:sessionStorage.getItem('companyid')
 		}
 		var json=JSON.stringify({usertype: "LoadSalesChallan", data:obj});
 		connection.send(json);
 	}
+	/*function loadAllProductsandChallanNosr(){
+		var obj={
+			companyid:sessionStorage.getItem('companyid')
+		}
+		var json=JSON.stringify({usertype: "LoadSalesReturnChallan", data:obj});
+		connection.send(json);
+	}*/
 
 	//validate Unit
 	$('#clearUnit').click(clearUnit);
@@ -641,7 +681,7 @@ $(function(){
 		var json=JSON.stringify({usertype: "deleteUnit", data:obj});
 		connection.send(json);
 	}
-	
+
 	$('#ssubmit').click(insertSalesChallan);
 	function insertSalesChallan(){
 		var salesProductlist=[];
@@ -683,14 +723,63 @@ $(function(){
 			salesProductlist.push(obj);	
 		});
 		var json=JSON.stringify({usertype: "insertSalesChallan",companyid:companyid,customerid:customerid,challanno:challanno,date:date,total:total,data:salesProductlist});
-        console.log('sales chalan json : '+json);
         connection.send(json);
 	}
-
 	$('#clearsaleschallan').click(clearsaleschallan);
 	function clearsaleschallan(){
 		//alert('hi');
 		$('#div_sales_challan').hide();
+		$('#div_dashboard').show();
+	}
+
+	$('#srsubmit').click(insertSalesReturnChallan);
+	function insertSalesReturnChallan(){
+		var salesReturnProductlist=[];
+		var total=0;
+		
+		var companyid=sessionStorage.getItem('companyid');
+		var customerid=$('#srcustomername').val();
+		var date=$('#srDate').val();
+		var challanno=$('#srchallanno').val();
+		
+		$('.itemRowsr').each(function(){
+			var tds=$(this).find('td');
+			var prodid,unit,qty,rate,price;
+			tds.each(function(){
+				if($(this).attr('data-Productid')){
+					prodid=$(this).attr('data-Productid');
+				}
+				else if($(this).attr('data-unit')){
+					unit=$(this).attr('data-unit');
+				}
+				else if($(this).attr('data-qty')){
+					qty=$(this).attr('data-qty');
+				}
+				else if($(this).attr('data-rate')){
+					rate=$(this).attr('data-rate');
+				}
+				else if($(this).attr('data-price')){
+					price=$(this).attr('data-price');
+				}	
+			});
+			var obj={
+				productid : prodid,
+				unit      : unit,
+				qty       : qty,
+				rate      : rate,
+				price     : price
+			}
+			total += parseInt(obj.price);
+			salesReturnProductlist.push(obj);	
+		});
+		var json=JSON.stringify({usertype: "insertSalesReturnChallan",companyid:companyid,customerid:customerid,challanno:challanno,date:date,total:total,data:salesReturnProductlist});
+        //console.log('hi'+json);
+        connection.send(json);
+	}
+	$('#clearsalesreturnchallan').click(clearsalesreturnchallan);
+	function clearsalesreturnchallan(){
+		//alert('hi');
+		$('#div_sales_return_challan').hide();
 		$('#div_dashboard').show();
 	}
 
@@ -709,6 +798,20 @@ $('.calculate').change(function(){
 	ans=(measurement/offset)*qty*rate;
 	ans=ans.toFixed(2);
 	$('#sprice').val(ans);
+});
+
+$('.calculatesr').change(function(){
+	if($('option:selected', this).attr('data-value'))
+		measurement = $('option:selected', this).attr('data-value');
+	if($('option:selected', this).attr('data-offset'))
+		offset=$('option:selected', this).attr('data-offset');
+	if($('#srquantity').val())
+		qty=$('#srquantity').val();
+	if($('#srrate').val())
+		rate=$('#srrate').val();
+	ans=(measurement/offset)*qty*rate;
+	ans=ans.toFixed(2);
+	$('#srprice').val(ans);
 });
 
 function addSalesRow(){
@@ -735,6 +838,32 @@ function addSalesRow(){
         html += "</tr>";
 
     $('#listSalesChallan').append(html);
+}
+
+function addSalesReturnRow(){
+	var itemid    =$("#loadProductsDropdownsr option:selected").val();
+	var itemName  =$("#loadProductsDropdownsr option:selected").text();
+	var itemUnit  =$("#loadUnitDropdownsr option:selected").text();
+	var itemQty   =$('#srquantity').val();
+	var itemRate  =$('#srrate').val();
+	var itemPrice =$('#srprice').val();
+
+	var itemMeasurement = $('#loadProductsDropdownsr option:selected').attr('data-value');
+	var itemOffset=$('#loadUnitDropdownsr option:selected').attr('data-offset');
+
+	var html  = "<tr class='itemRowsr'>";
+		html +=	"<td id='itemidsr' data-ProductId="+itemid+">"+itemName+"</td>";
+    	html +=	"<td id='itemunitsr' data-unit="+itemUnit+">"+itemUnit+"</td>"
+        html +=	"<td id='itemqtysr' data-qty="+itemQty+" style='text-align:right;'>"+itemQty+"</td>";                    
+        html +=	"<td id='itemratesr' data-rate="+itemRate+" style='text-align:right;'><span data-prefix>₹</span>"+itemRate+"</td>";
+        html +=	"<td id='itempricesr' data-price="+itemPrice+" style='text-align:right;'><span data-prefix>₹</span>"+itemPrice+"</td>";
+        html +=	"<td style='align-items: center;'>";
+        //html +=	"<i class='fa fa-pencil' aria-hidden='true'></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+        html +=	"<a class='scut'><i class='fa fa-trash' aria-hidden='true'></i></a>";
+        html +=	"</td>";
+        html += "</tr>";
+
+    $('#listSalesReturnChallan').append(html);
 }
 
 function updateCustomer(customerid,companyid,fname,lname,contactno,gstno,address){

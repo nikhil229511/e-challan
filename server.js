@@ -107,13 +107,26 @@ wsServer.on('request',function(request){
 						case "LoadSalesChallan":
 							getAllProductList(c.data.companyid);
 							getSalesChallanNo(c.data.companyid);
+							getSalesReturnChallanNo(c.data.companyid);
 							getAllCustomerList(c.data.companyid);
 							getAllUnitsList(c.data.companyid);
 						break;
 
-						case "insertSalesChallan":
-							//console.log(c.date);							
+						/*case "LoadSalesReturnChallan":
+							getAllProductList(c.data.companyid);
+							getSalesReturnChallanNo(c.data.companyid);
+							getAllCustomerList(c.data.companyid);
+							getAllUnitsList(c.data.companyid);
+						break;
+						*/
+						
+
+						case "insertSalesChallan":					
 							insertSalesChallan(c.companyid,c.customerid,c.challanno,c.date,c.total,c.data,connection);
+						break;
+						
+						case "insertSalesReturnChallan":						
+							insertSalesReturnChallan(c.companyid,c.customerid,c.challanno,c.date,c.total,c.data,connection);
 						break;
 
 						case "sendAll":
@@ -481,6 +494,17 @@ wsServer.on('request',function(request){
 				sendResponse(json,connection);
 			});
 		}
+		function getSalesReturnChallanNo(companyid){
+			var sql="SELECT companyid as 'companyid', MAX(challanno) AS 'LastChallan' FROM   challanreturnmaster where companyid="+companyid+" GROUP BY companyid";
+			con.query(sql, function (err, result, fields) {
+				var obj={
+					companyid:result[0].companyid,
+					challanno:result[0].LastChallan
+				}
+				var json=JSON.stringify({type:"getSalesReturnChallanNo_callback",data:obj});
+				sendResponse(json,connection);
+			});
+		}
 
 		function getAllCustomerList(companyid){
 			var arr=[];
@@ -593,6 +617,85 @@ wsServer.on('request',function(request){
 				sendResponse(json,connection);
 			});
 		}
+
+		function insertSalesReturnChallan(companyid,customerid,challanno,date,total,product_arr,connection){
+			var challanid,obj;
+			async.series([
+				function(callback){
+		            var sql="START TRANSACTION";
+		            con.query(sql, function (err, result) {
+		                if (err){        
+		                    obj={
+								msg:'ChallanReturnInsertFail'
+							}
+							var json=JSON.stringify({type:"insertSalesReturnChallan_callback",data:obj});
+							sendResponse(json,connection);
+							return false;
+		                }else
+		                    callback(null,'succes1');    
+		            });		            
+		        },
+		        function(callback){
+		            var sql="INSERT INTO challanreturnmaster(companyid,customerid,challanno,date,total) values ("+companyid+","+customerid+","+challanno+",'"+date+"',"+total+");";
+		            con.query(sql, function (err, result) {
+		                if (err){        
+		                    obj={
+								msg:'ChallanReturnInsertFail'
+							}
+							var json=JSON.stringify({type:"insertSalesReturnChallan_callback",data:obj});
+							sendResponse(json,connection);
+							return false;
+		                }else{
+		                    challanid=result.insertId;
+		                    callback(null,'succes2');    
+		                }
+		            });		            
+		        },
+		        function(callback){
+		            var sql="INSERT INTO challanreturndetail (challanid,productid,unit,quantity,rate,price) values";
+		            for(var i=0;i<product_arr.length;i++){
+						if(i==product_arr.length-1)
+							sql += "("+challanid+","+product_arr[i].productid+",'"+product_arr[i].unit+"',"+product_arr[i].qty+","+product_arr[i].rate+","+product_arr[i].price+")";
+						else
+							sql += "("+challanid+","+product_arr[i].productid+",'"+product_arr[i].unit+"',"+product_arr[i].qty+","+product_arr[i].rate+","+product_arr[i].price+"),";
+					}
+		            con.query(sql, function (err, result) {
+		                if (err){        
+		                    obj={
+								msg:'ChallanReturnInsertFail'
+							}
+							var json=JSON.stringify({type:"insertSalesReturnChallan_callback",data:obj});
+							sendResponse(json,connection);
+							return false;
+		                }else{
+		                    callback(null,'succes2');    
+		                }
+		            });		            
+		        },
+		        function(callback){
+		            var sql="COMMIT";
+		            con.query(sql, function (err, result) {
+		                if (err){        
+		                    obj={
+								msg:'ChallanReturnInsertFail'
+							}
+							var json=JSON.stringify({type:"insertSalesReturnChallan_callback",data:obj});
+							sendResponse(json,connection);
+							return false;
+		                }else
+		                    callback(null,'success4');
+		            });		           
+		        }	
+			],
+			function(){
+				obj={
+					msg:'ChallanReturnInsertSuccess'
+				}
+				var json=JSON.stringify({type:"insertSalesReturnChallan_callback",data:obj});
+				sendResponse(json,connection);
+			});
+		}
+
 		function getAllUnits(companyid){
 			var arr=[];
 			var sql="SELECT * from unitmaster where companyid="+companyid+";";
