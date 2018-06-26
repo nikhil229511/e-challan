@@ -2,6 +2,7 @@
 var row_id = 1;
 var productList=[];
 var unitList=[];
+var customers=[];
 $(document).ready(function() {
 
 });
@@ -39,6 +40,7 @@ $(function(){
 	  	if(json.type == "customerInsert_callback") {
 	  		if(json.data.msg== 'CustomerInsertSuccess'){
 	  			notifyInsert();
+	  			clearCustomer();
 	  		}
 	  		else if(json.data.msg == 'CustomerInsertFail'){
 	  			notifyFail();
@@ -47,6 +49,7 @@ $(function(){
 	  	else if(json.type == "customerUpdate_callback") {
 	  		if(json.data.msg== 'CustomerUpdateSuccess'){
 	  			notifyUpdate();
+	  			clearCustomer();
 	  		}
 	  		else if(json.data.msg == 'CustomerUpdateFail'){
 	  			notifyFail();
@@ -63,6 +66,7 @@ $(function(){
 	  	else if(json.type == "TransporterInsert_callback") {
 	  		if(json.data.msg== 'TransporterInsertSuccess'){
 	  			notifyInsert();
+	  			clearTransporter();
 	  		}
 	  		else if(json.data.msg == 'TransporterInsertFail'){
 	  			notifyFail();
@@ -71,6 +75,7 @@ $(function(){
 	  	else if(json.type == "TransporterUpdate_callback") {
 	  		if(json.data.msg== 'TransporterUpdateSuccess'){
 	  			notifyUpdate();
+	  			clearTransporter();
 	  		}
 	  		else if(json.data.msg == 'TransporterUpdateFail'){
 	  			notifyFail();
@@ -87,6 +92,7 @@ $(function(){
 	  	else if(json.type == "ProductInsert_callback") {
 	  		if(json.data.msg== 'ProductInsertSuccess'){
 	  			notifyInsert();
+	  			clearProduct();
 	  		}
 	  		else if(json.data.msg == 'ProductInsertFail'){
 	  			notifyFail();
@@ -95,6 +101,7 @@ $(function(){
 	  	else if(json.type == "ProductUpdate_callback") {
 	  		if(json.data.msg== 'ProductUpdateSuccess'){
 	  			notifyUpdate();
+	  			clearProduct();
 	  		}
 	  		else if(json.data.msg == 'ProductUpdateFail'){
 	  			notifyFail();
@@ -111,6 +118,7 @@ $(function(){
 	  	else if(json.type == "insertUnit_callback") {
 	  		if(json.data.msg== 'UnitInsertSuccess'){
 	  			notifyInsert();
+	  			clearUnit();
 	  		}
 	  		else if(json.data.msg == 'UnitInsertFail'){
 	  			notifyFail();
@@ -119,6 +127,7 @@ $(function(){
 	  	else if(json.type == "UnitUpdate_callback") {
 	  		if(json.data.msg== 'UnitUpdateSuccess'){
 	  			notifyUpdate();
+	  			clearUnit();
 	  		}
 	  		else if(json.data.msg == 'UnitUpdateFail'){
 	  			notifyFail();
@@ -233,6 +242,15 @@ $(function(){
 	  		$('#srcustomername').empty();
 	  		var htmlString="<option value='-1'>Select Customer</option>";
 	  		for(var i=0;i<json.data.length;i++){
+	  			var obj={
+	  				customerid 	: json.data[i].customerid,
+	  				fname		: json.data[i].fname,
+	  				lname		: json.data[i].lname,
+	  				address 	: json.data[i].address,
+	  				gstno 		: json.data[i].gstno,
+	  				contactno 	: json.data[i].contactno
+	  			}
+	  			customers.push(obj);
 	  			htmlString +='<option value='+json.data[i].customerid+'>'+json.data[i].fname+' '+json.data[i].lname+'</option>';
 	  		}
 	  		$('#scustomername').append(htmlString);
@@ -249,7 +267,7 @@ $(function(){
 	  	else if(json.type == "getAllUnitList_callback"){
 	  		$('#loadUnitDropdown').empty();
 	  		$('#loadUnitDropdownsr').empty();
-	  		var htmlString="<option value='-1'>Select Item</option>";
+	  		var htmlString="<option value='-1'>Select Unit</option>";
 	  		unitList=[];
 	  		for(var i=0;i<json.data.length;i++){
 	  			var obj={
@@ -290,18 +308,14 @@ $(function(){
 
 		$('#salesChallanDiv').unbind().click(function(){
 	    	$('#div_sales_challan').show("slow", function() {
-	    		//alert('hello');
 	    		loadAllProductsandChallanNo();
 	    	});	
 	    });
-
-	    /*$('#salesReturnChallanDiv').unbind().click(function(){
+	    $('#salesReturnChallanDiv').unbind().click(function(){
 	    	$('#div_sales_return_challan').show("slow", function() {
-	    		//alert('hi');
 	    		loadAllProductsandChallanNosr();
 	    	});	
-	    });*/
-
+	    });
 		$(document).unbind().on('click','.sadd',function(){
 	      	addSalesRow();
 	      	$('#loadUnitDropdown').val($('#loadUnitDropdown option:first').val());
@@ -310,16 +324,14 @@ $(function(){
 	      	$('#squantity').val("");
 	      	$('#sprice').val("");   	
 	    });
-
-	    $(document).unbind().on('click','.sradd',function(){
+	    $(document).on('click','.sradd',function(){
 	      	addSalesReturnRow();
 	      	$('#loadUnitDropdownsr').val($('#loadUnitDropdownsr option:first').val());
 	      	$('#loadProductsDropdownsr').val($('#loadProductsDropdownsr option:first').val());
 	      	$('#srrate').val("");
 	      	$('#srquantity').val("");
-	      	$('#srprice').val("");   	
+	      	$('#srprice').val("");
 	    });
-
 	    $(document).on('click','.scut',function(){
 	      	
 	      	$(this).parent().parent().remove();	    	
@@ -343,7 +355,8 @@ $(function(){
 	$('#csubmit').click(validateCustomer);
 	$('#clearCustomer').click(clearCustomer);	
 	function clearCustomer(event){
-		event.preventDefault();
+		if(event)
+			event.preventDefault();
 		$('#cfname').val("");
 		$('#clname').val("");
 		$('#ccontactno').val("");
@@ -432,7 +445,8 @@ $(function(){
 	$('#tsubmit').click(validateTransporter);
 	$('#clearTransporter').click(clearTransporter);
 	function clearTransporter(event){
-		event.preventDefault();
+		if(event)
+			event.preventDefault();
 		$('#tfname').val("");
 		$('#tlname').val("");
 		$('#tcontactno').val("");
@@ -523,7 +537,8 @@ $(function(){
 	$('#psubmit').click(validateProduct);
 	$('#clearProduct').click(clearProduct);
 	function clearProduct(even){
-		event.preventDefault();
+		if(event)
+			event.preventDefault();
 		$('#pname').val("");
 		$('#length').val("");
 		$('#width').val("");
@@ -611,19 +626,20 @@ $(function(){
 		var json=JSON.stringify({usertype: "LoadSalesChallan", data:obj});
 		connection.send(json);
 	}
-	/*function loadAllProductsandChallanNosr(){
+	function loadAllProductsandChallanNosr(){
 		var obj={
 			companyid:sessionStorage.getItem('companyid')
 		}
 		var json=JSON.stringify({usertype: "LoadSalesReturnChallan", data:obj});
 		connection.send(json);
-	}*/
+	}
 
 	//validate Unit
 	$('#clearUnit').click(clearUnit);
 	$('#usubmit').click(validateUnit);
 	function clearUnit(event){
-		event.preventDefault();
+		if(event)
+			event.preventDefault();
 		$('#uname').val("");
 		$('#uoffset').val("");
 		$('#unitid').val('-1');
@@ -682,6 +698,79 @@ $(function(){
 		connection.send(json);
 	}
 
+	var ans,qty,measurement,offset,rate;
+	$('.calculate').change(function(){
+		if($('option:selected', this).attr('data-value'))
+			measurement = $('option:selected', this).attr('data-value');
+		if($('option:selected', this).attr('data-offset'))
+			offset=$('option:selected', this).attr('data-offset');
+		if($('#squantity').val())
+			qty=$('#squantity').val();
+		if($('#srate').val())
+			rate=$('#srate').val();
+		ans=(measurement/offset)*qty*rate;
+		ans=ans.toFixed(2);
+		$('#sprice').val(ans);
+	});
+	$('.calculatesr').change(function(){
+		if($('option:selected', this).attr('data-value'))
+			measurement = $('option:selected', this).attr('data-value');
+		if($('option:selected', this).attr('data-offset'))
+			offset=$('option:selected', this).attr('data-offset');
+		if($('#srquantity').val())
+			qty=$('#srquantity').val();
+		if($('#srrate').val())
+			rate=$('#srrate').val();
+		ans=(measurement/offset)*qty*rate;
+		ans=ans.toFixed(2);
+		$('#srprice').val(ans);
+	});
+
+	$('#printsaleschallan').click(printsaleschallan);
+	function printsaleschallan(){
+		$('#salesChallanNo').text(" "+$('#schallanno').val());
+		$('#salesDate').text($('#sDate').val());
+		$('#salesCustomerName').text($('#scustomername option:selected').text());
+		for(var index in customers){
+			if(customers[index].customerid == $('#scustomername option:selected').val()){
+				$('#salesCustomerAddress').text(customers[index].address);
+				break;
+			}
+		}
+		$('.hideforprint').css('display','none');
+		//var tablehtml=$('#listSalesChallan').html()
+		$('#salesPrintList').html($('#listSalesChallan').html());
+		
+		$('#salesgrandTotal').text($('#grandTotal').text());
+		printDiv('sales_print_div');
+	}
+	$('#printsalesreturnchallan').click(printsalesreturnchallan);
+	function printsalesreturnchallan(){
+		$('#salesReturnChallanNo').text(" "+$('#srchallanno').val());
+		$('#salesReturnDate').text($('#srDate').val());
+		$('#salesReturnCustomerName').text($('#srcustomername option:selected').text());
+		for(var index in customers){
+			if(customers[index].customerid == $('#srcustomername option:selected').val()){
+				$('#salesReturnCustomerAddress').text(customers[index].address);
+				break;
+			}
+		}
+		$('.hideforprint').css('display','none');
+		$('#salesReturnPrintList').html($('#listSalesReturnChallan').html());
+		
+		$('#salesReturngrandTotal').text($('#srgrandTotal').text());
+		printDiv('sales_return_print_div');
+	}
+
+	function printDiv(divID) {
+		var divElements = document.getElementById(divID).innerHTML;
+        var oldPage = document.body.innerHTML;
+        document.body.innerHTML = 
+          "<html><head><title></title></head><body><pre><br><br><br><br></pre>"+divElements+"</body>";
+        window.print();
+        document.body.innerHTML = oldPage;      
+    }
+
 	$('#ssubmit').click(insertSalesChallan);
 	function insertSalesChallan(){
 		var salesProductlist=[];
@@ -722,8 +811,11 @@ $(function(){
 			total += parseInt(obj.price);
 			salesProductlist.push(obj);	
 		});
+		$('#grandTotal').text(total);
 		var json=JSON.stringify({usertype: "insertSalesChallan",companyid:companyid,customerid:customerid,challanno:challanno,date:date,total:total,data:salesProductlist});
         connection.send(json);
+
+        //print bill
 	}
 	$('#clearsaleschallan').click(clearsaleschallan);
 	function clearsaleschallan(){
@@ -731,7 +823,6 @@ $(function(){
 		$('#div_sales_challan').hide();
 		$('#div_dashboard').show();
 	}
-
 	$('#srsubmit').click(insertSalesReturnChallan);
 	function insertSalesReturnChallan(){
 		var salesReturnProductlist=[];
@@ -772,8 +863,8 @@ $(function(){
 			total += parseInt(obj.price);
 			salesReturnProductlist.push(obj);	
 		});
+		$('#srgrandTotal').text(total);
 		var json=JSON.stringify({usertype: "insertSalesReturnChallan",companyid:companyid,customerid:customerid,challanno:challanno,date:date,total:total,data:salesReturnProductlist});
-        //console.log('hi'+json);
         connection.send(json);
 	}
 	$('#clearsalesreturnchallan').click(clearsalesreturnchallan);
@@ -784,36 +875,6 @@ $(function(){
 	}
 
 });
-
-var ans,qty,measurement,offset,rate;
-$('.calculate').change(function(){
-	if($('option:selected', this).attr('data-value'))
-		measurement = $('option:selected', this).attr('data-value');
-	if($('option:selected', this).attr('data-offset'))
-		offset=$('option:selected', this).attr('data-offset');
-	if($('#squantity').val())
-		qty=$('#squantity').val();
-	if($('#srate').val())
-		rate=$('#srate').val();
-	ans=(measurement/offset)*qty*rate;
-	ans=ans.toFixed(2);
-	$('#sprice').val(ans);
-});
-
-$('.calculatesr').change(function(){
-	if($('option:selected', this).attr('data-value'))
-		measurement = $('option:selected', this).attr('data-value');
-	if($('option:selected', this).attr('data-offset'))
-		offset=$('option:selected', this).attr('data-offset');
-	if($('#srquantity').val())
-		qty=$('#srquantity').val();
-	if($('#srrate').val())
-		rate=$('#srrate').val();
-	ans=(measurement/offset)*qty*rate;
-	ans=ans.toFixed(2);
-	$('#srprice').val(ans);
-});
-
 function addSalesRow(){
 	var itemid    =$("#loadProductsDropdown option:selected").val();
 	var itemName  =$("#loadProductsDropdown option:selected").text();
@@ -831,7 +892,7 @@ function addSalesRow(){
         html +=	"<td id='itemqty' data-qty="+itemQty+" style='text-align:right;'>"+itemQty+"</td>";                    
         html +=	"<td id='itemrate' data-rate="+itemRate+" style='text-align:right;'><span data-prefix>₹</span>"+itemRate+"</td>";
         html +=	"<td id='itemprice' data-price="+itemPrice+" style='text-align:right;'><span data-prefix>₹</span>"+itemPrice+"</td>";
-        html +=	"<td style='align-items: center;'>";
+        html +=	"<td style='align-items: center;' class='hideforprint'>";
         //html +=	"<i class='fa fa-pencil' aria-hidden='true'></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
         html +=	"<a class='scut'><i class='fa fa-trash' aria-hidden='true'></i></a>";
         html +=	"</td>";
@@ -839,7 +900,6 @@ function addSalesRow(){
 
     $('#listSalesChallan').append(html);
 }
-
 function addSalesReturnRow(){
 	var itemid    =$("#loadProductsDropdownsr option:selected").val();
 	var itemName  =$("#loadProductsDropdownsr option:selected").text();
@@ -857,7 +917,7 @@ function addSalesReturnRow(){
         html +=	"<td id='itemqtysr' data-qty="+itemQty+" style='text-align:right;'>"+itemQty+"</td>";                    
         html +=	"<td id='itemratesr' data-rate="+itemRate+" style='text-align:right;'><span data-prefix>₹</span>"+itemRate+"</td>";
         html +=	"<td id='itempricesr' data-price="+itemPrice+" style='text-align:right;'><span data-prefix>₹</span>"+itemPrice+"</td>";
-        html +=	"<td style='align-items: center;'>";
+        html +=	"<td style='align-items: center;' class='hideforprint'>";
         //html +=	"<i class='fa fa-pencil' aria-hidden='true'></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
         html +=	"<a class='scut'><i class='fa fa-trash' aria-hidden='true'></i></a>";
         html +=	"</td>";
@@ -865,7 +925,6 @@ function addSalesReturnRow(){
 
     $('#listSalesReturnChallan').append(html);
 }
-
 function updateCustomer(customerid,companyid,fname,lname,contactno,gstno,address){
 	$('#ccustomerid').val(customerid);
 	$('#cfname').val(fname);
@@ -894,7 +953,6 @@ function updateUnit(unitid,unitname,offset){
 	$('#uname').val(decodeURIComponent(unitname));
 	$('#uoffset').val(offset);
 }
-
 function notifyUpdate(){
     $.notify({
       	title: "Update Complete : ",

@@ -107,18 +107,18 @@ wsServer.on('request',function(request){
 						case "LoadSalesChallan":
 							getAllProductList(c.data.companyid);
 							getSalesChallanNo(c.data.companyid);
-							getSalesReturnChallanNo(c.data.companyid);
+							//getSalesReturnChallanNo(c.data.companyid);
 							getAllCustomerList(c.data.companyid);
 							getAllUnitsList(c.data.companyid);
 						break;
 
-						/*case "LoadSalesReturnChallan":
+						case "LoadSalesReturnChallan":
 							getAllProductList(c.data.companyid);
 							getSalesReturnChallanNo(c.data.companyid);
 							getAllCustomerList(c.data.companyid);
 							getAllUnitsList(c.data.companyid);
 						break;
-						*/
+						
 						
 
 						case "insertSalesChallan":					
@@ -508,13 +508,16 @@ wsServer.on('request',function(request){
 
 		function getAllCustomerList(companyid){
 			var arr=[];
-			var sql="SELECT fname,lname,customerid from customers where companyid="+companyid+";";
+			var sql="SELECT fname,lname,customerid,address,gstno,contactno from customers where companyid="+companyid+";";
 			con.query(sql, function (err, result, fields) {
 				for(var index in result){
 					var obj={
 						customerid 		: 	result[index].customerid,
 						fname 			: 	result[index].fname,
-						lname 			: 	result[index].lname,						
+						lname 			: 	result[index].lname,
+						address 		: 	result[index].address,
+						gstno 			: 	result[index].gstno,
+						contactno 		: 	result[index].contactno						
 					}
 					arr.push(obj); 
 				}

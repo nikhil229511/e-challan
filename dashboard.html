@@ -6,8 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>E-challan Dashboard</title>
 	<link rel="stylesheet" type="text/css" href="css/main.css">
-  <!-- <link rel="stylesheet" type="text/css" href="css/invoice.css"> -->
-	<!-- external -->
+  <!-- external -->
 	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <style type="text/css">
     article, article address, table.meta, table.inventory { margin: 0 0 0em; }
@@ -23,14 +22,14 @@
     table.inventory td:nth-child(6) { text-align: right; width: 1%; }
 
     /*table css*/
-    table { font-size: 90%; width: 100%; }
-    table { border-collapse: separate; border-spacing: 2px; }
+    table { font-size: 100%; width: 100%; }
+    table { border-collapse: collapse; border-spacing: 2px; }
     th, td { border-width: 1px; padding: 0.5em; position: relative; text-align: left; }
     th, td { border-radius: 0.25em; border-style: solid; }
-    th { background: #EEE; border-color: #BBB; }
+    th { background: #d7dfdf87; border-color: #BBB; }
     td { border-color: #DDD; }
 
-    h1 { font: bold 100% sans-serif; letter-spacing:0.5em; text-align: center; text-transform: uppercase;}
+    h1 { font: bold 100% sans-serif; text-align: center;}
     table.balance { float: right; width: 36%; }
     table.balance:after { clear: both; content: ""; display: table; }
 
@@ -38,7 +37,7 @@
     table.balance td { text-align: right; }
 
     /*for + and - button*/
-    .sadd,.sradd, .scut
+    .sadd, .scut, .sradd
     {
       border-width: 1px;
       display: block;
@@ -65,14 +64,14 @@
 
     .sadd,.sradd{ margin: -2.5em 0 0; }
 
-    .sadd:hover ,.sradd:hover { background: #00ADEE; }
+    .sadd:hover,.sradd:hover { background: #00ADEE; }
 
     @media print {
       * { -webkit-print-color-adjust: exact; }
       html { background: none; padding: 0; }
       body { box-shadow: none; margin: 0; }
       span:empty { display: none; }
-      .sadd,.sradd, .scut { display: none; }
+      .sadd, .scut,.sradd { display: none; }
     }
 
     @page { margin: 0; }
@@ -139,8 +138,7 @@
           </ul>
         </li>
         <li><a class="app-menu__item" id="salesChallanDiv" style="cursor: pointer;" onclick='showSalesChallan();'><i class="app-menu__icon fa fa-edit"></i><span class="app-menu__label">Sales Challan</span></a></li>
-        <li><a class="app-menu__item" id="
-          " style="cursor: pointer;" onclick='showSalesReturnChallan();'><i class="app-menu__icon fa fa-edit"></i><span class="app-menu__label">Sales-Return Challan</span></a></li>
+        <li><a class="app-menu__item" id="salesReturnChallanDiv" style="cursor: pointer;" onclick='showSalesReturnChallan();'><i class="app-menu__icon fa fa-edit"></i><span class="app-menu__label">Sales-Return Challan</span></a></li>
         <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon fa fa-th-list "></i><span class="app-menu__label">Reports</span><i class="treeview-indicator fa fa-angle-right"></i></a>
           <ul class="treeview-menu">
             <li><a class="treeview-item" href="#"><i class="icon fa fa-circle-o"></i> Challan No.-wise</a></li>
@@ -445,7 +443,7 @@
 
           <div class="tile">            
             <div class="tile-body">            
-              <table>
+              <table id='salesitemlist'>
                 <thead>
                   <tr>
                     <th>Item name</th>
@@ -471,11 +469,66 @@
                 <br><br><br><br><br>
                 <hr class="style-eight">
                 <button class="btn btn-primary" id="ssubmit" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Okay</button>
+                <button class="btn btn-info" id="printsaleschallan"><i class="fa fa-fw fa-lg fa-print"></i>Print</button>
                 <button class="btn btn-danger" id="clearsaleschallan"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancel</button>
               </aside>        
             </div>
           </div>               
         </div>
+
+
+        <!-- print sales div -->
+        <div class="row" id="sales_print_div" style="display: none;">
+          <div class="col-md-12">
+          <div class="tile">
+            <section class="invoice">
+              <div class="row mb-4">
+                <div class="col-6">
+                  <h2 class="page-header"><i class="fa fa-globe"></i> Tech.Kid  Inc</h2>
+                </div>
+                <div class="col-6">
+                  <h5 class="text-right">Date: <span id='salesDate'></span></h5>
+                </div>
+              </div>
+              <div class="row invoice-info">
+                <div class="col-4">From
+                  <address><strong>Tech.Kid Inc.</strong><br><span id='salesFirmAddress'>Surat India</span></address>
+                </div>
+                <div class="col-4">To
+                  <address><strong><span id='salesCustomerName'></span></strong><br><span id='salesCustomerAddress'></span></address>
+                </div>
+                <div class="col-4"><b>Challan Number: <span id='salesChallanNo'></span></b></div>
+              </div>
+              <div class="row">
+                <div class="col-12 table-responsive">
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>Item</th>
+                        <th>Unit</th>
+                        <th>Quantity</th>
+                        <th>Rate</th>
+                        <th>Price</th>
+                      </tr>
+                    </thead>
+                    <tbody id='salesPrintList'>
+                      
+                    </tbody>
+                  </table>
+                  <br>
+                  <table class="balance">
+                    <tr>
+                      <th><span>Total</span></th>
+                      <td><span data-prefix>₹</span><span id='salesgrandTotal'></span></td>
+                    </tr>              
+                  </table>
+                </div>
+              </div>              
+            </section>
+          </div>
+          </div>
+        </div>
+
       </div>
       
       <!-- Changable content sales return challan-->
@@ -559,11 +612,64 @@
                 <br><br><br><br><br>
                 <hr class="style-eight">
                 <button class="btn btn-primary" id="srsubmit" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Okay</button>
+                <button class="btn btn-info" id="printsalesreturnchallan" type="submit"><i class="fa fa-fw fa-lg fa-print"></i>Print</button>
                 <button class="btn btn-danger" id="clearsalesreturnchallan"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancel</button>
               </aside>        
             </div>
           </div>               
         </div>
+        
+        <!-- print sales Return div -->
+        <div class="row" id="sales_return_print_div" style="display: none;">
+          <div class="col-md-12">
+          <div class="tile">
+            <section class="invoice">
+              <div class="row mb-4">
+                <div class="col-6">
+                  <h2 class="page-header"><i class="fa fa-globe"></i> Tech.Kid  Inc</h2>
+                </div>
+                <div class="col-6">
+                  <h5 class="text-right">Date: <span id='salesReturnDate'></span></h5>
+                </div>
+              </div>
+              <div class="row invoice-info">
+                <div class="col-4">From
+                  <address><strong>Tech.Kid Inc.</strong><br><span id='salesReturnFirmAddress'>Surat India</span></address>
+                </div>
+                <div class="col-4">To
+                  <address><strong><span id='salesReturnCustomerName'></span></strong><br><span id='salesReturnCustomerAddress'></span></address>
+                </div>
+                <div class="col-4"><b>Challan Number: <span id='salesReturnChallanNo'></span></b></div>
+              </div>
+              <div class="row">
+                <div class="col-12 table-responsive">
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>Item</th>
+                        <th>Unit</th>
+                        <th>Quantity</th>
+                        <th>Rate</th>
+                        <th>Price</th>
+                      </tr>
+                    </thead>
+                    <tbody id='salesReturnPrintList'>
+                      
+                    </tbody>
+                  </table>
+                  <br>
+                  <table class="balance">
+                    <tr>
+                      <th><span>Total</span></th>
+                      <td><span data-prefix>₹</span><span id='salesReturngrandTotal'></span></td>
+                    </tr>              
+                  </table>
+                </div>
+              </div>              
+            </section>
+          </div>
+          </div>
+        </div>        
       </div>
 
   </main>
