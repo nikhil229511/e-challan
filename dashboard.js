@@ -3,9 +3,9 @@ var row_id = 1;
 var productList=[];
 var unitList=[];
 var customers=[];
-$(document).ready(function() {
-
-});
+var salesGrand;
+var salesReturnGrand;
+var companyid,customerid,date,challanno;
 
 $(function(){
 
@@ -308,31 +308,60 @@ $(function(){
 
 		$('#salesChallanDiv').unbind().click(function(){
 	    	$('#div_sales_challan').show("slow", function() {
+	    		$('#grandTotal').val("");
+	    		salesGrand=0;		
 	    		loadAllProductsandChallanNo();
 	    	});	
 	    });
 	    $('#salesReturnChallanDiv').unbind().click(function(){
 	    	$('#div_sales_return_challan').show("slow", function() {
+	    		$('#srgrandTotal').val("");
+	    		salesReturnGrand=0;
 	    		loadAllProductsandChallanNosr();
 	    	});	
 	    });
-		$(document).unbind().on('click','.sadd',function(){
+		$(document).unbind().on('click','.sadd',function(){	      	
+	      	salesGrand =parseFloat(salesGrand) + parseFloat($('#sprice').val());
+	      	salesGrand=salesGrand.toFixed(2);
 	      	addSalesRow();
+	      	$('#grandTotal').text(salesGrand);
+
 	      	$('#loadUnitDropdown').val($('#loadUnitDropdown option:first').val());
 	      	$('#loadProductsDropdown').val($('#loadProductsDropdown option:first').val());
 	      	$('#srate').val("");
 	      	$('#squantity').val("");
 	      	$('#sprice').val("");   	
 	    });
+
 	    $(document).on('click','.sradd',function(){
+	      	salesReturnGrand =parseFloat(salesReturnGrand) + parseFloat($('#srprice').val());
+	      	salesReturnGrand=salesReturnGrand.toFixed(2);
 	      	addSalesReturnRow();
+	      	$('#srgrandTotal').text(salesReturnGrand);
+
+
 	      	$('#loadUnitDropdownsr').val($('#loadUnitDropdownsr option:first').val());
 	      	$('#loadProductsDropdownsr').val($('#loadProductsDropdownsr option:first').val());
 	      	$('#srrate').val("");
 	      	$('#srquantity').val("");
 	      	$('#srprice').val("");
 	    });
+
 	    $(document).on('click','.scut',function(){
+	      	var priceval=parseFloat($(this).parent().parent().find('#itemprice').attr('data-price'));
+	      	priceval = priceval.toFixed(2);
+	      	salesGrand = parseFloat(salesGrand) -  parseFloat(priceval);
+	      	salesReturnGrand = parseFloat(salesReturnGrand) -  parseFloat(priceval);
+	      	$('#grandTotal').text(salesGrand);
+	      	$(this).parent().parent().remove();	    	
+	    });
+
+	    $(document).on('click','.srcut',function(){
+	      	var pricevall=parseFloat($(this).parent().parent().find('#itempricesr').attr('data-price'));
+	      	pricevall = pricevall.toFixed(2);
+	      	salesReturnGrand = parseFloat(salesReturnGrand) -  parseFloat(pricevall);
+	      	//alert(salesReturnGrand);
+	      	$('#srgrandTotal').text(salesReturnGrand);
 	      	
 	      	$(this).parent().parent().remove();	    	
 	    });
@@ -346,6 +375,12 @@ $(function(){
 	$('#div_sales_challan').hide();
 	$('#div_sales_return_challan').hide();
 	$('#div_units').hide();
+	$('#div_sales_report_challanwise').hide();
+	$('#div_sales_return_report_challanwise').hide();
+	$('#div_sales_report_datewise').hide();
+	$('#div_sales_return_report_datewise').hide();
+	$('#div_sales_report_customerwise').hide();
+	$('#div_sales_return_report_customerwise').hide();
 
 	$('a[href="#"]').click(function (event) { // where href are blank
 	   event.preventDefault();
@@ -712,6 +747,7 @@ $(function(){
 		ans=ans.toFixed(2);
 		$('#sprice').val(ans);
 	});
+
 	$('.calculatesr').change(function(){
 		if($('option:selected', this).attr('data-value'))
 			measurement = $('option:selected', this).attr('data-value');
@@ -738,12 +774,19 @@ $(function(){
 			}
 		}
 		$('.hideforprint').css('display','none');
-		//var tablehtml=$('#listSalesChallan').html()
 		$('#salesPrintList').html($('#listSalesChallan').html());
 		
 		$('#salesgrandTotal').text($('#grandTotal').text());
+
+		companyid=sessionStorage.getItem('companyid');
+		customerid=$('#scustomername').val();
+		date=$('#sDate').val();
+		challanno=$('#schallanno').val();
+		insertSalesChallan();
 		printDiv('sales_print_div');
+		
 	}
+
 	$('#printsalesreturnchallan').click(printsalesreturnchallan);
 	function printsalesreturnchallan(){
 		$('#salesReturnChallanNo').text(" "+$('#srchallanno').val());
@@ -759,6 +802,12 @@ $(function(){
 		$('#salesReturnPrintList').html($('#listSalesReturnChallan').html());
 		
 		$('#salesReturngrandTotal').text($('#srgrandTotal').text());
+		
+		companyid=sessionStorage.getItem('companyid');
+		customerid=$('#srcustomername').val();
+		date=$('#srDate').val();
+		challanno=$('#srchallanno').val();
+		insertSalesReturnChallan();
 		printDiv('sales_return_print_div');
 	}
 
@@ -768,7 +817,9 @@ $(function(){
         document.body.innerHTML = 
           "<html><head><title></title></head><body><pre><br><br><br><br></pre>"+divElements+"</body>";
         window.print();
-        document.body.innerHTML = oldPage;      
+        document.body.innerHTML = oldPage;  
+        $('#div_dashboard').show();
+        $('#div_sales_challan').hide();    
     }
 
 	$('#ssubmit').click(insertSalesChallan);
@@ -776,10 +827,10 @@ $(function(){
 		var salesProductlist=[];
 		var total=0;
 		
-		var companyid=sessionStorage.getItem('companyid');
-		var customerid=$('#scustomername').val();
-		var date=$('#sDate').val();
-		var challanno=$('#schallanno').val();
+		companyid=sessionStorage.getItem('companyid');
+		customerid=$('#scustomername').val();
+		date=$('#sDate').val();
+		challanno=$('#schallanno').val();
 		
 		$('.itemRow').each(function(){
 			var tds=$(this).find('td');
@@ -811,18 +862,16 @@ $(function(){
 			total += parseInt(obj.price);
 			salesProductlist.push(obj);	
 		});
-		$('#grandTotal').text(total);
 		var json=JSON.stringify({usertype: "insertSalesChallan",companyid:companyid,customerid:customerid,challanno:challanno,date:date,total:total,data:salesProductlist});
         connection.send(json);
-
-        //print bill
 	}
+	
 	$('#clearsaleschallan').click(clearsaleschallan);
 	function clearsaleschallan(){
-		//alert('hi');
 		$('#div_sales_challan').hide();
 		$('#div_dashboard').show();
 	}
+	
 	$('#srsubmit').click(insertSalesReturnChallan);
 	function insertSalesReturnChallan(){
 		var salesReturnProductlist=[];
@@ -863,13 +912,12 @@ $(function(){
 			total += parseInt(obj.price);
 			salesReturnProductlist.push(obj);	
 		});
-		$('#srgrandTotal').text(total);
 		var json=JSON.stringify({usertype: "insertSalesReturnChallan",companyid:companyid,customerid:customerid,challanno:challanno,date:date,total:total,data:salesReturnProductlist});
         connection.send(json);
 	}
+	
 	$('#clearsalesreturnchallan').click(clearsalesreturnchallan);
 	function clearsalesreturnchallan(){
-		//alert('hi');
 		$('#div_sales_return_challan').hide();
 		$('#div_dashboard').show();
 	}
@@ -919,7 +967,7 @@ function addSalesReturnRow(){
         html +=	"<td id='itempricesr' data-price="+itemPrice+" style='text-align:right;'><span data-prefix>₹</span>"+itemPrice+"</td>";
         html +=	"<td style='align-items: center;' class='hideforprint'>";
         //html +=	"<i class='fa fa-pencil' aria-hidden='true'></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-        html +=	"<a class='scut'><i class='fa fa-trash' aria-hidden='true'></i></a>";
+        html +=	"<a class='srcut'><i class='fa fa-trash' aria-hidden='true'></i></a>";
         html +=	"</td>";
         html += "</tr>";
 
