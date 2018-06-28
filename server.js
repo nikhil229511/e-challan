@@ -118,16 +118,28 @@ wsServer.on('request',function(request){
 							getAllCustomerList(c.data.companyid);
 							getAllUnitsList(c.data.companyid);
 						break;
-						
-						
-
-						case "insertSalesChallan":					
+											
+						case "insertSalesChallan":	
 							insertSalesChallan(c.companyid,c.customerid,c.challanno,c.date,c.total,c.data,connection);
 						break;
 						
 						case "insertSalesReturnChallan":						
 							insertSalesReturnChallan(c.companyid,c.customerid,c.challanno,c.date,c.total,c.data,connection);
 						break;
+
+						case "SearchSalesChallanNowise":
+							SearchSalesChallanNowise(c.data.companyid,c.data.challanno,connection);
+						break;
+
+						case "SearchSalesReturnChallanNowise":							
+							SearchSalesReturnChallanNowise(c.data.companyid,c.data.challanno,connection);
+
+						case "SearchSalesChallanDatewise":
+							SearchSalesChallanDatewise(c.data.fromDate,c.data.toDate,c.data.companyid,connection);
+						break;
+
+						case "SearchSalesReturnChallanDatewise":
+						SearchSalesReturnChallanDatewise(c.data.fromDate,c.data.toDate,c.data.companyid,connection);
 
 						case "sendAll":
 							getAllCustomers(c.data.companyid);
@@ -561,7 +573,8 @@ wsServer.on('request',function(request){
 		            });		            
 		        },
 		        function(callback){
-		            var sql="INSERT INTO challanmaster(companyid,customerid,challanno,date,total) values ("+companyid+","+customerid+","+challanno+",'"+date+"',"+total+");";
+		            var sql='INSERT INTO challanmaster(companyid,customerid,challanno,Date,total) values ('+companyid+','+customerid+','+challanno+',"'+date+'",'+total+');';
+		            console.log(sql);
 		            con.query(sql, function (err, result) {
 		                if (err){        
 		                    obj={
@@ -639,7 +652,7 @@ wsServer.on('request',function(request){
 		            });		            
 		        },
 		        function(callback){
-		            var sql="INSERT INTO challanreturnmaster(companyid,customerid,challanno,date,total) values ("+companyid+","+customerid+","+challanno+",'"+date+"',"+total+");";
+		            var sql='INSERT INTO challanreturnmaster(companyid,customerid,challanno,date,total) values ('+companyid+','+customerid+','+challanno+',"'+date+'",'+total+');';
 		            con.query(sql, function (err, result) {
 		                if (err){        
 		                    obj={
@@ -715,6 +728,183 @@ wsServer.on('request',function(request){
 				sendResponse(json,connection);				
 			});
 		}
+
+		function SearchSalesChallanNowise(companyid,challanno,connection){
+			var challanid,obj,objM,objD,arr=[];
+			async.series([
+					function(callback){
+						var sql="SELECT cm.challanid,cm.companyid,cm.customerid,c.fname,c.lname,c.address,c.gstno,cm.challanno,cm.Date,cm.total FROM challanmaster cm INNER JOIN customers c on c.customerid=cm.customerid WHERE cm.companyid="+companyid+" and cm.challanno="+challanno+";";
+						con.query(sql, function (err, result) {
+							if (err){        
+			                    obj={
+									msg:'ChallanSelectFail'
+								}
+								var json=JSON.stringify({type:"SearchSalesChallanNowise_callback",data:obj});
+								sendResponse(json,connection);
+								return false;
+			                }else{
+			                	challanid=result[0].challanid;
+			                	objM={
+			                		customerid 	: result[0].customerid,
+			                		customername: result[0].fname+" "+result[0].lname,
+			                		challanno 	: result[0].challanno,
+			                		date 		: result[0].Date,
+			                		total 		: result[0].total,
+			                		gstno 		: result[0].gstno,
+			                		address 	: result[0].address			                		
+			                	}
+			                    callback(null,'succes1');			                
+			                }
+			            });			            
+					},
+					function(callback){
+						var sql="SELECT cd.*,p.productname FROM challandetail cd INNER JOIN products p on p.productid=cd.productid WHERE challanid="+challanid+";";
+						con.query(sql, function (err, result) {
+			                if (err){        
+			                    obj={
+									msg:'ChallanSelectFail'
+								}
+								var json=JSON.stringify({type:"SearchSalesChallanNowise_callback",data:obj});
+								sendResponse(json,connection);
+								return false;
+			                }else{
+			                    for(var index in result){
+			                    	//console.log(result[index].productid);
+			                    	objD={
+			                    		productid 	: result[index].productid,
+			                    		productname : result[index].productname,
+			                    		unit 		: result[index].unit,
+			                    		quantity 	: result[index].quantity,
+			                    		rate 		: result[index].rate,
+			                    		price 		: result[index].price
+			                    	}
+			                    	arr.push(objD);			                    	
+			                    }
+			                    callback(null,'succes1');
+			                }
+			            });
+					}	
+				],
+				function(){
+				obj={
+					msg:'ChallanSelectSuccess'
+				}
+				var json=JSON.stringify({type:"SearchSalesChallanNowise_callback",data : obj, dataM : objM , dataD : arr});
+				sendResponse(json,connection);
+			});
+		}
+
+		function SearchSalesReturnChallanNowise(companyid,challanno,connection){
+			var challanid,obj,objM,objD,arr=[];
+			async.series([
+					function(callback){
+						var sql="SELECT crm.challanid,crm.companyid,crm.customerid,c.fname,c.lname,c.address,c.gstno,crm.challanno,crm.date,crm.total FROM challanreturnmaster crm INNER JOIN customers c on c.customerid=crm.customerid WHERE crm.companyid="+companyid+" and crm.challanno="+challanno+";";
+						con.query(sql, function (err, result) {
+							if (err){        
+			                    obj={
+									msg:'ChallanSelectFail'
+								}
+								var json=JSON.stringify({type:"SearchSalesReturnChallanNowise_callback",data:obj});
+								sendResponse(json,connection);
+								return false;
+			                }else{
+			                	challanid=result[0].challanid;
+			                	objM={
+			                		customerid 	: result[0].customerid,
+			                		customername: result[0].fname+" "+result[0].lname,
+			                		challanno 	: result[0].challanno,
+			                		date 		: result[0].date,
+			                		total 		: result[0].total,
+			                		gstno 		: result[0].gstno,
+			                		address 	: result[0].address			                		
+			                	}
+			                    callback(null,'succes1');			                
+			                }
+			            });			            
+					},
+					function(callback){
+						var sql="SELECT crd.*,p.productname FROM challanreturndetail crd INNER JOIN products p on p.productid=crd.productid WHERE challanid="+challanid+";";
+						con.query(sql, function (err, result) {
+			                if (err){        
+			                    obj={
+									msg:'ChallanSelectFail'
+								}
+								var json=JSON.stringify({type:"SearchSalesReturnChallanNowise_callback",data:obj});
+								sendResponse(json,connection);
+								return false;
+			                }else{
+			                    for(var index in result){
+			                    	//console.log(result[index].productid);
+			                    	objD={
+			                    		productid 	: result[index].productid,
+			                    		productname : result[index].productname,
+			                    		unit 		: result[index].unit,
+			                    		quantity 	: result[index].quantity,
+			                    		rate 		: result[index].rate,
+			                    		price 		: result[index].price
+			                    	}
+			                    	arr.push(objD);			                    	
+			                    }
+			                    callback(null,'succes1');
+			                }
+			            });
+					}	
+				],
+				function(){
+				obj={
+					msg:'ChallanSelectSuccess'
+				}
+				var json=JSON.stringify({type:"SearchSalesReturnChallanNowise_callback",data : obj, dataM : objM , dataD : arr});
+				sendResponse(json,connection);
+			});
+		}
+
+		function SearchSalesChallanDatewise(fromDate,toDate,companyid,connection){
+			var arr=[];
+			var sql="SELECT cm.companyid,cm.customerid,cm.challanno,cm.Date,cm.total,c.fname,c.lname,c.address,c.contactno FROM challanmaster cm INNER JOIN customers c on cm.customerid=c.customerid where cm.Date > '"+fromDate+"' AND cm.Date < '"+toDate+"' ORDER BY cm.Date DESC";
+			con.query(sql, function (err, result, fields) {
+				for(var index in result){
+					var obj={
+						companyid 	: 	result[index].companyid,
+						customerid 	: 	result[index].customerid,
+						challanno 	: 	result[index].challanno,
+						date 		:  	result[index].Date,
+						total 		: 	result[index].total,
+						fname 	 	: 	result[index].fname,
+						lname 		: 	result[index].lname,
+						address 	:  	result[index].address,
+						contactno 	:  	result[index].contactno						
+					}
+					arr.push(obj); 
+				}
+				var json=JSON.stringify({type:"SearchSalesChallanDatewise_callback",data:arr});
+				sendResponse(json,connection);
+			});
+		}
+
+		function SearchSalesReturnChallanDatewise(fromDate,toDate,companyid,connection){
+			var arr=[];
+			var sql="SELECT crm.companyid,crm.customerid,crm.challanno,crm.Date,crm.total,c.fname,c.lname,c.address,c.contactno FROM challanreturnmaster crm INNER JOIN customers c on crm.customerid=c.customerid where crm.Date > '"+fromDate+"' AND crm.Date < '"+toDate+"' ORDER BY crm.challanno";
+			con.query(sql, function (err, result, fields) {
+				for(var index in result){
+					var obj={
+						companyid 	: 	result[index].companyid,
+						customerid 	: 	result[index].customerid,
+						challanno 	: 	result[index].challanno,
+						date 		:  	result[index].Date,
+						total 		: 	result[index].total,
+						fname 	 	: 	result[index].fname,
+						lname 		: 	result[index].lname,
+						address 	:  	result[index].address,
+						contactno 	:  	result[index].contactno						
+					}
+					arr.push(obj); 
+				}
+				var json=JSON.stringify({type:"SearchSalesReturnChallanDatewise_callback",data:arr});
+				sendResponse(json,connection);
+			});
+		}
+
 
 		function sendResponse(json,connection){
 			connection.send(json);

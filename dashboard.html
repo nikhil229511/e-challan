@@ -680,19 +680,19 @@
           <h3 class="tile-title">Sales Challan Report</h3>
           <div class="tile"> 
             <div class="tile-body">
-              <form class="row" id="">                
+              <form class="row form" id="">                
                 <div class="form-group col-md-2">
                   <label class="control-label">Challan No.</label>
-                  <input class="form-control" id="srchallanno" type="text">
+                  <input class="form-control" id="searchchallannos" type="text">
                 </div> 
                 <div class="form-group col-md-1">
-                  <label class="control-label" style="visibility: hidden;">Challan</label><br>
-                  <button class="btn btn-primary" id="" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Search</button>
+                  <label class="control-label" style="visibility: hidden;">C</label><br>
+                  <button class="btn btn-primary" id="btnSearchSalesChallanNowise"><i class="fa fa-fw fa-lg fa-check-circle"></i>Search</button>
 
                 </div>
                 <div class="form-group col-md-1">
-                  <label class="control-label" style="visibility: hidden;">Challan</label><br>
-                  <button class="btn btn-info" id="" type="submit"><i class="fa fa-fw fa-lg fa-print"></i>Print</button>  
+                  <label class="control-label" style="visibility: hidden;">C</label><br>
+                  <button class="btn btn-info" id="btnPrintSalesChallanNowise"><i class="fa fa-fw fa-lg fa-print"></i>Print</button>  
                 </div>
                                                
               </form>
@@ -700,8 +700,7 @@
           </div>          
         </div>
         
-        <!-- print sales Return div -->
-        <div class="row" id="sales_report_Challanwise_div"> <!-- style="display: none;"> -->
+        <div class="row" id="sales_report_Challanwise_div" style="display: none;">
           <div class="col-md-12">
           <div class="tile">
             <section class="invoice">
@@ -710,17 +709,17 @@
                   <h2 class="page-header"><i class="fa fa-globe"></i> Sales Challan</h2>
                 </div>
                 <div class="col-6">
-                  <h5 class="text-right">Date: <span id='salesReturnDate'></span></h5>
+                  <h5 class="text-right">Date: <span id='SearchSalesDate'></span></h5>
                 </div>
               </div>
               <div class="row invoice-info">
                 <div class="col-4">From:
-                  <address><strong>________________________________________________________</strong><br><br><span id='salesReturnFirmAddress'>________________________________________________________</span></address>
+                  <address><strong>________________________________________________________</strong><br><br><span id='salesReturnFirmAddress'><strong>________________________________________________________</strong></span></address>
                 </div>
                 <div class="col-4">To:
-                  <address><strong><span id='salesReturnCustomerName'></span></strong><br><span id='salesReturnCustomerAddress'></span></address>
+                  <address><strong><span id='searchSalesCustomerName'></span></strong><br><span id='searchSalesCustomerAddress'></span></address>
                 </div>
-                <div class="col-4"><b>Challan Number: <span id='salesReturnChallanNo'></span></b></div>
+                <div class="col-4"><b>Challan Number: <span id='searchSalesChallanNo'></span></b></div>
               </div>
               <div class="row">
                 <div class="col-12 table-responsive">
@@ -734,7 +733,7 @@
                         <th>Price</th>
                       </tr>
                     </thead>
-                    <tbody id='salesReturnPrintList'>
+                    <tbody id='searchSalesPrintList'>
                       
                     </tbody>
                   </table>
@@ -742,7 +741,7 @@
                   <table class="balance">
                     <tr>
                       <th><span>Total</span></th>
-                      <td><span data-prefix>₹</span><span id='salesReturngrandTotal'></span></td>
+                      <td><span data-prefix>₹</span><span id='searchSalesgrandTotal'></span></td>
                     </tr>              
                   </table>
                 </div>
@@ -762,16 +761,15 @@
               <form class="row" id="">                
                 <div class="form-group col-md-2">
                   <label class="control-label">Challan No.</label>
-                  <input class="form-control" id="srchallanno" type="text">
+                  <input class="form-control" id="searchchallannosr" type="text">
                 </div> 
                 <div class="form-group col-md-1">
-                  <label class="control-label" style="visibility: hidden;">Challan</label><br>
-                  <button class="btn btn-primary" id="" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Search</button>
-
+                  <label class="control-label" style="visibility: hidden;">C</label><br>
+                  <button class="btn btn-primary" id="btnSearchSalesReturnChallanNowise"><i class="fa fa-fw fa-lg fa-check-circle"></i>Search</button>
                 </div>
                 <div class="form-group col-md-1">
-                  <label class="control-label" style="visibility: hidden;">Challan</label><br>
-                  <button class="btn btn-info" id="" type="submit"><i class="fa fa-fw fa-lg fa-print"></i>Print</button>  
+                  <label class="control-label" style="visibility: hidden;">C</label><br>
+                  <button class="btn btn-info" id="btnPrintSalesReturnChallanNowise"><i class="fa fa-fw fa-lg fa-print"></i>Print</button>  
                 </div>
                                                
               </form>
@@ -780,7 +778,7 @@
         </div>
         
         <!-- print sales Return div -->
-        <div class="row" id="sales_report_Challanwise_div"> <!-- style="display: none;"> -->
+        <div class="row" id="sales_return_report_Challanwise_div" style="display: none;">
           <div class="col-md-12">
           <div class="tile">
             <section class="invoice">
@@ -789,7 +787,7 @@
                   <h2 class="page-header"><i class="fa fa-globe"></i> Sales Return Challan</h2>
                 </div>
                 <div class="col-6">
-                  <h5 class="text-right">Date: <span id='salesReturnDate'></span></h5>
+                  <h5 class="text-right">Date: <span id='SearchSalesReturnDate'></span></h5>
                 </div>
               </div>
               <div class="row invoice-info">
@@ -797,9 +795,9 @@
                   <address><strong>________________________________________________________</strong><br><br><span id='salesReturnFirmAddress'>________________________________________________________</span></address>
                 </div>
                 <div class="col-4">To:
-                  <address><strong><span id='salesReturnCustomerName'></span></strong><br><span id='salesReturnCustomerAddress'></span></address>
+                  <address><strong><span id='searchSalesReturnCustomerName'></span></strong><br><span id='searchSalesReturnCustomerAddress'></span></address>
                 </div>
-                <div class="col-4"><b>Challan Number: <span id='salesReturnChallanNo'></span></b></div>
+                <div class="col-4"><b>Challan Number: <span id='searchSalesReturnChallanNo'></span></b></div>
               </div>
               <div class="row">
                 <div class="col-12 table-responsive">
@@ -813,7 +811,7 @@
                         <th>Price</th>
                       </tr>
                     </thead>
-                    <tbody id='salesReturnPrintList'>
+                    <tbody id='searchSalesReturnPrintList'>
                       
                     </tbody>
                   </table>
@@ -821,7 +819,7 @@
                   <table class="balance">
                     <tr>
                       <th><span>Total</span></th>
-                      <td><span data-prefix>₹</span><span id='salesReturngrandTotal'></span></td>
+                      <td><span data-prefix>₹</span><span id='searchSalesReturngrandTotal'></span></td>
                     </tr>              
                   </table>
                 </div>
@@ -832,137 +830,69 @@
         </div>        
       </div>
 
-      <!-- Changable content sales report datewise-->
+      <!-- Changable content sales report datewise-->      
       <div id="div_sales_report_datewise">
-        <!--<div class="col-md-12">
-          <h3 class="tile-title">Sales Return Challan</h3>
+        <div class="col-md-12">
+          <h3 class="tile-title">Sales Challan Datewise Report</h3>
           <div class="tile"> 
             <div class="tile-body">
               <form class="row" id="">                
-                <div class="form-group col-md-5">
-                  <label class="control-label">Customer Name.</label>
-                  <select class="form-control" id="srcustomername">
-                  </select>
+                <div class="form-group col-md-3">
+                  <label class="control-label">From Date</label>
+                  <input class="form-control" id="ssearchfromdate" type="text" placeholder="Select Date">
                 </div>
                 <div class="form-group col-md-3">
-                  <label class="control-label">Date</label>
-                  <input class="form-control" id="srDate" type="text" placeholder="Select Date">
+                  <label class="control-label">To Date</label>
+                  <input class="form-control" id="ssearchtodate" type="text" placeholder="Select Date">
                 </div>
-                <div class="form-group col-md-2">
-                  <label class="control-label">Challan No.</label>
-                  <input class="form-control" id="srchallanno" type="text" disabled>
-                </div>                
+                <div class="form-group col-md-1">
+                  <label class="control-label" style="visibility: hidden;">C</label><br>
+                  <button class="btn btn-primary" id="btnSearchSalesChallanDatewise"><i class="fa fa-fw fa-lg fa-check-circle"></i>Search</button>
+                </div>
+                <div class="form-group col-md-1">
+                  <label class="control-label" style="visibility: hidden;">C</label><br>
+                  <button class="btn btn-info" id="btnPrintSalesChallanDatewise"><i class="fa fa-fw fa-lg fa-print"></i>Print</button>  
+                </div>
+                                               
               </form>
-            </div>
-            <table id="srTable" class="inventory">
-              <thead>
-                <tr>
-                  <th>Item name</th>
-                  <th>Unit</th>
-                  <th>Quantity</th>
-                  <th>Rate</th> 
-                  <th>Price</th>
-                  <th>Action</th> 
-                </tr>
-              </thead>
-              <tbody id="srcontainer">
-              <tr id="row">
-                <td>     
-                  <select class="form-control fd calculatesr" id="loadProductsDropdownsr" name="loadProductsDropdownsr"></select>
-                </td>
-                <td>     
-                  <select class="form-control fd calculatesr" id="loadUnitDropdownsr" name="loadUnitDropdownsr"></select>
-                </td>
-                <td><input type="text" id="srquantity" name="srquantity" class="form-control calculatesr"></td>
-                <td><input type="text" id="srrate" name="srrate" class="form-control calculatesr"></td>
-                <td><input type="text" id="srprice" name="srprice" class="form-control" disabled></td>
-                <td style="align-items: center;">
-                  <a class="sradd" style="margin-top:5px;width: 28px;"><i class="fa fa-plus fa-fw"></i></a> 
-                </td>                   
-              </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div class="tile">            
-            <div class="tile-body">            
-              <table>
-                <thead>
-                  <tr>
-                    <th>Item name</th>
-                    <th>Unit</th>
-                    <th>Quantity</th>
-                    <th>Rate</th> 
-                    <th>Price</th>
-                    <th>Action</th> 
-                  </tr>
-                </thead>
-                <tbody id='listSalesReturnChallan'>
-                </tbody>
-              </table>
-              <br>
-              <table class="balance">
-                <tr>
-                  <th><span>Total</span></th>
-                  <td><span data-prefix>₹</span><span id='srgrandTotal'></span></td>
-                </tr>              
-              </table>
-              <aside>
-                <br><br><br><br><br>
-                <hr class="style-eight">
-                <button class="btn btn-primary" id="srsubmit" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Okay</button>
-                <button class="btn btn-info" id="printsalesreturnchallan" type="submit"><i class="fa fa-fw fa-lg fa-print"></i>Print</button>
-                <button class="btn btn-danger" id="clearsalesreturnchallan"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancel</button>
-              </aside>        
-            </div>
-          </div>               
-        </div>-->
+            </div>            
+          </div>          
+        </div>
         
         <!-- print sales Return div -->
-        <div class="row" id="sales_report_Challanwise_div"> <!-- style="display: none;"> -->
+        <div class="row" id="sales_report_datewise_div" style="display: none;">
           <div class="col-md-12">
           <div class="tile">
             <section class="invoice">
               <div class="row mb-4">
                 <div class="col-6">
-                  <h2 class="page-header"><i class="fa fa-globe"></i> Sales Return Challan</h2>
-                </div>
-                <div class="col-6">
-                  <h5 class="text-right">Date: <span id='salesReturnDate'></span></h5>
-                </div>
+                  <h2 class="page-header"><i class="fa fa-globe"></i> Sales Challan Datewise Report.</h2>
+                </div>                
               </div>
               <div class="row invoice-info">
                 <div class="col-4">From:
-                  <address><strong>________________________________________________________</strong><br><br><span id='salesReturnFirmAddress'>________________________________________________________</span></address>
+                  <address><strong><span id='searchSalesFromDate'></span></strong></address>
                 </div>
                 <div class="col-4">To:
-                  <address><strong><span id='salesReturnCustomerName'></span></strong><br><span id='salesReturnCustomerAddress'></span></address>
-                </div>
-                <div class="col-4"><b>Challan Number: <span id='salesReturnChallanNo'></span></b></div>
+                  <address><strong><span id='searchSalesToDate'></span></strong></address>
+                </div>                
               </div>
               <div class="row">
                 <div class="col-12 table-responsive">
                   <table class="table table-striped">
                     <thead>
                       <tr>
-                        <th>Item</th>
-                        <th>Unit</th>
-                        <th>Quantity</th>
-                        <th>Rate</th>
-                        <th>Price</th>
+                        <th>Name</th>                        
+                        <th>Challan No.</th>
+                        <th>Date</th>
+                        <th>Total Amount</th>
+                        <th>Contact No</th>                        
                       </tr>
                     </thead>
-                    <tbody id='salesReturnPrintList'>
+                    <tbody id='searchSalesPrintListDatewise'>
                       
                     </tbody>
-                  </table>
-                  <br>
-                  <table class="balance">
-                    <tr>
-                      <th><span>Total</span></th>
-                      <td><span data-prefix>₹</span><span id='salesReturngrandTotal'></span></td>
-                    </tr>              
-                  </table>
+                  </table>                  
                 </div>
               </div>              
             </section>
@@ -971,137 +901,69 @@
         </div>        
       </div>
 
-      <!-- Changable content sales return report datewise-->
+      <!-- Changable content sales return report datewise-->      
       <div id="div_sales_return_report_datewise">
-        <!--<div class="col-md-12">
-          <h3 class="tile-title">Sales Return Challan</h3>
+        <div class="col-md-12">
+          <h3 class="tile-title">Sales Return Challan Datewise Report</h3>
           <div class="tile"> 
             <div class="tile-body">
               <form class="row" id="">                
-                <div class="form-group col-md-5">
-                  <label class="control-label">Customer Name.</label>
-                  <select class="form-control" id="srcustomername">
-                  </select>
+                <div class="form-group col-md-3">
+                  <label class="control-label">From Date</label>
+                  <input class="form-control" id="srsearchfromdate" type="text" placeholder="Select Date">
                 </div>
                 <div class="form-group col-md-3">
-                  <label class="control-label">Date</label>
-                  <input class="form-control" id="srDate" type="text" placeholder="Select Date">
+                  <label class="control-label">To Date</label>
+                  <input class="form-control" id="srsearchtodate" type="text" placeholder="Select Date">
                 </div>
-                <div class="form-group col-md-2">
-                  <label class="control-label">Challan No.</label>
-                  <input class="form-control" id="srchallanno" type="text" disabled>
-                </div>                
+                <div class="form-group col-md-1">
+                  <label class="control-label" style="visibility: hidden;">C</label><br>
+                  <button class="btn btn-primary" id="btnSearchSalesReturnChallanDatewise"><i class="fa fa-fw fa-lg fa-check-circle"></i>Search</button>
+                </div>
+                <div class="form-group col-md-1">
+                  <label class="control-label" style="visibility: hidden;">C</label><br>
+                  <button class="btn btn-info" id="btnPrintSalesReturnChallanDatewise"><i class="fa fa-fw fa-lg fa-print"></i>Print</button>  
+                </div>
+                                               
               </form>
-            </div>
-            <table id="srTable" class="inventory">
-              <thead>
-                <tr>
-                  <th>Item name</th>
-                  <th>Unit</th>
-                  <th>Quantity</th>
-                  <th>Rate</th> 
-                  <th>Price</th>
-                  <th>Action</th> 
-                </tr>
-              </thead>
-              <tbody id="srcontainer">
-              <tr id="row">
-                <td>     
-                  <select class="form-control fd calculatesr" id="loadProductsDropdownsr" name="loadProductsDropdownsr"></select>
-                </td>
-                <td>     
-                  <select class="form-control fd calculatesr" id="loadUnitDropdownsr" name="loadUnitDropdownsr"></select>
-                </td>
-                <td><input type="text" id="srquantity" name="srquantity" class="form-control calculatesr"></td>
-                <td><input type="text" id="srrate" name="srrate" class="form-control calculatesr"></td>
-                <td><input type="text" id="srprice" name="srprice" class="form-control" disabled></td>
-                <td style="align-items: center;">
-                  <a class="sradd" style="margin-top:5px;width: 28px;"><i class="fa fa-plus fa-fw"></i></a> 
-                </td>                   
-              </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div class="tile">            
-            <div class="tile-body">            
-              <table>
-                <thead>
-                  <tr>
-                    <th>Item name</th>
-                    <th>Unit</th>
-                    <th>Quantity</th>
-                    <th>Rate</th> 
-                    <th>Price</th>
-                    <th>Action</th> 
-                  </tr>
-                </thead>
-                <tbody id='listSalesReturnChallan'>
-                </tbody>
-              </table>
-              <br>
-              <table class="balance">
-                <tr>
-                  <th><span>Total</span></th>
-                  <td><span data-prefix>₹</span><span id='srgrandTotal'></span></td>
-                </tr>              
-              </table>
-              <aside>
-                <br><br><br><br><br>
-                <hr class="style-eight">
-                <button class="btn btn-primary" id="srsubmit" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Okay</button>
-                <button class="btn btn-info" id="printsalesreturnchallan" type="submit"><i class="fa fa-fw fa-lg fa-print"></i>Print</button>
-                <button class="btn btn-danger" id="clearsalesreturnchallan"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancel</button>
-              </aside>        
-            </div>
-          </div>               
-        </div>-->
+            </div>            
+          </div>          
+        </div>
         
         <!-- print sales Return div -->
-        <div class="row" id="sales_report_Challanwise_div"> <!-- style="display: none;"> -->
+        <div class="row" id="sales_return_report_datewise_div"> <!-- style="display: none;"> -->
           <div class="col-md-12">
           <div class="tile">
             <section class="invoice">
               <div class="row mb-4">
                 <div class="col-6">
-                  <h2 class="page-header"><i class="fa fa-globe"></i> Sales Return Challan</h2>
-                </div>
-                <div class="col-6">
-                  <h5 class="text-right">Date: <span id='salesReturnDate'></span></h5>
-                </div>
+                  <h2 class="page-header"><i class="fa fa-globe"></i> Sales Return Challan Datewise Report.</h2>
+                </div>                
               </div>
               <div class="row invoice-info">
                 <div class="col-4">From:
-                  <address><strong>________________________________________________________</strong><br><br><span id='salesReturnFirmAddress'>________________________________________________________</span></address>
+                  <address><strong><span id='searchSalesReturnFromDate'></span></strong></address>
                 </div>
                 <div class="col-4">To:
-                  <address><strong><span id='salesReturnCustomerName'></span></strong><br><span id='salesReturnCustomerAddress'></span></address>
-                </div>
-                <div class="col-4"><b>Challan Number: <span id='salesReturnChallanNo'></span></b></div>
+                  <address><strong><span id='searchSalesReturnToDate'></span></strong></address>
+                </div>                
               </div>
               <div class="row">
                 <div class="col-12 table-responsive">
                   <table class="table table-striped">
                     <thead>
                       <tr>
-                        <th>Item</th>
-                        <th>Unit</th>
-                        <th>Quantity</th>
-                        <th>Rate</th>
-                        <th>Price</th>
+                        <th>Name</th>                        
+                        <th>Challan No.</th>
+                        <th>Date</th>
+                        <th>Total Amount</th>
+                        <th>Contact No</th>                        
                       </tr>
                     </thead>
-                    <tbody id='salesReturnPrintList'>
+                    <tbody id='searchSalesReturnPrintListDatewise'>
                       
                     </tbody>
-                  </table>
-                  <br>
-                  <table class="balance">
-                    <tr>
-                      <th><span>Total</span></th>
-                      <td><span data-prefix>₹</span><span id='salesReturngrandTotal'></span></td>
-                    </tr>              
-                  </table>
+                  </table>                  
                 </div>
               </div>              
             </section>
@@ -1630,6 +1492,29 @@
           autoclose: true,
           todayHighlight: true
       });
+
+      $('#ssearchfromdate').datepicker({
+          format: "dd/mm/yyyy",
+          autoclose: true,
+          todayHighlight: true
+      });
+      $('#ssearchtodate').datepicker({
+          format: "dd/mm/yyyy",
+          autoclose: true,
+          todayHighlight: true
+      });
+
+      $('#srsearchtodate').datepicker({
+          format: "dd/mm/yyyy",
+          autoclose: true,
+          todayHighlight: true
+      });
+      $('#srsearchfromdate').datepicker({
+          format: "dd/mm/yyyy",
+          autoclose: true,
+          todayHighlight: true
+      });
+      
     </script>
     <script type="text/javascript">$('#sampleTableTransporter').DataTable();</script>
 

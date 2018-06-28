@@ -281,14 +281,99 @@ $(function(){
 	  		$('#loadUnitDropdown').append(htmlString);
 	  		$('#loadUnitDropdownsr').append(htmlString);
 	  	}
-	  	else if(json.type == "insertSalesChallan_callback"){
-	  		if(json.data.msg== 'insertSalesChallanSuccess'){
-	  			notifyInsert();
-	  		}
-	  		else if(json.data.msg == 'insertSalesChallanFail'){
+	  	else if(json.type == "SearchSalesChallanNowise_callback"){
+	  		if(json.data.msg == 'ChallanSelectFail'){
 	  			notifyFail();
 	  		}
-	  	}	  	
+	  		else if(json.data.msg == 'ChallanSelectSuccess'){
+	  			$('#searchSalesCustomerName').text(json.dataM.customername);
+	  			$('#searchSalesChallanNo').text(json.dataM.challanno);
+	  			$('#SearchSalesDate').text(json.dataM.date);
+	  			$('#searchSalesgrandTotal').text(json.dataM.total);
+	  			$('#searchSalesCustomerAddress').text(json.dataM.address);
+
+	  			$('#searchSalesPrintList').empty();
+	  			var html='';
+	  			for(var index in json.dataD){
+	  				html  = "<tr class='itemRow'>";
+					html +=	"<td id='itemid' data-ProductId="+json.dataD[index].productid+">"+json.dataD[index].productname+"</td>";
+			    	html +=	"<td id='itemunit' data-unit="+json.dataD[index].unit+">"+json.dataD[index].unit+"</td>"
+			        html +=	"<td id='itemqty' data-qty="+json.dataD[index].quantity+" style='text-align:right;'>"+json.dataD[index].quantity+"</td>";                    
+			        html +=	"<td id='itemrate' data-rate="+json.dataD[index].rate+" style='text-align:right;'><span data-prefix>₹</span>"+json.dataD[index].rate+"</td>";
+			        html +=	"<td id='itemprice' data-price="+json.dataD[index].price+" style='text-align:right;'><span data-prefix>₹</span>"+json.dataD[index].price+"</td>";
+			        html += "</tr>";
+
+    				$('#searchSalesPrintList').append(html);
+	  			}
+	  			$('#sales_report_Challanwise_div').show();	  			
+	  		}
+	  	}
+	  	else if(json.type == "SearchSalesReturnChallanNowise_callback"){
+	  		if(json.data.msg == 'ChallanSelectFail'){
+	  			notifyFail();
+	  		}
+	  		else if(json.data.msg == 'ChallanSelectSuccess'){
+	  			$('#searchSalesReturnCustomerName').text(json.dataM.customername);
+	  			$('#searchSalesReturnChallanNo').text(json.dataM.challanno);
+	  			$('#SearchSalesReturnDate').text(json.dataM.date);
+	  			$('#searchSalesReturngrandTotal').text(json.dataM.total);
+	  			$('#searchSalesReturnCustomerAddress').text(json.dataM.address);
+
+	  			$('#searchSalesPrintList').empty();
+	  			var html='';
+	  			for(var index in json.dataD){
+	  				html  = "<tr class='itemRow'>";
+					html +=	"<td id='itemid' data-ProductId="+json.dataD[index].productid+">"+json.dataD[index].productname+"</td>";
+			    	html +=	"<td id='itemunit' data-unit="+json.dataD[index].unit+">"+json.dataD[index].unit+"</td>"
+			        html +=	"<td id='itemqty' data-qty="+json.dataD[index].quantity+" style='text-align:right;'>"+json.dataD[index].quantity+"</td>";                    
+			        html +=	"<td id='itemrate' data-rate="+json.dataD[index].rate+" style='text-align:right;'><span data-prefix>₹</span>"+json.dataD[index].rate+"</td>";
+			        html +=	"<td id='itemprice' data-price="+json.dataD[index].price+" style='text-align:right;'><span data-prefix>₹</span>"+json.dataD[index].price+"</td>";
+			        html += "</tr>";
+
+    				$('#searchSalesReturnPrintList').append(html);
+	  			}
+	  			$('#sales_return_report_Challanwise_div').show();	  			
+	  		}	  		
+	  	}
+	  	else if(json.type == "SearchSalesChallanDatewise_callback"){
+	  		$('#searchSalesFromDate').text($('#ssearchfromdate').val());
+			$('#searchSalesToDate').text($('#ssearchtodate').val());
+
+			$('#searchSalesPrintListDatewise').empty();
+			var html="";
+			
+			for(var i in json.data){
+				html += "<tr>";
+				html += "<td>"+json.data[i].fname+" "+json.data[i].lname+"</td>";
+				html += "<td>"+json.data[i].challanno+"</td>";
+				html += "<td>"+json.data[i].date+"</td>";
+				html += "<td>"+json.data[i].total+"</td>";
+				html += "<td>"+json.data[i].contactno+"</td>";
+				html += "</tr>";
+
+			}  	
+			$('#searchSalesPrintListDatewise').append(html);		 			
+	  	}
+	  	else if(json.type == "SearchSalesReturnChallanDatewise_callback"){
+	  		$('#searchSalesReturnFromDate').text($('#srsearchfromdate').val());
+			$('#searchSalesReturnToDate').text($('#srsearchtodate').val());
+
+			$('#searchSalesReturnPrintListDatewise').empty();
+			var html="";
+			
+			for(var i in json.data){
+				html += "<tr>";
+				html += "<td>"+json.data[i].fname+" "+json.data[i].lname+"</td>";
+				html += "<td>"+json.data[i].challanno+"</td>";
+				html += "<td>"+json.data[i].date+"</td>";
+				html += "<td>"+json.data[i].total+"</td>";
+				html += "<td>"+json.data[i].contactno+"</td>";
+				html += "</tr>";
+
+			}  	
+			$('#searchSalesReturnPrintListDatewise').append(html);		 			
+	  	}
+
 
 	  	$('.deleteC').unbind().click(function(){
 			deleteCustomer($(this).attr("id"));
@@ -330,7 +415,8 @@ $(function(){
 	      	$('#loadProductsDropdown').val($('#loadProductsDropdown option:first').val());
 	      	$('#srate').val("");
 	      	$('#squantity').val("");
-	      	$('#sprice').val("");   	
+	      	$('#sprice').val("");
+	      	$('#loadProductsDropdown').focus();
 	    });
 
 	    $(document).on('click','.sradd',function(){
@@ -345,6 +431,7 @@ $(function(){
 	      	$('#srrate').val("");
 	      	$('#srquantity').val("");
 	      	$('#srprice').val("");
+	      	$('#loadProductsDropdownsr').focus();
 	    });
 
 	    $(document).on('click','.scut',function(){
@@ -360,7 +447,6 @@ $(function(){
 	      	var pricevall=parseFloat($(this).parent().parent().find('#itempricesr').attr('data-price'));
 	      	pricevall = pricevall.toFixed(2);
 	      	salesReturnGrand = parseFloat(salesReturnGrand) -  parseFloat(pricevall);
-	      	//alert(salesReturnGrand);
 	      	$('#srgrandTotal').text(salesReturnGrand);
 	      	
 	      	$(this).parent().parent().remove();	    	
@@ -466,6 +552,7 @@ $(function(){
 			json=JSON.stringify({usertype: "updateCustomer", data:obj});
 		}
 		connection.send(json);
+		$('#cfname').focus();
 	}
 	function deleteCustomer(customerid){
 		var obj={
@@ -558,6 +645,7 @@ $(function(){
 		else
 			json=JSON.stringify({usertype: "updateTransporter", data:obj});
 		connection.send(json);
+		$('#tfname').focus();
 	}
 	function deleteTransporter(transportid){
 		var obj={
@@ -645,6 +733,7 @@ $(function(){
 		else
 			json=JSON.stringify({usertype: "updateProduct", data:obj});
 		connection.send(json);
+		$('#pname').focus();
 	}
 	function deleteProduct(productid){
 		var obj={
@@ -723,6 +812,7 @@ $(function(){
 		else
 			json=JSON.stringify({usertype: "updateUnit", data:obj});
 		connection.send(json);
+		$('#uname').focus();
 	}
 	function deleteUnit(unitid){
 		var obj={
@@ -762,6 +852,7 @@ $(function(){
 		$('#srprice').val(ans);
 	});
 
+	//$('#printsaleschallan').click(printsaleschallan);
 	$('#printsaleschallan').click(printsaleschallan);
 	function printsaleschallan(){
 		$('#salesChallanNo').text(" "+$('#schallanno').val());
@@ -783,8 +874,7 @@ $(function(){
 		date=$('#sDate').val();
 		challanno=$('#schallanno').val();
 		insertSalesChallan();
-		printDiv('sales_print_div');
-		
+		printDiv('sales_print_div');	
 	}
 
 	$('#printsalesreturnchallan').click(printsalesreturnchallan);
@@ -811,6 +901,34 @@ $(function(){
 		printDiv('sales_return_print_div');
 	}
 
+	$('#btnPrintSalesChallanNowise').click(PrintSalesChallanNowise);
+	function PrintSalesChallanNowise(){
+		if(event)
+			event.preventDefault();
+		printDiv('sales_report_Challanwise_div');		
+	}
+
+	$('#btnPrintSalesReturnChallanNowise').click(PrintSalesReturnChallanNowise);
+	function PrintSalesReturnChallanNowise(){
+		if(event)
+			event.preventDefault();
+		printDiv('sales_return_report_Challanwise_div');
+	}
+
+	$('#btnPrintSalesChallanDatewise').click(PrintSalesChallanDatewise);
+	function PrintSalesChallanDatewise(){
+		if(event)
+			event.preventDefault();
+		printDiv('sales_report_datewise_div');
+	}
+
+	$('#btnPrintSalesReturnChallanDatewise').click(PrintSalesReturnChallanDatewise);
+	function PrintSalesReturnChallanDatewise(){
+		if(event)
+			event.preventDefault();
+		printDiv('sales_return_report_datewise_div');
+	}
+
 	function printDiv(divID) {
 		var divElements = document.getElementById(divID).innerHTML;
         var oldPage = document.body.innerHTML;
@@ -831,7 +949,9 @@ $(function(){
 		customerid=$('#scustomername').val();
 		date=$('#sDate').val();
 		challanno=$('#schallanno').val();
-		
+		date=date.replace(/\//g, "-");
+		var t=date.split('-');
+		date=t[2]+"-"+t[1]+"-"+t[0];
 		$('.itemRow').each(function(){
 			var tds=$(this).find('td');
 			var prodid,unit,qty,rate,price;
@@ -881,6 +1001,9 @@ $(function(){
 		var customerid=$('#srcustomername').val();
 		var date=$('#srDate').val();
 		var challanno=$('#srchallanno').val();
+		date=date.replace(/\//g, "-");
+		var t=date.split('-');
+		date=t[2]+"-"+t[1]+"-"+t[0];
 		
 		$('.itemRowsr').each(function(){
 			var tds=$(this).find('td');
@@ -922,6 +1045,81 @@ $(function(){
 		$('#div_dashboard').show();
 	}
 
+	$('#btnSearchSalesChallanNowise').click(SearchSalesChallanNowise);
+	function SearchSalesChallanNowise(){
+		if(event)
+			event.preventDefault();
+		var obj={
+			challanno 	: 	$('#searchchallannos').val(),
+			companyid 	: 	sessionStorage.getItem('companyid')
+		}
+		var json=JSON.stringify({usertype:"SearchSalesChallanNowise" , data:obj});
+		connection.send(json);
+	}
+
+	$('#btnSearchSalesReturnChallanNowise').click(SearchSalesReturnChallanNowise);
+	function SearchSalesReturnChallanNowise(){
+		if(event)
+			event.preventDefault();
+		var obj={
+			challanno 	: 	$('#searchchallannosr').val(),
+			companyid 	: 	sessionStorage.getItem('companyid')
+		}
+		var json=JSON.stringify({usertype:"SearchSalesReturnChallanNowise" , data:obj});
+		connection.send(json);
+	}
+
+	$('#btnSearchSalesChallanDatewise').click(SearchSalesChallanDatewise);
+	function SearchSalesChallanDatewise(){
+		if(event)
+			event.preventDefault();
+		var fromdate=$('#ssearchfromdate').val();
+		fromdate=fromdate.replace(/\//g, "-");
+		var t=fromdate.split('-');
+		fromdate=t[2]+"-"+t[1]+"-"+t[0];
+		
+		var todate=$('#ssearchtodate').val();
+		todate=todate.replace(/\//g, "-");
+		var t=todate.split('-');
+		todate=t[2]+"-"+t[1]+"-"+t[0];
+
+		var obj={
+			fromDate 	: 	fromdate,
+			toDate 		: 	todate,
+			companyid 	: 	sessionStorage.getItem('companyid')
+		}
+		var json=JSON.stringify({usertype:"SearchSalesChallanDatewise" , data:obj});
+		connection.send(json);
+
+		$('#sales_report_datewise_div').show();
+	}
+
+	$('#btnSearchSalesReturnChallanDatewise').click(SearchSalesReturnChallanDatewise);
+	function SearchSalesReturnChallanDatewise(){
+		if(event)
+			event.preventDefault();
+		var fromdate=$('#srsearchfromdate').val();
+		fromdate=fromdate.replace(/\//g, "-");
+		var t=fromdate.split('-');
+		fromdate=t[2]+"-"+t[1]+"-"+t[0];
+		
+		var todate=$('#srsearchtodate').val();
+		todate=todate.replace(/\//g, "-");
+		var t=todate.split('-');
+		todate=t[2]+"-"+t[1]+"-"+t[0];
+
+		var obj={
+			fromDate 	: 	fromdate,
+			toDate 		: 	todate,
+			companyid 	: 	sessionStorage.getItem('companyid')
+		}
+		var json=JSON.stringify({usertype:"SearchSalesReturnChallanDatewise" , data:obj});
+		connection.send(json);
+
+		$('#sales_return_report_datewise_div').show();
+	}
+
+
 });
 function addSalesRow(){
 	var itemid    =$("#loadProductsDropdown option:selected").val();
@@ -941,7 +1139,6 @@ function addSalesRow(){
         html +=	"<td id='itemrate' data-rate="+itemRate+" style='text-align:right;'><span data-prefix>₹</span>"+itemRate+"</td>";
         html +=	"<td id='itemprice' data-price="+itemPrice+" style='text-align:right;'><span data-prefix>₹</span>"+itemPrice+"</td>";
         html +=	"<td style='align-items: center;' class='hideforprint'>";
-        //html +=	"<i class='fa fa-pencil' aria-hidden='true'></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
         html +=	"<a class='scut'><i class='fa fa-trash' aria-hidden='true'></i></a>";
         html +=	"</td>";
         html += "</tr>";
