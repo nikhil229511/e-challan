@@ -972,137 +972,66 @@
         </div>        
       </div>
 
-      <!-- Changable content sales report customerwise-->
+      <!-- Changable content sales report customerwise-->      
       <div id="div_sales_report_customerwise">
-        <!--<div class="col-md-12">
-          <h3 class="tile-title">Sales Return Challan</h3>
+        <div class="col-md-12">
+          <h3 class="tile-title">Sales Challan Customerwise Report</h3>
           <div class="tile"> 
             <div class="tile-body">
               <form class="row" id="">                
-                <div class="form-group col-md-5">
-                  <label class="control-label">Customer Name.</label>
-                  <select class="form-control" id="srcustomername">
-                  </select>
-                </div>
                 <div class="form-group col-md-3">
-                  <label class="control-label">Date</label>
-                  <input class="form-control" id="srDate" type="text" placeholder="Select Date">
+                  <label class="control-label">Customer Name</label>
+                  <input class="form-control" id="ssearchcustomername" type="text" placeholder="Select Customer">
                 </div>
-                <div class="form-group col-md-2">
-                  <label class="control-label">Challan No.</label>
-                  <input class="form-control" id="srchallanno" type="text" disabled>
-                </div>                
+                <div class="form-group col-md-1">
+                  <label class="control-label" style="visibility: hidden;">C</label><br>
+                  <button class="btn btn-primary" id="btnSearchSalesChallanCustomerwise"><i class="fa fa-fw fa-lg fa-check-circle"></i>Search</button>
+                </div>
+                <div class="form-group col-md-1">
+                  <label class="control-label" style="visibility: hidden;">C</label><br>
+                  <button class="btn btn-info" id="btnPrintSalesChallanCustomerwise"><i class="fa fa-fw fa-lg fa-print"></i>Print</button>  
+                </div>
+                                               
               </form>
-            </div>
-            <table id="srTable" class="inventory">
-              <thead>
-                <tr>
-                  <th>Item name</th>
-                  <th>Unit</th>
-                  <th>Quantity</th>
-                  <th>Rate</th> 
-                  <th>Price</th>
-                  <th>Action</th> 
-                </tr>
-              </thead>
-              <tbody id="srcontainer">
-              <tr id="row">
-                <td>     
-                  <select class="form-control fd calculatesr" id="loadProductsDropdownsr" name="loadProductsDropdownsr"></select>
-                </td>
-                <td>     
-                  <select class="form-control fd calculatesr" id="loadUnitDropdownsr" name="loadUnitDropdownsr"></select>
-                </td>
-                <td><input type="text" id="srquantity" name="srquantity" class="form-control calculatesr"></td>
-                <td><input type="text" id="srrate" name="srrate" class="form-control calculatesr"></td>
-                <td><input type="text" id="srprice" name="srprice" class="form-control" disabled></td>
-                <td style="align-items: center;">
-                  <a class="sradd" style="margin-top:5px;width: 28px;"><i class="fa fa-plus fa-fw"></i></a> 
-                </td>                   
-              </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div class="tile">            
-            <div class="tile-body">            
-              <table>
-                <thead>
-                  <tr>
-                    <th>Item name</th>
-                    <th>Unit</th>
-                    <th>Quantity</th>
-                    <th>Rate</th> 
-                    <th>Price</th>
-                    <th>Action</th> 
-                  </tr>
-                </thead>
-                <tbody id='listSalesReturnChallan'>
-                </tbody>
-              </table>
-              <br>
-              <table class="balance">
-                <tr>
-                  <th><span>Total</span></th>
-                  <td><span data-prefix>₹</span><span id='srgrandTotal'></span></td>
-                </tr>              
-              </table>
-              <aside>
-                <br><br><br><br><br>
-                <hr class="style-eight">
-                <button class="btn btn-primary" id="srsubmit" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Okay</button>
-                <button class="btn btn-info" id="printsalesreturnchallan" type="submit"><i class="fa fa-fw fa-lg fa-print"></i>Print</button>
-                <button class="btn btn-danger" id="clearsalesreturnchallan"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancel</button>
-              </aside>        
-            </div>
-          </div>               
-        </div>-->
+            </div>            
+          </div>          
+        </div>
         
         <!-- print sales Return div -->
-        <div class="row" id="sales_report_Challanwise_div"> <!-- style="display: none;"> -->
+        <div class="row" id="sales_report_customerwise_div" style="display: none;">
           <div class="col-md-12">
           <div class="tile">
             <section class="invoice">
               <div class="row mb-4">
                 <div class="col-6">
-                  <h2 class="page-header"><i class="fa fa-globe"></i> Sales Return Challan</h2>
-                </div>
-                <div class="col-6">
-                  <h5 class="text-right">Date: <span id='salesReturnDate'></span></h5>
-                </div>
+                  <h2 class="page-header"><i class="fa fa-globe"></i> Sales Challan Customerwise Report.</h2>
+                </div>                
               </div>
               <div class="row invoice-info">
-                <div class="col-4">From:
-                  <address><strong>________________________________________________________</strong><br><br><span id='salesReturnFirmAddress'>________________________________________________________</span></address>
+                <div class="col-4">Customer Name:
+                  <address><strong><span id='searchSalesCustomerName1'></span></strong></address>
                 </div>
-                <div class="col-4">To:
-                  <address><strong><span id='salesReturnCustomerName'></span></strong><br><span id='salesReturnCustomerAddress'></span></address>
-                </div>
-                <div class="col-4"><b>Challan Number: <span id='salesReturnChallanNo'></span></b></div>
+                <div class="col-4">Address:
+                  <address><strong><span id='searchSalesAddress'></span></strong></address>
+                </div>                
+                <div class="col-4">Contact No:
+                  <address><strong><span id='searchSalesContactNo'></span></strong></address>
+                </div>                
               </div>
               <div class="row">
                 <div class="col-12 table-responsive">
                   <table class="table table-striped">
                     <thead>
                       <tr>
-                        <th>Item</th>
-                        <th>Unit</th>
-                        <th>Quantity</th>
-                        <th>Rate</th>
-                        <th>Price</th>
+                        <th>Challan No.</th>
+                        <th>Date</th>
+                        <th>Total Amount</th>
                       </tr>
                     </thead>
-                    <tbody id='salesReturnPrintList'>
+                    <tbody id='searchSalesPrintListCustomerwise'>
                       
                     </tbody>
-                  </table>
-                  <br>
-                  <table class="balance">
-                    <tr>
-                      <th><span>Total</span></th>
-                      <td><span data-prefix>₹</span><span id='salesReturngrandTotal'></span></td>
-                    </tr>              
-                  </table>
+                  </table>                  
                 </div>
               </div>              
             </section>
@@ -1111,137 +1040,66 @@
         </div>        
       </div>
 
-      <!-- Changable content sales return report customerwise-->
+      <!-- Changable content sales return report customerwise-->      
       <div id="div_sales_return_report_customerwise">
-        <!--<div class="col-md-12">
-          <h3 class="tile-title">Sales Return Challan</h3>
+        <div class="col-md-12">
+          <h3 class="tile-title">Sales Return Challan Customerwise Report</h3>
           <div class="tile"> 
             <div class="tile-body">
               <form class="row" id="">                
-                <div class="form-group col-md-5">
-                  <label class="control-label">Customer Name.</label>
-                  <select class="form-control" id="srcustomername">
-                  </select>
-                </div>
                 <div class="form-group col-md-3">
-                  <label class="control-label">Date</label>
-                  <input class="form-control" id="srDate" type="text" placeholder="Select Date">
+                  <label class="control-label">Customer Name</label>
+                  <input class="form-control" id="srsearchcustomername" type="text" placeholder="Select Customer">
                 </div>
-                <div class="form-group col-md-2">
-                  <label class="control-label">Challan No.</label>
-                  <input class="form-control" id="srchallanno" type="text" disabled>
-                </div>                
+                <div class="form-group col-md-1">
+                  <label class="control-label" style="visibility: hidden;">C</label><br>
+                  <button class="btn btn-primary" id="btnSearchSalesReturnChallanCustomerwise"><i class="fa fa-fw fa-lg fa-check-circle"></i>Search</button>
+                </div>
+                <div class="form-group col-md-1">
+                  <label class="control-label" style="visibility: hidden;">C</label><br>
+                  <button class="btn btn-info" id="btnPrintSalesReturnChallanCustomerwise"><i class="fa fa-fw fa-lg fa-print"></i>Print</button>  
+                </div>
+                                               
               </form>
-            </div>
-            <table id="srTable" class="inventory">
-              <thead>
-                <tr>
-                  <th>Item name</th>
-                  <th>Unit</th>
-                  <th>Quantity</th>
-                  <th>Rate</th> 
-                  <th>Price</th>
-                  <th>Action</th> 
-                </tr>
-              </thead>
-              <tbody id="srcontainer">
-              <tr id="row">
-                <td>     
-                  <select class="form-control fd calculatesr" id="loadProductsDropdownsr" name="loadProductsDropdownsr"></select>
-                </td>
-                <td>     
-                  <select class="form-control fd calculatesr" id="loadUnitDropdownsr" name="loadUnitDropdownsr"></select>
-                </td>
-                <td><input type="text" id="srquantity" name="srquantity" class="form-control calculatesr"></td>
-                <td><input type="text" id="srrate" name="srrate" class="form-control calculatesr"></td>
-                <td><input type="text" id="srprice" name="srprice" class="form-control" disabled></td>
-                <td style="align-items: center;">
-                  <a class="sradd" style="margin-top:5px;width: 28px;"><i class="fa fa-plus fa-fw"></i></a> 
-                </td>                   
-              </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div class="tile">            
-            <div class="tile-body">            
-              <table>
-                <thead>
-                  <tr>
-                    <th>Item name</th>
-                    <th>Unit</th>
-                    <th>Quantity</th>
-                    <th>Rate</th> 
-                    <th>Price</th>
-                    <th>Action</th> 
-                  </tr>
-                </thead>
-                <tbody id='listSalesReturnChallan'>
-                </tbody>
-              </table>
-              <br>
-              <table class="balance">
-                <tr>
-                  <th><span>Total</span></th>
-                  <td><span data-prefix>₹</span><span id='srgrandTotal'></span></td>
-                </tr>              
-              </table>
-              <aside>
-                <br><br><br><br><br>
-                <hr class="style-eight">
-                <button class="btn btn-primary" id="srsubmit" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Okay</button>
-                <button class="btn btn-info" id="printsalesreturnchallan" type="submit"><i class="fa fa-fw fa-lg fa-print"></i>Print</button>
-                <button class="btn btn-danger" id="clearsalesreturnchallan"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancel</button>
-              </aside>        
-            </div>
-          </div>               
-        </div>-->
+            </div>            
+          </div>          
+        </div>
         
         <!-- print sales Return div -->
-        <div class="row" id="sales_report_Challanwise_div"> <!-- style="display: none;"> -->
+        <div class="row" id="sales_return_report_customerwise_div" style="display: none;">
           <div class="col-md-12">
           <div class="tile">
             <section class="invoice">
               <div class="row mb-4">
                 <div class="col-6">
-                  <h2 class="page-header"><i class="fa fa-globe"></i> Sales Return Challan</h2>
-                </div>
-                <div class="col-6">
-                  <h5 class="text-right">Date: <span id='salesReturnDate'></span></h5>
-                </div>
+                  <h2 class="page-header"><i class="fa fa-globe"></i>Sales Return Challan Customerwise Report.</h2>
+                </div>                
               </div>
               <div class="row invoice-info">
-                <div class="col-4">From:
-                  <address><strong>________________________________________________________</strong><br><br><span id='salesReturnFirmAddress'>________________________________________________________</span></address>
+                <div class="col-4">Customer Name:
+                  <address><strong><span id='searchSalesReturnCustomerName1'></span></strong></address>
                 </div>
-                <div class="col-4">To:
-                  <address><strong><span id='salesReturnCustomerName'></span></strong><br><span id='salesReturnCustomerAddress'></span></address>
-                </div>
-                <div class="col-4"><b>Challan Number: <span id='salesReturnChallanNo'></span></b></div>
+                <div class="col-4">Address:
+                  <address><strong><span id='searchSalesReturnAddress'></span></strong></address>
+                </div>                
+                <div class="col-4">Contact No:
+                  <address><strong><span id='searchSalesReturnContactNo'></span></strong></address>
+                </div>                
               </div>
               <div class="row">
                 <div class="col-12 table-responsive">
                   <table class="table table-striped">
                     <thead>
                       <tr>
-                        <th>Item</th>
-                        <th>Unit</th>
-                        <th>Quantity</th>
-                        <th>Rate</th>
-                        <th>Price</th>
+                        <th>Challan No.</th>
+                        <th>Date</th>
+                        <th>Total Amount</th>
                       </tr>
                     </thead>
-                    <tbody id='salesReturnPrintList'>
+                    <tbody id='searchSalesReturnPrintListCustomerwise'>
                       
                     </tbody>
-                  </table>
-                  <br>
-                  <table class="balance">
-                    <tr>
-                      <th><span>Total</span></th>
-                      <td><span data-prefix>₹</span><span id='salesReturngrandTotal'></span></td>
-                    </tr>              
-                  </table>
+                  </table>                  
                 </div>
               </div>              
             </section>

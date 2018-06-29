@@ -140,7 +140,14 @@ wsServer.on('request',function(request){
 
 						case "SearchSalesReturnChallanDatewise":
 						SearchSalesReturnChallanDatewise(c.data.fromDate,c.data.toDate,c.data.companyid,connection);
+						break;
 
+						case "SearchSalesChallanCustomerwise":
+						SearchSalesChallanCustomerwise(c.data.fname,c.data.lname,c.data.companyid,connection);
+						break;
+
+						case "SearchSalesReturnChallanCustomerwise":
+						SearchSalesReturnChallanCustomerwise(c.data.fname,c.data.lname,c.data.companyid,connection);
 						case "sendAll":
 							getAllCustomers(c.data.companyid);
 							getAllTransporters(c.data.companyid);
@@ -861,7 +868,7 @@ wsServer.on('request',function(request){
 
 		function SearchSalesChallanDatewise(fromDate,toDate,companyid,connection){
 			var arr=[];
-			var sql="SELECT cm.companyid,cm.customerid,cm.challanno,cm.Date,cm.total,c.fname,c.lname,c.address,c.contactno FROM challanmaster cm INNER JOIN customers c on cm.customerid=c.customerid where cm.Date > '"+fromDate+"' AND cm.Date < '"+toDate+"' ORDER BY cm.Date DESC";
+			var sql="SELECT cm.companyid,cm.customerid,cm.challanno,cm.Date,cm.total,c.fname,c.lname,c.address,c.contactno FROM challanmaster cm INNER JOIN customers c on cm.customerid=c.customerid where cm.Date > '"+fromDate+"' AND cm.Date < '"+toDate+"' AND cm.companyid="+companyid+" ORDER BY cm.Date DESC";
 			con.query(sql, function (err, result, fields) {
 				for(var index in result){
 					var obj={
@@ -884,7 +891,7 @@ wsServer.on('request',function(request){
 
 		function SearchSalesReturnChallanDatewise(fromDate,toDate,companyid,connection){
 			var arr=[];
-			var sql="SELECT crm.companyid,crm.customerid,crm.challanno,crm.Date,crm.total,c.fname,c.lname,c.address,c.contactno FROM challanreturnmaster crm INNER JOIN customers c on crm.customerid=c.customerid where crm.Date > '"+fromDate+"' AND crm.Date < '"+toDate+"' ORDER BY crm.challanno";
+			var sql="SELECT crm.companyid,crm.customerid,crm.challanno,crm.Date,crm.total,c.fname,c.lname,c.address,c.contactno FROM challanreturnmaster crm INNER JOIN customers c on crm.customerid=c.customerid where crm.Date > '"+fromDate+"' AND crm.Date < '"+toDate+"'  AND crm.companyid="+companyid+" ORDER BY crm.challanno";
 			con.query(sql, function (err, result, fields) {
 				for(var index in result){
 					var obj={
@@ -905,6 +912,51 @@ wsServer.on('request',function(request){
 			});
 		}
 
+		function SearchSalesChallanCustomerwise(fname,lname,companyid,connection){
+			var arr=[];
+			var sql="SELECT cm.companyid,cm.customerid,cm.challanno,cm.Date,cm.total,c.fname,c.lname,c.address,c.contactno FROM challanmaster cm INNER JOIN customers c on cm.customerid=c.customerid where c.fname='"+fname+"' AND c.lname= '"+lname+"' AND cm.companyid="+companyid+" ORDER BY cm.challanno";
+			con.query(sql, function (err, result, fields) {
+				for(var index in result){
+					var obj={
+						companyid 	: 	result[index].companyid,
+						customerid 	: 	result[index].customerid,
+						challanno 	: 	result[index].challanno,
+						date 		:  	result[index].Date,
+						total 		: 	result[index].total,
+						fname 	 	: 	result[index].fname,
+						lname 		: 	result[index].lname,
+						address 	:  	result[index].address,
+						contactno 	:  	result[index].contactno						
+					}
+					arr.push(obj); 
+				}
+				var json=JSON.stringify({type:"SearchSalesChallanCustomerwise_callback",data:arr});
+				sendResponse(json,connection);
+			});
+		}
+
+		function SearchSalesReturnChallanCustomerwise(fname,lname,companyid,connection){
+			var arr=[];
+			var sql="SELECT crm.companyid,crm.customerid,crm.challanno,crm.Date,crm.total,c.fname,c.lname,c.address,c.contactno FROM challanreturnmaster crm INNER JOIN customers c on crm.customerid=c.customerid where c.fname='"+fname+"' AND c.lname= '"+lname+"' AND crm.companyid="+companyid+" ORDER BY crm.challanno";
+			con.query(sql, function (err, result, fields) {
+				for(var index in result){
+					var obj={
+						companyid 	: 	result[index].companyid,
+						customerid 	: 	result[index].customerid,
+						challanno 	: 	result[index].challanno,
+						date 		:  	result[index].Date,
+						total 		: 	result[index].total,
+						fname 	 	: 	result[index].fname,
+						lname 		: 	result[index].lname,
+						address 	:  	result[index].address,
+						contactno 	:  	result[index].contactno						
+					}
+					arr.push(obj); 
+				}
+				var json=JSON.stringify({type:"SearchSalesReturnChallanCustomerwise_callback",data:arr});
+				sendResponse(json,connection);
+			});
+		}
 
 		function sendResponse(json,connection){
 			connection.send(json);

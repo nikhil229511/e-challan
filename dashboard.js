@@ -373,6 +373,42 @@ $(function(){
 			}  	
 			$('#searchSalesReturnPrintListDatewise').append(html);		 			
 	  	}
+	  	else if(json.type == "SearchSalesChallanCustomerwise_callback"){
+	  		$('#searchSalesCustomerName1').text(""+json.data[0].fname+" "+json.data[0].lname+"");
+			$('#searchSalesAddress').text(json.data[0].address);
+			$('#searchSalesContactNo').text(json.data[0].contactno);
+
+			$('#searchSalesPrintListCustomerwise').empty();
+			var html="";
+			
+			for(var i in json.data){
+				html += "<tr>";
+				html += "<td>"+json.data[i].challanno+"</td>";
+				html += "<td>"+json.data[i].date+"</td>";
+				html += "<td>"+json.data[i].total+"</td>";
+				html += "</tr>";
+
+			}  	
+			$('#searchSalesPrintListCustomerwise').append(html);		 			
+	  	}
+	  	else if(json.type == "SearchSalesReturnChallanCustomerwise_callback"){
+	  		$('#searchSalesReturnCustomerName1').text(""+json.data[0].fname+" "+json.data[0].lname+"");
+			$('#searchSalesReturnAddress').text(json.data[0].address);
+			$('#searchSalesReturnContactNo').text(json.data[0].contactno);
+
+			$('#searchSalesReturnPrintListCustomerwise').empty();
+			var html="";
+			
+			for(var i in json.data){
+				html += "<tr>";
+				html += "<td>"+json.data[i].challanno+"</td>";
+				html += "<td>"+json.data[i].date+"</td>";
+				html += "<td>"+json.data[i].total+"</td>";
+				html += "</tr>";
+
+			}  	
+			$('#searchSalesReturnPrintListCustomerwise').append(html);		 			
+	  	}
 
 
 	  	$('.deleteC').unbind().click(function(){
@@ -929,6 +965,21 @@ $(function(){
 		printDiv('sales_return_report_datewise_div');
 	}
 
+	$('#btnPrintSalesChallanCustomerwise').click(PrintSalesChallanCustomerwise);
+	function PrintSalesChallanCustomerwise(){
+		if(event)
+			event.preventDefault();
+		printDiv('sales_report_customerwise_div');
+	}
+
+	$('#btnPrintSalesReturnChallanCustomerwise').click(PrintSalesReturnChallanCustomerwise);
+	function PrintSalesReturnChallanCustomerwise(){
+		if(event)
+			event.preventDefault();
+		printDiv('sales_return_report_customerwise_div');
+	}
+
+
 	function printDiv(divID) {
 		var divElements = document.getElementById(divID).innerHTML;
         var oldPage = document.body.innerHTML;
@@ -1119,6 +1170,38 @@ $(function(){
 		$('#sales_return_report_datewise_div').show();
 	}
 
+	$('#btnSearchSalesChallanCustomerwise').click(SearchSalesChallanCustomerwise);
+	function SearchSalesChallanCustomerwise(){
+		if(event)
+			event.preventDefault();
+		var cname=$('#ssearchcustomername').val();
+		cname=cname.split(" ");
+		var obj={
+			fname 		: 	cname[0],
+			lname 		: 	cname[1],
+			companyid 	: 	sessionStorage.getItem('companyid')
+		}
+		var json=JSON.stringify({usertype:"SearchSalesChallanCustomerwise" , data:obj});
+		connection.send(json);
+
+		$('#sales_report_customerwise_div').show();
+	}
+	$('#btnSearchSalesReturnChallanCustomerwise').click(SearchSalesReturnChallanCustomerwise);
+	function SearchSalesReturnChallanCustomerwise(){
+		if(event)
+			event.preventDefault();
+		var cname=$('#srsearchcustomername').val();
+		cname=cname.split(" ");
+		var obj={
+			fname 		: 	cname[0],
+			lname 		: 	cname[1],
+			companyid 	: 	sessionStorage.getItem('companyid')
+		}
+		var json=JSON.stringify({usertype:"SearchSalesReturnChallanCustomerwise" , data:obj});
+		connection.send(json);
+
+		$('#sales_return_report_customerwise_div').show();
+	}
 
 });
 function addSalesRow(){
