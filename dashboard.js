@@ -3,6 +3,7 @@ var row_id = 1;
 var productList=[];
 var unitList=[];
 var customers=[];
+var customerName=[];
 var salesGrand;
 var salesReturnGrand;
 var companyid,customerid,date,challanno;
@@ -159,7 +160,13 @@ $(function(){
 	  	}	
 	  	else if(json.type == "getAllCustomer_callback"){
 	  		var htmlString="";
+	  		var html="<option value='-1'>Select Customer</option>";
+
 	  		for(var i=0;i<json.data.length;i++){
+	  			var strName=json.data[i].fname+" "+json.data[i].lname;
+	  			customerName.push(strName);
+	  			html +='<option>'+strName+'</option>';
+
 	  			htmlString +='<tr>';
 	  			htmlString +='<td>'+json.data[i].fname+'</td>';
 	  			htmlString +='<td>'+json.data[i].lname+'</td>';	
@@ -168,9 +175,11 @@ $(function(){
 	  			htmlString +='<td>'+json.data[i].address+'</td>';
 	  			htmlString +="<td><a href='#' onclick=updateCustomer("+json.data[i].customerid+","+json.data[i].companyid+",'"+json.data[i].fname+"','"+json.data[i].lname+"','"+json.data[i].contactno+"','"+json.data[i].gstno+"','"+encodeURIComponent(json.data[i].address) +"'); >";
 	  			htmlString +='<i class="fa fa-pencil" aria-hidden="true"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-	  			htmlString +='<a href="#" class="deleteC" id='+json.data[i].customerid+'><i class="fa fa-trash" aria-hidden="true"></i></a></td>';
+	  			htmlString +='<a href="#" class="demoSwalCustomer" id='+json.data[i].customerid+'><i class="fa fa-trash" aria-hidden="true"></i></a></td>';
 	  			htmlString +='</tr>';
 	  		}
+	  		$('#srsearchcustomername').html(html);
+	  		$('#ssearchcustomername').html(html);
 	  		$('#CustomersData').html(htmlString);
 	  	}
 	  	else if(json.type == "getAllTransporter_callback"){
@@ -184,7 +193,7 @@ $(function(){
 	  			htmlString +='<td>'+json.data[i].address+'</td>';
 	  			htmlString +="<td><a href='#' onclick=updateTransporter("+json.data[i].transportid+","+json.data[i].companyid+",'"+json.data[i].fname+"','"+json.data[i].lname+"','"+json.data[i].contactno+"','"+json.data[i].gstno+"','"+encodeURIComponent(json.data[i].address) +"'); >";
 	  			htmlString +='<i class="fa fa-pencil" aria-hidden="true"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-	  			htmlString +='<a href="#" class="deleteT" id='+json.data[i].transportid+'><i class="fa fa-trash" aria-hidden="true"></i></a></td>';
+	  			htmlString +='<a href="#" class="demoSwalTransporter" id='+json.data[i].transportid+'><i class="fa fa-trash" aria-hidden="true"></i></a></td>';
 	  			htmlString +='</tr>';
 	  		}
 	  		$('#TransportersData').html(htmlString);
@@ -199,7 +208,7 @@ $(function(){
 	  			htmlString +='<td>'+json.data[i].thickness+'</td>';
 	  			htmlString +="<td><a href='#' onclick=updateProduct("+json.data[i].productid+",'"+encodeURIComponent(json.data[i].productname)+"',"+json.data[i].length+","+json.data[i].width+","+json.data[i].thickness+"); >";
 	  			htmlString +='<i class="fa fa-pencil" aria-hidden="true"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-	  			htmlString +='<a href="#" class="deleteP" id='+json.data[i].productid+'><i class="fa fa-trash" aria-hidden="true"></i></a></td>';
+	  			htmlString +='<a href="#" class="demoSwalProduct" id='+json.data[i].productid+'><i class="fa fa-trash" aria-hidden="true"></i></a></td>';
 	  			htmlString +='</tr>';
 	  		}
 	  		$('#productsData').html(htmlString);
@@ -212,7 +221,7 @@ $(function(){
 	  			htmlString +='<td>'+json.data[i].offset+'</td>';	
 	  			htmlString +="<td><a href='#' onclick=updateUnit("+json.data[i].unitid+",'"+encodeURIComponent(json.data[i].unitname)+"',"+json.data[i].offset+"); >";
 	  			htmlString +='<i class="fa fa-pencil" aria-hidden="true"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-	  			htmlString +='<a href="#" class="deleteU" id='+json.data[i].unitid+'><i class="fa fa-trash" aria-hidden="true"></i></a></td>';
+	  			htmlString +='<a href="#" class="demoSwalUnit" id='+json.data[i].unitid+'><i class="fa fa-trash" aria-hidden="true"></i></a></td>';
 	  			htmlString +='</tr>';
 	  		}
 	  		$('#unitsData').html(htmlString);
@@ -398,34 +407,104 @@ $(function(){
 
 			$('#searchSalesReturnPrintListCustomerwise').empty();
 			var html="";
-			
-			for(var i in json.data){
-				html += "<tr>";
-				html += "<td>"+json.data[i].challanno+"</td>";
-				html += "<td>"+json.data[i].date+"</td>";
-				html += "<td>"+json.data[i].total+"</td>";
-				html += "</tr>";
-
-			}  	
-			$('#searchSalesReturnPrintListCustomerwise').append(html);		 			
+			if(json.data.length){
+				for(var i in json.data){
+					html += "<tr>";
+					html += "<td>"+json.data[i].challanno+"</td>";
+					html += "<td>"+json.data[i].date+"</td>";
+					html += "<td>"+json.data[i].total+"</td>";
+					html += "</tr>";
+				}
+				$('#searchSalesReturnPrintListCustomerwise').append(html);
+			}
+			else{
+				alert("No Data Found");
+			}					 			
 	  	}
 
+	  	$('.demoSwalCustomer').click(function(e){
+	  		var id=$(e.currentTarget).attr('id');
+	      	swal({
+	      		title: "Are you sure?",
+	      		text: "You will not be able to recover this Change!",
+	      		type: "warning",
+	      		showCancelButton: true,
+	      		confirmButtonText: "Yes, delete it!",
+	      		cancelButtonText: "No, cancel!",
+	      		closeOnConfirm: false,
+	      		closeOnCancel: false
+	      	}, function(isConfirm) {
+	      		if (isConfirm) {
+	      			deleteCustomer(id);
+	      			swal("Deleted!", "Record has been deleted.", "success");
+	      		} else {
+	      			swal("Cancelled", "Customer is Not Deleted.", "error");
+	      		}
+	      	});
+	    });
 
-	  	$('.deleteC').unbind().click(function(){
-			deleteCustomer($(this).attr("id"));
-		});
+	  	$('.demoSwalTransporter').click(function(e){
+	  		var id=$(e.currentTarget).attr('id');
+	      	swal({
+	      		title: "Are you sure?",
+	      		text: "You will not be able to recover this Change!",
+	      		type: "warning",
+	      		showCancelButton: true,
+	      		confirmButtonText: "Yes, delete it!",
+	      		cancelButtonText: "No, cancel!",
+	      		closeOnConfirm: false,
+	      		closeOnCancel: false
+	      	}, function(isConfirm) {
+	      		if (isConfirm) {
+	      			deleteTransporter(id);
+	      			swal("Deleted!", "Record has been deleted.", "success");
+	      		} else {
+	      			swal("Cancelled", "Customer is Not Deleted.", "error");
+	      		}
+	      	});
+	    });
 
-		$('.deleteT').unbind().click(function(){
-			deleteTransporter($(this).attr("id"));
-		});
+	    $('.demoSwalProduct').click(function(e){
+	  		var id=$(e.currentTarget).attr('id');
+	      	swal({
+	      		title: "Are you sure?",
+	      		text: "You will not be able to recover this Change!",
+	      		type: "warning",
+	      		showCancelButton: true,
+	      		confirmButtonText: "Yes, delete it!",
+	      		cancelButtonText: "No, cancel!",
+	      		closeOnConfirm: false,
+	      		closeOnCancel: false
+	      	}, function(isConfirm) {
+	      		if (isConfirm) {
+	      			deleteProduct(id);
+	      			swal("Deleted!", "Record has been deleted.", "success");
+	      		} else {
+	      			swal("Cancelled", "Customer is Not Deleted.", "error");
+	      		}
+	      	});
+	    });
 
-		$('.deleteP').unbind().click(function(){
-			deleteProduct($(this).attr("id"));
-		});
-		
-		$('.deleteU').unbind().click(function(){
-			deleteUnit($(this).attr("id"));
-		});
+	    $('.demoSwalUnit').click(function(e){
+	  		var id=$(e.currentTarget).attr('id');
+	      	swal({
+	      		title: "Are you sure?",
+	      		text: "You will not be able to recover this Change!",
+	      		type: "warning",
+	      		showCancelButton: true,
+	      		confirmButtonText: "Yes, delete it!",
+	      		cancelButtonText: "No, cancel!",
+	      		closeOnConfirm: false,
+	      		closeOnCancel: false
+	      	}, function(isConfirm) {
+	      		if (isConfirm) {
+	      			deleteUnit(id);
+	      			swal("Deleted!", "Record has been deleted.", "success");
+	      		} else {
+	      			swal("Cancelled", "Customer is Not Deleted.", "error");
+	      		}
+	      	});
+	    });
 
 		$('#salesChallanDiv').unbind().click(function(){
 	    	$('#div_sales_challan').show("slow", function() {
@@ -433,7 +512,7 @@ $(function(){
 	    		salesGrand=0;		
 	    		loadAllProductsandChallanNo();
 	    	});	
-	    });
+	    });	    
 	    $('#salesReturnChallanDiv').unbind().click(function(){
 	    	$('#div_sales_return_challan').show("slow", function() {
 	    		$('#srgrandTotal').val("");
@@ -490,25 +569,26 @@ $(function(){
 	};
 
 	//initial display div setting
-	$('#div_dashboard').show();
-	$('#div_customers').hide();
-	$('#div_transporters').hide();
-	$('#div_products').hide();
-	$('#div_sales_challan').hide();
-	$('#div_sales_return_challan').hide();
-	$('#div_units').hide();
-	$('#div_sales_report_challanwise').hide();
-	$('#div_sales_return_report_challanwise').hide();
-	$('#div_sales_report_datewise').hide();
-	$('#div_sales_return_report_datewise').hide();
-	$('#div_sales_report_customerwise').hide();
-	$('#div_sales_return_report_customerwise').hide();
+	var div_active=sessionStorage.getItem('activeDiv');
+	$('#'+div_active).show();
+	if(div_active == 'div_sales_challan'){
+		setTimeout(function(){
+			salesGrand=0;
+  			loadAllProductsandChallanNo();
+		},1);
+	}
+	else if(div_active == 'div_sales_return_challan'){
+		setTimeout(function(){
+			salesReturnGrand=0;
+  			loadAllProductsandChallanNosr();
+		},1);	
+	}
 
 	$('a[href="#"]').click(function (event) { // where href are blank
 	   event.preventDefault();
 	});
 
-	// validation Customer
+	//Customer
 	$('#csubmit').click(validateCustomer);
 	$('#clearCustomer').click(clearCustomer);	
 	function clearCustomer(event){
@@ -599,7 +679,7 @@ $(function(){
 		connection.send(json);
 	}
 
-	// validation Transporter
+	//Transporter
 	$('#tsubmit').click(validateTransporter);
 	$('#clearTransporter').click(clearTransporter);
 	function clearTransporter(event){
@@ -692,7 +772,7 @@ $(function(){
 		connection.send(json);
 	}
 
-	// validation Product
+	//Product
 	$('#psubmit').click(validateProduct);
 	$('#clearProduct').click(clearProduct);
 	function clearProduct(even){
@@ -794,7 +874,7 @@ $(function(){
 		connection.send(json);
 	}
 
-	//validate Unit
+	//Unit
 	$('#clearUnit').click(clearUnit);
 	$('#usubmit').click(validateUnit);
 	function clearUnit(event){
@@ -888,7 +968,6 @@ $(function(){
 		$('#srprice').val(ans);
 	});
 
-	//$('#printsaleschallan').click(printsaleschallan);
 	$('#printsaleschallan').click(printsaleschallan);
 	function printsaleschallan(){
 		$('#salesChallanNo').text(" "+$('#schallanno').val());
@@ -978,7 +1057,6 @@ $(function(){
 			event.preventDefault();
 		printDiv('sales_return_report_customerwise_div');
 	}
-
 
 	function printDiv(divID) {
 		var divElements = document.getElementById(divID).innerHTML;
@@ -1204,6 +1282,7 @@ $(function(){
 	}
 
 });
+
 function addSalesRow(){
 	var itemid    =$("#loadProductsDropdown option:selected").val();
 	var itemName  =$("#loadProductsDropdown option:selected").text();

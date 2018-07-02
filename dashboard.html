@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
+	<link rel="shortcut icon" type="image/png" href="favicon.ico">
+  <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>E-challan Dashboard</title>
@@ -121,7 +122,7 @@
   <!-- Sidebar menu-->
   <div class="app-sidebar__overlay" data-toggle="sidebar"></div>
     <aside class="app-sidebar">
-      <div class="app-sidebar__user"><img class="app-sidebar__user-avatar" src="Assets/images/48.jpg" alt="User Image">
+      <div class="app-sidebar__user"><img class="app-sidebar__user-avatar" src="Assets/images/logo48.png" alt="User Image">
         <div>
           <p class="app-sidebar__user-name">John Doe</p>
           <p class="app-sidebar__user-designation">Software Developer</p>
@@ -164,13 +165,12 @@
       <!-- page title -->
 
     	<!-- Changable content Dashboard-->
-    	<div id="div_dashboard">
+    	<div id="div_dashboard" style="display: none;">
       	<div class="row user">
         	<div class="col-md-12">
           		<div class="profile">
-            		<div class="info"><img class="user-img" src="Assets/images/128.jpg">
-              			<h4>John Doe</h4>
-  	            		<p>Software Developer</p>
+            		<div class="info"><img class="user-img" src="Assets/images/logo128.png">
+              			<h4>E-Challan</h4>  	            		
             		</div>
             		<div class="cover-image"></div>
           		</div>
@@ -179,7 +179,7 @@
       </div>
       
       <!-- Changable content Customers-->
-      <div id="div_customers">
+      <div id="div_customers" style="display: none;">
         <div class="col-md-12">
           <div class="tile">
             <h3 class="tile-title">Customers Detail</h3>
@@ -238,7 +238,7 @@
       </div>
 
       <!-- Changable content Transporters-->
-      <div id="div_transporters">
+      <div id="div_transporters" style="display: none;">
         <div class="col-md-12">
           <div class="tile">
             <h3 class="tile-title">Transporters Detail</h3>
@@ -296,7 +296,7 @@
       </div>
       
       <!-- Changable content Products-->
-      <div id="div_products">
+      <div id="div_products" style="display: none;">
         <div class="col-md-12">
           <div class="tile">
             <h3 class="tile-title">Products Detail</h3>
@@ -349,7 +349,7 @@
       </div>
 
       <!-- Changable content Units-->
-      <div id="div_units">
+      <div id="div_units" style="display: none;">
         <div class="col-md-12">
           <div class="tile">
             <h3 class="tile-title">Units Detail</h3>
@@ -392,7 +392,7 @@
       </div>
 
       <!-- Changable content sales challan-->
-      <div id="div_sales_challan">
+      <div id="div_sales_challan" style="display: none;">
         <div class="col-md-12">
           <h3 class="tile-title">Sales Challan</h3>
           <div class="tile"> 
@@ -534,7 +534,7 @@
       </div>
       
       <!-- Changable content sales return challan-->
-      <div id="div_sales_return_challan">
+      <div id="div_sales_return_challan" style="display: none;">
         <div class="col-md-12">
           <h3 class="tile-title">Sales Return Challan</h3>
           <div class="tile"> 
@@ -675,7 +675,7 @@
       </div>
 
       <!-- Changable content sales report challanwise-->
-      <div id="div_sales_report_challanwise">
+      <div id="div_sales_report_challanwise" style="display: none;">
         <div class="col-md-12">
           <h3 class="tile-title">Sales Challan Report</h3>
           <div class="tile"> 
@@ -753,7 +753,7 @@
       </div>
 
       <!-- Changable content sales Return report challanwise-->      
-      <div id="div_sales_return_report_challanwise">
+      <div id="div_sales_return_report_challanwise" style="display: none;">
         <div class="col-md-12">
           <h3 class="tile-title">Sales Return Challan Report</h3>
           <div class="tile"> 
@@ -831,7 +831,7 @@
       </div>
 
       <!-- Changable content sales report datewise-->      
-      <div id="div_sales_report_datewise">
+      <div id="div_sales_report_datewise" style="display: none;">
         <div class="col-md-12">
           <h3 class="tile-title">Sales Challan Datewise Report</h3>
           <div class="tile"> 
@@ -902,7 +902,7 @@
       </div>
 
       <!-- Changable content sales return report datewise-->      
-      <div id="div_sales_return_report_datewise">
+      <div id="div_sales_return_report_datewise" style="display: none;">
         <div class="col-md-12">
           <h3 class="tile-title">Sales Return Challan Datewise Report</h3>
           <div class="tile"> 
@@ -973,7 +973,7 @@
       </div>
 
       <!-- Changable content sales report customerwise-->      
-      <div id="div_sales_report_customerwise">
+      <div id="div_sales_report_customerwise" style="display: none;">
         <div class="col-md-12">
           <h3 class="tile-title">Sales Challan Customerwise Report</h3>
           <div class="tile"> 
@@ -981,7 +981,7 @@
               <form class="row" id="">                
                 <div class="form-group col-md-3">
                   <label class="control-label">Customer Name</label>
-                  <input class="form-control" id="ssearchcustomername" type="text" placeholder="Select Customer">
+                  <select class="form-control" id="ssearchcustomername"></select>
                 </div>
                 <div class="form-group col-md-1">
                   <label class="control-label" style="visibility: hidden;">C</label><br>
@@ -1041,7 +1041,7 @@
       </div>
 
       <!-- Changable content sales return report customerwise-->      
-      <div id="div_sales_return_report_customerwise">
+      <div id="div_sales_return_report_customerwise" style="display: none;">
         <div class="col-md-12">
           <h3 class="tile-title">Sales Return Challan Customerwise Report</h3>
           <div class="tile"> 
@@ -1049,7 +1049,7 @@
               <form class="row" id="">                
                 <div class="form-group col-md-3">
                   <label class="control-label">Customer Name</label>
-                  <input class="form-control" id="srsearchcustomername" type="text" placeholder="Select Customer">
+                  <select class="form-control" id="srsearchcustomername"></select>
                 </div>
                 <div class="form-group col-md-1">
                   <label class="control-label" style="visibility: hidden;">C</label><br>
@@ -1111,78 +1111,77 @@
   </main>
 
     <script>
-      //changing div functions goes here.
       function showDashboard(){
-        $('#div_dashboard').show();
-        $('#div_customers').hide();
-        $('#div_transporters').hide();
-        $('#div_products').hide();
-        $('#div_sales_challan').hide();
-        $('#div_sales_return_challan').hide();
-        $('#div_units').hide();
-        $('#div_sales_report_challanwise').hide();
-        $('#div_sales_return_report_challanwise').hide();
-        $('#div_sales_report_datewise').hide();
-        $('#div_sales_return_report_datewise').hide();
-        $('#div_sales_report_customerwise').hide();
-        $('#div_sales_return_report_customerwise').hide();
+        sessionStorage.setItem('activeDiv','div_dashboard');
+        checkDiv();
       }
 
       function showCustomers(){
-        $('#div_dashboard').hide();
-        $('#div_customers').show();
-        $('#div_transporters').hide();
-        $('#div_products').hide();
-        $('#div_sales_challan').hide();
-        $('#div_sales_return_challan').hide();
-        $('#div_units').hide();
-        $('#div_sales_report_challanwise').hide();
-        $('#div_sales_return_report_challanwise').hide();
-        $('#div_sales_report_datewise').hide();
-        $('#div_sales_return_report_datewise').hide();
-        $('#div_sales_report_customerwise').hide();
-        $('#div_sales_return_report_customerwise').hide();
+        sessionStorage.setItem('activeDiv','div_customers');
+        checkDiv();
       }
 
       function showTransporters(){
-        $('#div_dashboard').hide();
-        $('#div_customers').hide();
-        $('#div_transporters').show();
-        $('#div_products').hide();
-        $('#div_sales_challan').hide();
-        $('#div_sales_return_challan').hide();
-        $('#div_units').hide();
-        $('#div_sales_report_challanwise').hide();
-        $('#div_sales_return_report_challanwise').hide();
-        $('#div_sales_report_datewise').hide();
-        $('#div_sales_return_report_datewise').hide();
-        $('#div_sales_report_customerwise').hide();
-        $('#div_sales_return_report_customerwise').hide();
+        sessionStorage.setItem('activeDiv','div_transporters');
+        checkDiv();
       }
 
       function showUnits(){
-        $('#div_units').show();
+        sessionStorage.setItem('activeDiv','div_units');
+        checkDiv();
+      }
+
+      function showProducts(){
+        sessionStorage.setItem('activeDiv','div_products');
+        checkDiv();
+      }
+      function showSalesChallan(){
+        sessionStorage.setItem('activeDiv','div_sales_challan');
+        checkDiv();
+      }
+      function showSalesReturnChallan(){
+        sessionStorage.setItem('activeDiv','div_sales_return_challan');
+        checkDiv();
+      }
+
+      function showSalesReportChallanwise(){
+        sessionStorage.setItem('activeDiv','div_sales_report_challanwise');
+        checkDiv();
+      }
+
+      function showSalesReturnReportChallanwise(){
+        sessionStorage.setItem('activeDiv','div_sales_return_report_challanwise');
+        checkDiv();
+      }
+
+      function showSalesDatewise(){
+        sessionStorage.setItem('activeDiv','div_sales_report_datewise');
+        checkDiv();
+      }
+
+      function showSalesReturnDatewise(){
+        sessionStorage.setItem('activeDiv','div_sales_return_report_datewise');
+        checkDiv();
+      }
+
+      function showSalesCustomerwise(){
+        sessionStorage.setItem('activeDiv','div_sales_report_customerwise');
+        checkDiv();
+      }
+
+      function showSalesReturnCustomerwise(){
+        sessionStorage.setItem('activeDiv','div_sales_return_report_customerwise');
+        checkDiv();   
+      }
+
+      function checkDiv(){
+        var div_active=sessionStorage.getItem('activeDiv');
         $('#div_dashboard').hide();
         $('#div_customers').hide();
         $('#div_transporters').hide();
         $('#div_products').hide();
         $('#div_sales_challan').hide();
         $('#div_sales_return_challan').hide();
-        $('#div_sales_report_challanwise').hide();
-        $('#div_sales_return_report_challanwise').hide();
-        $('#div_sales_report_datewise').hide();
-        $('#div_sales_return_report_datewise').hide();
-        $('#div_sales_report_customerwise').hide();
-        $('#div_sales_return_report_customerwise').hide();
-      }
-
-      function showProducts(){
-        $('#div_dashboard').hide();
-        $('#div_customers').hide();
-        $('#div_transporters').hide();
-        $('#div_products').show(); 
-        $('#div_sales_challan').hide();
-        $('#div_sales_return_challan').hide();
         $('#div_units').hide();
         $('#div_sales_report_challanwise').hide();
         $('#div_sales_return_report_challanwise').hide();
@@ -1190,156 +1189,24 @@
         $('#div_sales_return_report_datewise').hide();
         $('#div_sales_report_customerwise').hide();
         $('#div_sales_return_report_customerwise').hide();
-      }
-      function showSalesChallan(){
-        $('#div_sales_challan').show();
-        $('#div_dashboard').hide();
-        $('#div_customers').hide();
-        $('#div_transporters').hide();
-        $('#div_products').hide(); 
-        $('#div_sales_return_challan').hide();
-        $('#div_units').hide();
-        $('#div_sales_report_challanwise').hide();
-        $('#div_sales_return_report_challanwise').hide();
-        $('#div_sales_report_datewise').hide();
-        $('#div_sales_return_report_datewise').hide();
-        $('#div_sales_report_customerwise').hide();
-        $('#div_sales_return_report_customerwise').hide();
-      }
-      function showSalesReturnChallan(){
-        $('#div_sales_return_challan').show(); 
-        $('#div_sales_challan').hide();
-        $('#div_dashboard').hide();
-        $('#div_customers').hide();
-        $('#div_transporters').hide();
-        $('#div_products').hide(); 
-        $('#div_units').hide();
-        $('#div_sales_report_challanwise').hide();
-        $('#div_sales_return_report_challanwise').hide();
-        $('#div_sales_report_datewise').hide();
-        $('#div_sales_return_report_datewise').hide();
-        $('#div_sales_report_customerwise').hide();
-        $('#div_sales_return_report_customerwise').hide();
-      }
-
-      function showSalesReportChallanwise(){
-        $('#div_sales_report_challanwise').show();
-        $('#div_sales_return_challan').hide(); 
-        $('#div_sales_challan').hide();
-        $('#div_dashboard').hide();
-        $('#div_customers').hide();
-        $('#div_transporters').hide();
-        $('#div_products').hide(); 
-        $('#div_units').hide(); 
-        $('#div_sales_return_report_challanwise').hide();
-        $('#div_sales_report_datewise').hide();
-        $('#div_sales_return_report_datewise').hide();
-        $('#div_sales_report_customerwise').hide();
-        $('#div_sales_return_report_customerwise').hide();
-      }
-
-      function showSalesReturnReportChallanwise(){
-        $('#div_sales_return_report_challanwise').show();
-        $('#div_sales_report_challanwise').hide();
-        $('#div_sales_return_challan').hide(); 
-        $('#div_sales_challan').hide();
-        $('#div_dashboard').hide();
-        $('#div_customers').hide();
-        $('#div_transporters').hide();
-        $('#div_products').hide(); 
-        $('#div_units').hide(); 
-        $('#div_sales_report_datewise').hide();
-        $('#div_sales_return_report_datewise').hide();
-        $('#div_sales_report_customerwise').hide();
-        $('#div_sales_return_report_customerwise').hide();
-      }
-
-      function showSalesDatewise(){
-        $('#div_sales_report_datewise').show();
-        $('#div_sales_return_report_challanwise').hide();
-        $('#div_sales_report_challanwise').hide();
-        $('#div_sales_return_challan').hide(); 
-        $('#div_sales_challan').hide();
-        $('#div_dashboard').hide();
-        $('#div_customers').hide();
-        $('#div_transporters').hide();
-        $('#div_products').hide(); 
-        $('#div_units').hide();
-        $('#div_sales_return_report_datewise').hide();
-        $('#div_sales_report_customerwise').hide();
-        $('#div_sales_return_report_customerwise').hide();
-      }
-
-      function showSalesReturnDatewise(){
-        $('#div_sales_return_report_datewise').show();
-        $('#div_sales_report_datewise').hide();
-        $('#div_sales_return_report_challanwise').hide();
-        $('#div_sales_report_challanwise').hide();
-        $('#div_sales_return_challan').hide(); 
-        $('#div_sales_challan').hide();
-        $('#div_dashboard').hide();
-        $('#div_customers').hide();
-        $('#div_transporters').hide();
-        $('#div_products').hide(); 
-        $('#div_units').hide(); 
-        $('#div_sales_report_customerwise').hide();
-        $('#div_sales_return_report_customerwise').hide();
-      }
-
-      function showSalesCustomerwise(){
-        $('#div_sales_report_customerwise').show();
-        $('#div_sales_return_report_datewise').hide();
-        $('#div_sales_report_datewise').hide();
-        $('#div_sales_return_report_challanwise').hide();
-        $('#div_sales_report_challanwise').hide();
-        $('#div_sales_return_challan').hide(); 
-        $('#div_sales_challan').hide();
-        $('#div_dashboard').hide();
-        $('#div_customers').hide();
-        $('#div_transporters').hide();
-        $('#div_products').hide(); 
-        $('#div_units').hide();  
-        $('#div_sales_return_report_customerwise').hide();
-      }
-
-      function showSalesReturnCustomerwise(){
-        $('#div_sales_return_report_customerwise').show();
-        $('#div_sales_report_customerwise').hide();
-        $('#div_sales_return_report_datewise').hide();
-        $('#div_sales_report_datewise').hide();
-        $('#div_sales_return_report_challanwise').hide();
-        $('#div_sales_report_challanwise').hide();
-        $('#div_sales_return_challan').hide(); 
-        $('#div_sales_challan').hide();
-        $('#div_dashboard').hide();
-        $('#div_customers').hide();
-        $('#div_transporters').hide();
-        $('#div_products').hide(); 
-        $('#div_units').hide();   
+        $('#'+div_active).show();        
       }
     </script>
 
-    <!-- Essential javascripts for application to work-->
     <script src="js/jquery-3.2.1.min.js"></script>
     <script src="js/popper.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/main.js"></script>
-    
-    <!-- The javascript plugin to display page loading on top-->
     <script src="js/plugins/pace.min.js"></script>
-    <!-- Data table plugin-->
     <script type="text/javascript" src="js/plugins/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="js/plugins/dataTables.bootstrap.min.js"></script>
     <script type="text/javascript" src="js/plugins/bootstrap-datepicker.min.js"></script>
     <script type="text/javascript" src="js/plugins/select2.min.js"></script>
     <script type="text/javascript" src="dashboard.js"></script>
+    <script type="text/javascript" src="js/plugins/bootstrap-notify.min.js"></script>
+    <script type="text/javascript" src="js/plugins/sweetalert.min.js"></script>
 
-    <!-- <script type="text/javascript" src="js/invoice.js"></script> -->
     <script type="text/javascript">
-      $('#sampleTableCustomer').dataTable({
-        "paging": true
-      });
-
       $('#sDate').datepicker({
           format: "dd/mm/yyyy",
           autoclose: true,
@@ -1371,15 +1238,7 @@
           format: "dd/mm/yyyy",
           autoclose: true,
           todayHighlight: true
-      });
-      
+      });   
     </script>
-    <script type="text/javascript">$('#sampleTableTransporter').DataTable();</script>
-
-    <script type="text/javascript">$('#sampleTableProduct').DataTable();</script>
-    <script type="text/javascript">$('#sampleTableUnit').DataTable();</script>
-    
-    <!-- notification -->
-    <script type="text/javascript" src="js/plugins/bootstrap-notify.min.js"></script>
 </body>
 </html>

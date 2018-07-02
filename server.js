@@ -737,7 +737,7 @@ wsServer.on('request',function(request){
 		}
 
 		function SearchSalesChallanNowise(companyid,challanno,connection){
-			var challanid,obj,objM,objD,arr=[];
+			var challanid=-1,obj,objM,objD,arr=[];
 			async.series([
 					function(callback){
 						var sql="SELECT cm.challanid,cm.companyid,cm.customerid,c.fname,c.lname,c.address,c.gstno,cm.challanno,cm.Date,cm.total FROM challanmaster cm INNER JOIN customers c on c.customerid=cm.customerid WHERE cm.companyid="+companyid+" and cm.challanno="+challanno+";";
@@ -750,17 +750,19 @@ wsServer.on('request',function(request){
 								sendResponse(json,connection);
 								return false;
 			                }else{
-			                	challanid=result[0].challanid;
-			                	objM={
-			                		customerid 	: result[0].customerid,
-			                		customername: result[0].fname+" "+result[0].lname,
-			                		challanno 	: result[0].challanno,
-			                		date 		: result[0].Date,
-			                		total 		: result[0].total,
-			                		gstno 		: result[0].gstno,
-			                		address 	: result[0].address			                		
-			                	}
-			                    callback(null,'succes1');			                
+			                	if(result!=null){
+				                	challanid=result[0].challanid;
+				                	objM={
+				                		customerid 	: result[0].customerid,
+				                		customername: result[0].fname+" "+result[0].lname,
+				                		challanno 	: result[0].challanno,
+				                		date 		: result[0].Date,
+				                		total 		: result[0].total,
+				                		gstno 		: result[0].gstno,
+				                		address 	: result[0].address			                		
+				                	}
+				                    callback(null,'succes1');
+				                }				             
 			                }
 			            });			            
 					},
