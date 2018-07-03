@@ -148,11 +148,17 @@ wsServer.on('request',function(request){
 
 						case "SearchSalesReturnChallanCustomerwise":
 						SearchSalesReturnChallanCustomerwise(c.data.fname,c.data.lname,c.data.companyid,connection);
+						break;
+
 						case "sendAll":
 							getAllCustomers(c.data.companyid);
 							getAllTransporters(c.data.companyid);
 							getAllProducts(c.data.companyid);
 							getAllUnits(c.data.companyid);
+						break;
+
+						case "logout":
+							logout(connection);
 						break;
 					}
 				}
@@ -327,7 +333,6 @@ wsServer.on('request',function(request){
 		function updateProduct(productid,name,length,width,thickness,companyid,connection){
 			var obj;
 			var sql="UPDATE products set productname='"+name+"',length='"+length+"',width='"+width+"',thickness='"+thickness+"' WHERE productid="+productid+" AND companyid="+companyid+";";
-			console.log(sql);
 			con.query(sql, function (err, result, fields) {
 				if(result.affectedRows){
 					obj={
@@ -386,7 +391,6 @@ wsServer.on('request',function(request){
 		function updateUnit(unitid,name,offset,companyid,connection){
 			var obj;
 			var sql="UPDATE unitmaster set unitname='"+name+"',offset="+offset+" WHERE unitid="+unitid+" AND companyid="+companyid+";";
-			console.log(sql);
 			con.query(sql, function (err, result, fields) {
 				if(result.affectedRows){
 					obj={
@@ -426,20 +430,22 @@ wsServer.on('request',function(request){
 			var arr=[];
 			var sql="SELECT * from customers where companyid="+companyid+";";
 			con.query(sql, function (err, result, fields) {
-				for(var index in result){
-					var obj={
-						customerid:result[index].customerid,
-						companyid:result[index].companyid,
-						fname:result[index].fname,
-						lname:result[index].lname,
-						contactno:result[index].contactno,
-						address:result[index].address,
-						gstno:result[index].gstno,
+				if(result.length){
+					for(var index in result){
+						var obj={
+							customerid:result[index].customerid,
+							companyid:result[index].companyid,
+							fname:result[index].fname,
+							lname:result[index].lname,
+							contactno:result[index].contactno,
+							address:result[index].address,
+							gstno:result[index].gstno,
+						}
+						arr.push(obj); 
 					}
-					arr.push(obj); 
+					var json=JSON.stringify({type:"getAllCustomer_callback",data:arr});
+					sendResponse(json,connection);				
 				}
-				var json=JSON.stringify({type:"getAllCustomer_callback",data:arr});
-				sendResponse(json,connection);				
 			});
 		}
 
@@ -447,20 +453,22 @@ wsServer.on('request',function(request){
 			var arr=[];
 			var sql="SELECT * from transporters where companyid="+companyid+";";
 			con.query(sql, function (err, result, fields) {
-				for(var index in result){
-					var obj={
-						transportid:result[index].transportid,
-						companyid:result[index].companyid,
-						fname:result[index].fname,
-						lname:result[index].lname,
-						contactno:result[index].contactno,
-						address:result[index].address,
-						gstno:result[index].gstno,
+				if(result.length){
+					for(var index in result){
+						var obj={
+							transportid:result[index].transportid,
+							companyid:result[index].companyid,
+							fname:result[index].fname,
+							lname:result[index].lname,
+							contactno:result[index].contactno,
+							address:result[index].address,
+							gstno:result[index].gstno,
+						}
+						arr.push(obj); 
 					}
-					arr.push(obj); 
+					var json=JSON.stringify({type:"getAllTransporter_callback",data:arr});
+					sendResponse(json,connection);				
 				}
-				var json=JSON.stringify({type:"getAllTransporter_callback",data:arr});
-				sendResponse(json,connection);				
 			});
 		}
 
@@ -468,18 +476,20 @@ wsServer.on('request',function(request){
 			var arr=[];
 			var sql="SELECT * from products where companyid="+companyid+";";
 			con.query(sql, function (err, result, fields) {
-				for(var index in result){
-					var obj={
-						productid:result[index].productid,
-						productname:result[index].productname,
-						length:result[index].length,
-						width:result[index].width,
-						thickness:result[index].thickness						
+				if(result.length){	
+					for(var index in result){
+						var obj={
+							productid:result[index].productid,
+							productname:result[index].productname,
+							length:result[index].length,
+							width:result[index].width,
+							thickness:result[index].thickness						
+						}
+						arr.push(obj); 
 					}
-					arr.push(obj); 
+					var json=JSON.stringify({type:"getAllProducts_callback",data:arr});
+					sendResponse(json,connection);				
 				}
-				var json=JSON.stringify({type:"getAllProducts_callback",data:arr});
-				sendResponse(json,connection);				
 			});
 		}
 
@@ -487,41 +497,47 @@ wsServer.on('request',function(request){
 			var arr=[];
 			var sql="SELECT * from products where companyid="+companyid+";";
 			con.query(sql, function (err, result, fields) {
-				for(var index in result){
-					var obj={
-						productid:result[index].productid,
-						productname:result[index].productname,
-						length:result[index].length,
-						width:result[index].width,
-						thickness:result[index].thickness						
+				if(result.length){	
+					for(var index in result){
+						var obj={
+							productid:result[index].productid,
+							productname:result[index].productname,
+							length:result[index].length,
+							width:result[index].width,
+							thickness:result[index].thickness						
+						}
+						arr.push(obj); 
 					}
-					arr.push(obj); 
+					var json=JSON.stringify({type:"getAllProductList_callback",data:arr});
+					sendResponse(json,connection);				
 				}
-				var json=JSON.stringify({type:"getAllProductList_callback",data:arr});
-				sendResponse(json,connection);				
 			});
 		}
 
 		function getSalesChallanNo(companyid){
 			var sql="SELECT companyid as 'companyid', MAX(challanno) AS 'LastChallan' FROM   challanmaster where companyid="+companyid+" GROUP BY companyid";
 			con.query(sql, function (err, result, fields) {
-				var obj={
-					companyid:result[0].companyid,
-					challanno:result[0].LastChallan
+				if(result.length){
+					var obj={
+						companyid:result[0].companyid,
+						challanno:result[0].LastChallan
+					}
+					var json=JSON.stringify({type:"getSalesChallanNo_callback",data:obj});
+					sendResponse(json,connection);
 				}
-				var json=JSON.stringify({type:"getSalesChallanNo_callback",data:obj});
-				sendResponse(json,connection);
 			});
 		}
 		function getSalesReturnChallanNo(companyid){
 			var sql="SELECT companyid as 'companyid', MAX(challanno) AS 'LastChallan' FROM   challanreturnmaster where companyid="+companyid+" GROUP BY companyid";
 			con.query(sql, function (err, result, fields) {
-				var obj={
-					companyid:result[0].companyid,
-					challanno:result[0].LastChallan
+				if(result.length){
+					var obj={
+						companyid:result[0].companyid,
+						challanno:result[0].LastChallan
+					}
+					var json=JSON.stringify({type:"getSalesReturnChallanNo_callback",data:obj});
+					sendResponse(json,connection);
 				}
-				var json=JSON.stringify({type:"getSalesReturnChallanNo_callback",data:obj});
-				sendResponse(json,connection);
 			});
 		}
 
@@ -529,19 +545,21 @@ wsServer.on('request',function(request){
 			var arr=[];
 			var sql="SELECT fname,lname,customerid,address,gstno,contactno from customers where companyid="+companyid+";";
 			con.query(sql, function (err, result, fields) {
-				for(var index in result){
-					var obj={
-						customerid 		: 	result[index].customerid,
-						fname 			: 	result[index].fname,
-						lname 			: 	result[index].lname,
-						address 		: 	result[index].address,
-						gstno 			: 	result[index].gstno,
-						contactno 		: 	result[index].contactno						
+				if(result.length){
+					for(var index in result){
+						var obj={
+							customerid 		: 	result[index].customerid,
+							fname 			: 	result[index].fname,
+							lname 			: 	result[index].lname,
+							address 		: 	result[index].address,
+							gstno 			: 	result[index].gstno,
+							contactno 		: 	result[index].contactno						
+						}
+						arr.push(obj); 
 					}
-					arr.push(obj); 
+					var json=JSON.stringify({type:"getAllCustomerList_callback",data:arr});
+					sendResponse(json,connection);
 				}
-				var json=JSON.stringify({type:"getAllCustomerList_callback",data:arr});
-				sendResponse(json,connection);				
 			});
 		}
 
@@ -549,16 +567,18 @@ wsServer.on('request',function(request){
 			var arr=[];
 			var sql="SELECT unitid,unitname,offset from unitmaster where companyid="+companyid+";";
 			con.query(sql, function (err, result, fields) {
-				for(var index in result){
-					var obj={
-						unitid 			: 	result[index].unitid,
-						unitname 		: 	result[index].unitname,
-						offset 			: 	result[index].offset,						
+				if(result.length){
+					for(var index in result){
+						var obj={
+							unitid 			: 	result[index].unitid,
+							unitname 		: 	result[index].unitname,
+							offset 			: 	result[index].offset,						
+						}
+						arr.push(obj); 
 					}
-					arr.push(obj); 
+					var json=JSON.stringify({type:"getAllUnitList_callback",data:arr});
+					sendResponse(json,connection);				
 				}
-				var json=JSON.stringify({type:"getAllUnitList_callback",data:arr});
-				sendResponse(json,connection);				
 			});
 		}
 
@@ -581,7 +601,6 @@ wsServer.on('request',function(request){
 		        },
 		        function(callback){
 		            var sql='INSERT INTO challanmaster(companyid,customerid,challanno,Date,total) values ('+companyid+','+customerid+','+challanno+',"'+date+'",'+total+');';
-		            console.log(sql);
 		            con.query(sql, function (err, result) {
 		                if (err){        
 		                    obj={
@@ -723,16 +742,18 @@ wsServer.on('request',function(request){
 			var arr=[];
 			var sql="SELECT * from unitmaster where companyid="+companyid+";";
 			con.query(sql, function (err, result, fields) {
-				for(var index in result){
-					var obj={
-						unitid:result[index].unitid,
-						unitname:result[index].unitname,
-						offset:result[index].offset,						
+				if(result.length){
+					for(var index in result){
+						var obj={
+							unitid:result[index].unitid,
+							unitname:result[index].unitname,
+							offset:result[index].offset,						
+						}
+						arr.push(obj); 
 					}
-					arr.push(obj); 
+					var json=JSON.stringify({type:"getAllUnits_callback",data:arr});
+					sendResponse(json,connection);				
 				}
-				var json=JSON.stringify({type:"getAllUnits_callback",data:arr});
-				sendResponse(json,connection);				
 			});
 		}
 
@@ -750,8 +771,8 @@ wsServer.on('request',function(request){
 								sendResponse(json,connection);
 								return false;
 			                }else{
-			                	if(result!=null){
-				                	challanid=result[0].challanid;
+			                	if(result.length){
+			                		challanid=result[0].challanid;
 				                	objM={
 				                		customerid 	: result[0].customerid,
 				                		customername: result[0].fname+" "+result[0].lname,
@@ -762,6 +783,14 @@ wsServer.on('request',function(request){
 				                		address 	: result[0].address			                		
 				                	}
 				                    callback(null,'succes1');
+				                }
+				                else{
+				                	obj={
+										msg:'ChallanSelectFail'
+									}
+									var json=JSON.stringify({type:"SearchSalesChallanNowise_callback",data:obj});
+									sendResponse(json,connection);
+									return false;	
 				                }				             
 			                }
 			            });			            
@@ -777,19 +806,28 @@ wsServer.on('request',function(request){
 								sendResponse(json,connection);
 								return false;
 			                }else{
-			                    for(var index in result){
-			                    	//console.log(result[index].productid);
-			                    	objD={
-			                    		productid 	: result[index].productid,
-			                    		productname : result[index].productname,
-			                    		unit 		: result[index].unit,
-			                    		quantity 	: result[index].quantity,
-			                    		rate 		: result[index].rate,
-			                    		price 		: result[index].price
-			                    	}
-			                    	arr.push(objD);			                    	
+			                    if(result.length){
+				                    for(var index in result){
+				                    	objD={
+				                    		productid 	: result[index].productid,
+				                    		productname : result[index].productname,
+				                    		unit 		: result[index].unit,
+				                    		quantity 	: result[index].quantity,
+				                    		rate 		: result[index].rate,
+				                    		price 		: result[index].price
+				                    	}
+				                    	arr.push(objD);			                    	
+				                    }
+			                    	callback(null,'succes1');
 			                    }
-			                    callback(null,'succes1');
+			                    else{
+			                    	obj={
+										msg:'ChallanSelectFail'
+									}
+									var json=JSON.stringify({type:"SearchSalesChallanNowise_callback",data:obj});
+									sendResponse(json,connection);
+									return false;	
+			                    }
 			                }
 			            });
 					}	
@@ -817,17 +855,27 @@ wsServer.on('request',function(request){
 								sendResponse(json,connection);
 								return false;
 			                }else{
-			                	challanid=result[0].challanid;
-			                	objM={
-			                		customerid 	: result[0].customerid,
-			                		customername: result[0].fname+" "+result[0].lname,
-			                		challanno 	: result[0].challanno,
-			                		date 		: result[0].date,
-			                		total 		: result[0].total,
-			                		gstno 		: result[0].gstno,
-			                		address 	: result[0].address			                		
-			                	}
-			                    callback(null,'succes1');			                
+			                	if(result.length){
+				                	challanid=result[0].challanid;
+				                	objM={
+				                		customerid 	: result[0].customerid,
+				                		customername: result[0].fname+" "+result[0].lname,
+				                		challanno 	: result[0].challanno,
+				                		date 		: result[0].date,
+				                		total 		: result[0].total,
+				                		gstno 		: result[0].gstno,
+				                		address 	: result[0].address			                		
+				                	}
+				                    callback(null,'succes1');			                
+				                }
+				                else{
+				                	obj={
+										msg:'ChallanSelectFail'
+									}
+									var json=JSON.stringify({type:"SearchSalesReturnChallanNowise_callback",data:obj});
+									sendResponse(json,connection);
+									return false;	
+				                }
 			                }
 			            });			            
 					},
@@ -842,19 +890,29 @@ wsServer.on('request',function(request){
 								sendResponse(json,connection);
 								return false;
 			                }else{
-			                    for(var index in result){
-			                    	//console.log(result[index].productid);
-			                    	objD={
-			                    		productid 	: result[index].productid,
-			                    		productname : result[index].productname,
-			                    		unit 		: result[index].unit,
-			                    		quantity 	: result[index].quantity,
-			                    		rate 		: result[index].rate,
-			                    		price 		: result[index].price
-			                    	}
-			                    	arr.push(objD);			                    	
-			                    }
-			                    callback(null,'succes1');
+			                	if(result.length){
+				                    for(var index in result){
+				                    	//console.log(result[index].productid);
+				                    	objD={
+				                    		productid 	: result[index].productid,
+				                    		productname : result[index].productname,
+				                    		unit 		: result[index].unit,
+				                    		quantity 	: result[index].quantity,
+				                    		rate 		: result[index].rate,
+				                    		price 		: result[index].price
+				                    	}
+				                    	arr.push(objD);			                    	
+				                    }
+				                    callback(null,'succes1');
+				                }
+				                else{
+				                	obj={
+										msg:'ChallanSelectFail'
+									}
+									var json=JSON.stringify({type:"SearchSalesReturnChallanNowise_callback",data:obj});
+									sendResponse(json,connection);
+									return false;
+				                }
 			                }
 			            });
 					}	
@@ -872,22 +930,24 @@ wsServer.on('request',function(request){
 			var arr=[];
 			var sql="SELECT cm.companyid,cm.customerid,cm.challanno,cm.Date,cm.total,c.fname,c.lname,c.address,c.contactno FROM challanmaster cm INNER JOIN customers c on cm.customerid=c.customerid where cm.Date > '"+fromDate+"' AND cm.Date < '"+toDate+"' AND cm.companyid="+companyid+" ORDER BY cm.Date DESC";
 			con.query(sql, function (err, result, fields) {
-				for(var index in result){
-					var obj={
-						companyid 	: 	result[index].companyid,
-						customerid 	: 	result[index].customerid,
-						challanno 	: 	result[index].challanno,
-						date 		:  	result[index].Date,
-						total 		: 	result[index].total,
-						fname 	 	: 	result[index].fname,
-						lname 		: 	result[index].lname,
-						address 	:  	result[index].address,
-						contactno 	:  	result[index].contactno						
+				if(result.length){
+					for(var index in result){
+						var obj={
+							companyid 	: 	result[index].companyid,
+							customerid 	: 	result[index].customerid,
+							challanno 	: 	result[index].challanno,
+							date 		:  	result[index].Date,
+							total 		: 	result[index].total,
+							fname 	 	: 	result[index].fname,
+							lname 		: 	result[index].lname,
+							address 	:  	result[index].address,
+							contactno 	:  	result[index].contactno						
+						}
+						arr.push(obj); 
 					}
-					arr.push(obj); 
+					var json=JSON.stringify({type:"SearchSalesChallanDatewise_callback",data:arr});
+					sendResponse(json,connection);
 				}
-				var json=JSON.stringify({type:"SearchSalesChallanDatewise_callback",data:arr});
-				sendResponse(json,connection);
 			});
 		}
 
@@ -895,22 +955,24 @@ wsServer.on('request',function(request){
 			var arr=[];
 			var sql="SELECT crm.companyid,crm.customerid,crm.challanno,crm.Date,crm.total,c.fname,c.lname,c.address,c.contactno FROM challanreturnmaster crm INNER JOIN customers c on crm.customerid=c.customerid where crm.Date > '"+fromDate+"' AND crm.Date < '"+toDate+"'  AND crm.companyid="+companyid+" ORDER BY crm.challanno";
 			con.query(sql, function (err, result, fields) {
-				for(var index in result){
-					var obj={
-						companyid 	: 	result[index].companyid,
-						customerid 	: 	result[index].customerid,
-						challanno 	: 	result[index].challanno,
-						date 		:  	result[index].Date,
-						total 		: 	result[index].total,
-						fname 	 	: 	result[index].fname,
-						lname 		: 	result[index].lname,
-						address 	:  	result[index].address,
-						contactno 	:  	result[index].contactno						
+				if(res.length){	
+					for(var index in result){
+						var obj={
+							companyid 	: 	result[index].companyid,
+							customerid 	: 	result[index].customerid,
+							challanno 	: 	result[index].challanno,
+							date 		:  	result[index].Date,
+							total 		: 	result[index].total,
+							fname 	 	: 	result[index].fname,
+							lname 		: 	result[index].lname,
+							address 	:  	result[index].address,
+							contactno 	:  	result[index].contactno						
+						}
+						arr.push(obj); 
 					}
-					arr.push(obj); 
+					var json=JSON.stringify({type:"SearchSalesReturnChallanDatewise_callback",data:arr});
+					sendResponse(json,connection);
 				}
-				var json=JSON.stringify({type:"SearchSalesReturnChallanDatewise_callback",data:arr});
-				sendResponse(json,connection);
 			});
 		}
 
@@ -918,22 +980,24 @@ wsServer.on('request',function(request){
 			var arr=[];
 			var sql="SELECT cm.companyid,cm.customerid,cm.challanno,cm.Date,cm.total,c.fname,c.lname,c.address,c.contactno FROM challanmaster cm INNER JOIN customers c on cm.customerid=c.customerid where c.fname='"+fname+"' AND c.lname= '"+lname+"' AND cm.companyid="+companyid+" ORDER BY cm.challanno";
 			con.query(sql, function (err, result, fields) {
-				for(var index in result){
-					var obj={
-						companyid 	: 	result[index].companyid,
-						customerid 	: 	result[index].customerid,
-						challanno 	: 	result[index].challanno,
-						date 		:  	result[index].Date,
-						total 		: 	result[index].total,
-						fname 	 	: 	result[index].fname,
-						lname 		: 	result[index].lname,
-						address 	:  	result[index].address,
-						contactno 	:  	result[index].contactno						
+				if(result.length){
+					for(var index in result){
+						var obj={
+							companyid 	: 	result[index].companyid,
+							customerid 	: 	result[index].customerid,
+							challanno 	: 	result[index].challanno,
+							date 		:  	result[index].Date,
+							total 		: 	result[index].total,
+							fname 	 	: 	result[index].fname,
+							lname 		: 	result[index].lname,
+							address 	:  	result[index].address,
+							contactno 	:  	result[index].contactno						
+						}
+						arr.push(obj); 
 					}
-					arr.push(obj); 
+					var json=JSON.stringify({type:"SearchSalesChallanCustomerwise_callback",data:arr});
+					sendResponse(json,connection);
 				}
-				var json=JSON.stringify({type:"SearchSalesChallanCustomerwise_callback",data:arr});
-				sendResponse(json,connection);
 			});
 		}
 
@@ -941,23 +1005,30 @@ wsServer.on('request',function(request){
 			var arr=[];
 			var sql="SELECT crm.companyid,crm.customerid,crm.challanno,crm.Date,crm.total,c.fname,c.lname,c.address,c.contactno FROM challanreturnmaster crm INNER JOIN customers c on crm.customerid=c.customerid where c.fname='"+fname+"' AND c.lname= '"+lname+"' AND crm.companyid="+companyid+" ORDER BY crm.challanno";
 			con.query(sql, function (err, result, fields) {
-				for(var index in result){
-					var obj={
-						companyid 	: 	result[index].companyid,
-						customerid 	: 	result[index].customerid,
-						challanno 	: 	result[index].challanno,
-						date 		:  	result[index].Date,
-						total 		: 	result[index].total,
-						fname 	 	: 	result[index].fname,
-						lname 		: 	result[index].lname,
-						address 	:  	result[index].address,
-						contactno 	:  	result[index].contactno						
+				if(result.length){
+					for(var index in result){
+						var obj={
+							companyid 	: 	result[index].companyid,
+							customerid 	: 	result[index].customerid,
+							challanno 	: 	result[index].challanno,
+							date 		:  	result[index].Date,
+							total 		: 	result[index].total,
+							fname 	 	: 	result[index].fname,
+							lname 		: 	result[index].lname,
+							address 	:  	result[index].address,
+							contactno 	:  	result[index].contactno						
+						}
+						arr.push(obj); 
 					}
-					arr.push(obj); 
+					var json=JSON.stringify({type:"SearchSalesReturnChallanCustomerwise_callback",data:arr});
+					sendResponse(json,connection);
 				}
-				var json=JSON.stringify({type:"SearchSalesReturnChallanCustomerwise_callback",data:arr});
-				sendResponse(json,connection);
 			});
+		}
+
+		function logout(connection){
+			var json=JSON.stringify({type:'logout_callback'});
+			sendResponse(json,connection);			
 		}
 
 		function sendResponse(json,connection){

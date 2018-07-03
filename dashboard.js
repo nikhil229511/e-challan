@@ -295,9 +295,13 @@ $(function(){
 	  			notifyFail();
 	  		}
 	  		else if(json.data.msg == 'ChallanSelectSuccess'){
+	  			var d1=json.dataM.date;
+	  			d1=d1.substring(0,10);
+	  			d1=d1.split("-");
+	  			var d=d1[2]+"/"+d1[1]+"/"+d1[0];
 	  			$('#searchSalesCustomerName').text(json.dataM.customername);
 	  			$('#searchSalesChallanNo').text(json.dataM.challanno);
-	  			$('#SearchSalesDate').text(json.dataM.date);
+	  			$('#SearchSalesDate').text(d);
 	  			$('#searchSalesgrandTotal').text(json.dataM.total);
 	  			$('#searchSalesCustomerAddress').text(json.dataM.address);
 
@@ -322,9 +326,14 @@ $(function(){
 	  			notifyFail();
 	  		}
 	  		else if(json.data.msg == 'ChallanSelectSuccess'){
+	  			var d1=json.dataM.date;
+	  			d1=d1.substring(0,10);
+	  			d1=d1.split("-");
+	  			var d=d1[2]+"/"+d1[1]+"/"+d1[0];
+	  			
 	  			$('#searchSalesReturnCustomerName').text(json.dataM.customername);
 	  			$('#searchSalesReturnChallanNo').text(json.dataM.challanno);
-	  			$('#SearchSalesReturnDate').text(json.dataM.date);
+	  			$('#SearchSalesReturnDate').text(d);
 	  			$('#searchSalesReturngrandTotal').text(json.dataM.total);
 	  			$('#searchSalesReturnCustomerAddress').text(json.dataM.address);
 
@@ -352,12 +361,17 @@ $(function(){
 			var html="";
 			
 			for(var i in json.data){
+				var d1=json.data[i].date;
+				d1=d1.substring(0,10);
+	  			d1=d1.split("-");
+	  			var d=d1[2]+"/"+d1[1]+"/"+d1[0];
+
 				html += "<tr>";
 				html += "<td>"+json.data[i].fname+" "+json.data[i].lname+"</td>";
 				html += "<td>"+json.data[i].challanno+"</td>";
-				html += "<td>"+json.data[i].date+"</td>";
-				html += "<td>"+json.data[i].total+"</td>";
+				html += "<td>"+d+"</td>";
 				html += "<td>"+json.data[i].contactno+"</td>";
+				html += "<td style='text-align:right;'> <span data-prefix>₹</span>>"+json.data[i].total+"</td>";
 				html += "</tr>";
 
 			}  	
@@ -371,12 +385,17 @@ $(function(){
 			var html="";
 			
 			for(var i in json.data){
+				var d1=json.data[i].date;
+				d1=d1.substring(0,10);
+	  			d1=d1.split("-");
+	  			var d=d1[2]+"/"+d1[1]+"/"+d1[0];
+
 				html += "<tr>";
 				html += "<td>"+json.data[i].fname+" "+json.data[i].lname+"</td>";
 				html += "<td>"+json.data[i].challanno+"</td>";
-				html += "<td>"+json.data[i].date+"</td>";
-				html += "<td>"+json.data[i].total+"</td>";
+				html += "<td>"+d+"</td>";
 				html += "<td>"+json.data[i].contactno+"</td>";
+				html += "<td style='text-align:right;'> <span data-prefix>₹</span>"+json.data[i].total+"</td>";
 				html += "</tr>";
 
 			}  	
@@ -391,10 +410,15 @@ $(function(){
 			var html="";
 			
 			for(var i in json.data){
+				var d1=json.data[i].date;
+				d1=d1.substring(0,10);
+	  			d1=d1.split("-");
+	  			var d=d1[2]+"/"+d1[1]+"/"+d1[0];
+
 				html += "<tr>";
 				html += "<td>"+json.data[i].challanno+"</td>";
-				html += "<td>"+json.data[i].date+"</td>";
-				html += "<td>"+json.data[i].total+"</td>";
+				html += "<td>"+d+"</td>";
+				html += "<td style='text-align:right;'> <span data-prefix>₹</span>"+json.data[i].total+"</td>";
 				html += "</tr>";
 
 			}  	
@@ -409,10 +433,15 @@ $(function(){
 			var html="";
 			if(json.data.length){
 				for(var i in json.data){
+					var d1=json.data[i].date;
+					d1=d1.substring(0,10);
+		  			d1=d1.split("-");
+		  			var d=d1[2]+"/"+d1[1]+"/"+d1[0];
+
 					html += "<tr>";
 					html += "<td>"+json.data[i].challanno+"</td>";
-					html += "<td>"+json.data[i].date+"</td>";
-					html += "<td>"+json.data[i].total+"</td>";
+					html += "<td>"+d+"</td>";
+					html += "<td style='text-align:right;'> <span data-prefix>₹</span>"+json.data[i].total+"</td>";
 					html += "</tr>";
 				}
 				$('#searchSalesReturnPrintListCustomerwise').append(html);
@@ -420,6 +449,11 @@ $(function(){
 			else{
 				alert("No Data Found");
 			}					 			
+	  	}
+	  	else if(json.type == "logout_callback"){
+	  		sessionStorage.removeItem('companyid');
+	  		sessionStorage.removeItem('username');
+	  		window.location='login.html';
 	  	}
 
 	  	$('.demoSwalCustomer').click(function(e){
@@ -534,6 +568,32 @@ $(function(){
 	      	$('#loadProductsDropdown').focus();
 	    });
 
+	    $('#searchchallannos').change(function(){
+	    	$('#sales_report_Challanwise_div').hide();
+	    });
+	    $('#searchchallannosr').change(function(){
+	    	$('#sales_return_report_Challanwise_div').hide();
+	    });
+	    $('#ssearchfromdate').change(function(){
+	    	$('#sales_report_datewise_div').hide();
+	    });
+	    $('#ssearchtodate').change(function(){
+	    	$('#sales_report_datewise_div').hide();
+	    });
+	    $('#srsearchfromdate').change(function(){
+	    	$('#sales_return_report_datewise_div').hide();
+	    });
+	    $('#srsearchtodate').change(function(){
+	    	$('#sales_return_report_datewise_div').hide();
+	    });
+	    $('#ssearchcustomername').change(function(){
+	    	$('#sales_report_customerwise_div').hide();
+	    });
+	    $('#srsearchcustomername').change(function(){
+	    	$('#sales_return_report_customerwise_div').hide();
+	    });
+	    
+
 	    $(document).on('click','.sradd',function(){
 	      	salesReturnGrand =parseFloat(salesReturnGrand) + parseFloat($('#srprice').val());
 	      	salesReturnGrand=salesReturnGrand.toFixed(2);
@@ -584,7 +644,7 @@ $(function(){
 		},1);	
 	}
 
-	$('a[href="#"]').click(function (event) { // where href are blank
+	$('a[href="#"]').click(function (event) {
 	   event.preventDefault();
 	});
 
@@ -1279,6 +1339,12 @@ $(function(){
 		connection.send(json);
 
 		$('#sales_return_report_customerwise_div').show();
+	}
+
+	$('#logout').click(logout);
+	function logout(){
+		var json=JSON.stringify({usertype:"logout"});
+		connection.send(json);
 	}
 
 });
