@@ -371,7 +371,7 @@ $(function(){
 				html += "<td>"+json.data[i].challanno+"</td>";
 				html += "<td>"+d+"</td>";
 				html += "<td>"+json.data[i].contactno+"</td>";
-				html += "<td style='text-align:right;'> <span data-prefix>₹</span>>"+json.data[i].total+"</td>";
+				html += "<td style='text-align:right;'> <span data-prefix>₹</span>"+json.data[i].total+"</td>";
 				html += "</tr>";
 
 			}  	
@@ -1126,6 +1126,7 @@ $(function(){
         window.print();
         document.body.innerHTML = oldPage;  
         $('#div_dashboard').show();
+        location.reload();
         $('#div_sales_challan').hide();    
     }
 
