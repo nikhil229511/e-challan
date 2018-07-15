@@ -397,7 +397,7 @@
                 </div>
                 <div class="form-group col-md-2">
                   <label class="control-label">Challan No.</label>
-                  <input class="form-control" id="schallanno" type="text" disabled>
+                  <input class="form-control" id="schallanno" type="text" value="1" disabled>
                 </div>                
               </form>
             </div>
@@ -460,7 +460,6 @@
                 <br><br><br><br><br>
                 <hr class="style-eight">
                 <button class="btn btn-primary" id="ssubmit" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Okay</button>
-                <button class="btn btn-info" id="printsaleschallan"><i class="fa fa-fw fa-lg fa-print"></i>Print</button>
                 <button class="btn btn-danger" id="clearsaleschallan"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancel</button>
               </aside>        
             </div>
@@ -539,7 +538,7 @@
                 </div>
                 <div class="form-group col-md-2">
                   <label class="control-label">Challan No.</label>
-                  <input class="form-control" id="srchallanno" type="text" disabled>
+                  <input class="form-control" id="srchallanno" value="1" type="text" disabled>
                 </div>                
               </form>
             </div>
@@ -602,7 +601,6 @@
                 <br><br><br><br><br>
                 <hr class="style-eight">
                 <button class="btn btn-primary" id="srsubmit" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Okay</button>
-                <button class="btn btn-info" id="printsalesreturnchallan" type="submit"><i class="fa fa-fw fa-lg fa-print"></i>Print</button>
                 <button class="btn btn-danger" id="clearsalesreturnchallan"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancel</button>
               </aside>        
             </div>
@@ -1099,6 +1097,7 @@
   </main>
 
     <script>
+      sessionStorage.setItem('activeDiv','div_dashboard');
       function showDashboard(){
         sessionStorage.setItem('activeDiv','div_dashboard');
         checkDiv();
@@ -1177,7 +1176,12 @@
         $('#div_sales_return_report_datewise').hide();
         $('#div_sales_report_customerwise').hide();
         $('#div_sales_return_report_customerwise').hide();
-        $('#'+div_active).show();        
+        $('#'+div_active).show();
+
+        $(".app-menu").find("li a").click(function(){       
+          $('.active').removeClass('active');     
+          $(this).addClass('active'); 
+        });
       }
     </script>
 

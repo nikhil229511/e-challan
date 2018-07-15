@@ -554,18 +554,9 @@ $(function(){
 	    		loadAllProductsandChallanNosr();
 	    	});	
 	    });
-		$(document).unbind().on('click','.sadd',function(){	      	
-	      	salesGrand =parseFloat(salesGrand) + parseFloat($('#sprice').val());
-	      	salesGrand=salesGrand.toFixed(2);
+		$(document).unbind().on('click','.sadd',function(){	      		      	
 	      	addSalesRow();
-	      	$('#grandTotal').text(salesGrand);
-
-	      	$('#loadUnitDropdown').val($('#loadUnitDropdown option:first').val());
-	      	$('#loadProductsDropdown').val($('#loadProductsDropdown option:first').val());
-	      	$('#srate').val("");
-	      	$('#squantity').val("");
-	      	$('#sprice').val("");
-	      	$('#loadProductsDropdown').focus();
+	      	
 	    });
 
 	    $('#searchchallannos').change(function(){
@@ -595,18 +586,7 @@ $(function(){
 	    
 
 	    $(document).on('click','.sradd',function(){
-	      	salesReturnGrand =parseFloat(salesReturnGrand) + parseFloat($('#srprice').val());
-	      	salesReturnGrand=salesReturnGrand.toFixed(2);
-	      	addSalesReturnRow();
-	      	$('#srgrandTotal').text(salesReturnGrand);
-
-
-	      	$('#loadUnitDropdownsr').val($('#loadUnitDropdownsr option:first').val());
-	      	$('#loadProductsDropdownsr').val($('#loadProductsDropdownsr option:first').val());
-	      	$('#srrate').val("");
-	      	$('#srquantity').val("");
-	      	$('#srprice').val("");
-	      	$('#loadProductsDropdownsr').focus();
+	      	addSalesReturnRow();	      	
 	    });
 
 	    $(document).on('click','.scut',function(){
@@ -671,14 +651,22 @@ $(function(){
 		var cgstno=$('#cgstno').val();
 		var caddress=$('#caddress').val();
 		var ccustomerid=$('#ccustomerid').val();
-		
+		var letters = /^[A-Za-z]+$/;
 		if(cfname =='' || cfname == null){
 			flag=1;
 			msg="Enter First Name.";
 		}
+		else if(!cfname.match(/^[A-Za-z]+$/)){
+			flag=1;
+			msg="First Name Only Accepts Alphabets."
+		}
 		else if(clname == '' || clname== null){
 			flag=1;
 			msg="Enter Last Name.";
+		}
+		else if(!clname.match(/^[A-Za-z]+$/)){
+			flag=1;
+			msg="Last Name Only Accepts Alphabets."
 		}
 		else if(ccontactno == '' || ccontactno== null){
 			flag=1;
@@ -693,9 +681,9 @@ $(function(){
 			msg="Enter Address."			
 		}
 		else if(cgstno.length !=0){
-			if(cgstno.length!=15){
+			if(!cgstno.match(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/)){
 				flag=1;
-				msg="GST number should be exactly 15 characters.."		
+				msg="Incorrect GST Number Format."		
 			}
 		}
 		if(flag == 0)
@@ -768,9 +756,17 @@ $(function(){
 			flag=1;
 			msg="Enter First Name.";
 		}
+		else if(!tfname.match(/^[A-Za-z]+$/)){
+			flag=1;
+			msg="First Name Only Accepts Alphabets."
+		}
 		else if(tlname == '' || tlname== null){
 			flag=1;
 			msg="Enter Last Name.";
+		}
+		else if(!tlname.match(/^[A-Za-z]+$/)){
+			flag=1;
+			msg="First Name Only Accepts Alphabets."
 		}
 		else if(tcontactno == '' || tcontactno== null){
 			flag=1;
@@ -785,9 +781,9 @@ $(function(){
 			msg="Enter Address."			
 		}
 		else if(tgstno.length !=0){
-			if(tgstno.length!=15){
+			if(!tgstno.match(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/)){
 				flag=1;
-				msg="GST number should be exactly 15 characters.."		
+				msg="Incorrect GST Number Format."		
 			}
 		}
 
@@ -863,7 +859,7 @@ $(function(){
 			flag=1;
 			msg="Enter Length.";
 		}
-		else if(!len.match(/^\d+$/)){
+		else if(!len.match(/^\d+(\.\d{1,2})?$/)){
 			flag=1;
 			msg="Length Should be Number.";
 		}
@@ -871,14 +867,14 @@ $(function(){
 			flag=1;
 			msg="Enter Width.";
 		}
-		else if(!width.match(/^\d+$/)){
+		else if(!width.match(/^\d+(\.\d{1,2})?$/)){
 			flag=1;
 			msg="width Should be Number.";
 		}else if(thickness == '' || thickness== null){
 			flag=1;
 			msg="Enter Thickness.";			
 		}
-		else if(!thickness.match(/^\d+$/)){
+		else if(!thickness.match(/^\d+(\.\d{1,2})?$/)){
 			flag=1;
 			msg="Thickness Should be Number.";
 		}
@@ -1028,7 +1024,6 @@ $(function(){
 		$('#srprice').val(ans);
 	});
 
-	$('#printsaleschallan').click(printsaleschallan);
 	function printsaleschallan(){
 		$('#salesChallanNo').text(" "+$('#schallanno').val());
 		$('#salesDate').text($('#sDate').val());
@@ -1048,11 +1043,9 @@ $(function(){
 		customerid=$('#scustomername').val();
 		date=$('#sDate').val();
 		challanno=$('#schallanno').val();
-		insertSalesChallan();
 		printDiv('sales_print_div');	
 	}
 
-	$('#printsalesreturnchallan').click(printsalesreturnchallan);
 	function printsalesreturnchallan(){
 		$('#salesReturnChallanNo').text(" "+$('#srchallanno').val());
 		$('#salesReturnDate').text($('#srDate').val());
@@ -1072,7 +1065,6 @@ $(function(){
 		customerid=$('#srcustomername').val();
 		date=$('#srDate').val();
 		challanno=$('#srchallanno').val();
-		insertSalesReturnChallan();
 		printDiv('sales_return_print_div');
 	}
 
@@ -1130,7 +1122,42 @@ $(function(){
         $('#div_sales_challan').hide();    
     }
 
-	$('#ssubmit').click(insertSalesChallan);
+	$('#ssubmit').click(popSalesPrint);
+	function popSalesPrint(){
+		if($('#scustomername').val()=='-1'){
+			var msg="Please Select Customer Name.";
+			notifyValidateError(msg);
+			return false;
+		}
+		else if($('#sDate').val()== ''){
+			var msg="Please Select Date.";
+			notifyValidateError(msg);
+			return false;
+		}
+		else if($('#grandTotal').text()== '' || $('#grandTotal').text()== '0'){
+			var msg="Blank Challan can not be saved.";
+			notifyValidateError(msg);
+			return false;
+		}
+
+		swal({
+      		title: "Do you want to print challan?",
+      		//text: "You will not be able to recover this Change!",
+      		type: "info",
+      		showCancelButton: true,
+      		confirmButtonText: "Yes!",
+      		cancelButtonText: "No!",
+      		closeOnConfirm: true,
+      		closeOnCancel: true
+      	}, function(isConfirm) {
+      		if (isConfirm) {
+      			insertSalesChallan();
+      			printsaleschallan();
+      		} else {
+      			insertSalesChallan();
+      		}
+      	});	
+	}
 	function insertSalesChallan(){
 		var salesProductlist=[];
 		var total=0;
@@ -1174,15 +1201,52 @@ $(function(){
 		});
 		var json=JSON.stringify({usertype: "insertSalesChallan",companyid:companyid,customerid:customerid,challanno:challanno,date:date,total:total,data:salesProductlist});
         connection.send(json);
+        location.reload();
 	}
 	
 	$('#clearsaleschallan').click(clearsaleschallan);
-	function clearsaleschallan(){
+	function clearsaleschallan(){		
+		$('#listSalesChallan').html("");
+		$('#grandTotal').html("");
 		$('#div_sales_challan').hide();
 		$('#div_dashboard').show();
 	}
 	
-	$('#srsubmit').click(insertSalesReturnChallan);
+	$('#srsubmit').click(popSalesReturnPrint);
+	function popSalesReturnPrint(){
+		if($('#srcustomername').val()=='-1'){
+			var msg="Please Select Customer Name.";
+			notifyValidateError(msg);
+			return false;
+		}
+		else if($('#srDate').val()== ''){
+			var msg="Please Select Date.";
+			notifyValidateError(msg);
+			return false;
+		}
+		else if($('#srgrandTotal').text()== '' || $('srgrandTotal').text()== '0'){
+			var msg="Blank Challan can not be saved.";
+			notifyValidateError(msg);
+			return false;
+		}
+		
+		swal({
+      		title: "Do you want to print challan?",
+      		type: "info",
+      		showCancelButton: true,
+      		confirmButtonText: "Yes!",
+      		cancelButtonText: "No!",
+      		closeOnConfirm: true,
+      		closeOnCancel: true
+      	}, function(isConfirm) {
+      		if (isConfirm) {
+      			insertSalesReturnChallan();
+      			printsalesreturnchallan();
+      		} else {
+      			insertSalesReturnChallan();
+      		}
+      	});	
+	}
 	function insertSalesReturnChallan(){
 		var salesReturnProductlist=[];
 		var total=0;
@@ -1227,10 +1291,13 @@ $(function(){
 		});
 		var json=JSON.stringify({usertype: "insertSalesReturnChallan",companyid:companyid,customerid:customerid,challanno:challanno,date:date,total:total,data:salesReturnProductlist});
         connection.send(json);
+        location.reload();
 	}
 	
 	$('#clearsalesreturnchallan').click(clearsalesreturnchallan);
 	function clearsalesreturnchallan(){
+		$('#listSalesReturnChallan').html("");
+		$('#srgrandTotal').html("");
 		$('#div_sales_return_challan').hide();
 		$('#div_dashboard').show();
 	}
@@ -1357,6 +1424,41 @@ function addSalesRow(){
 	var itemQty   =$('#squantity').val();
 	var itemRate  =$('#srate').val();
 	var itemPrice =$('#sprice').val();
+	var msg,flag=0;
+	if($("#loadProductsDropdown").val()==-1){
+		flag=1;
+		msg="Please Select Product.";
+  	}
+  	else if($('#loadUnitDropdown').val()==-1){
+  		flag=1;
+		msg="Please Select Unit of Measurement.";
+  	}
+  	else if(itemQty==""){
+  		flag=1;
+		msg="Please Enter Quantity.";
+  	}
+  	else if(! itemQty.match(/^\d+$/)){
+  		flag=1;
+		msg="Quantity can only be Numbers.";
+  	}
+  	else if(itemRate==""){
+  		flag=1;
+		msg="Please Enter Rate.";
+  	}
+  	else if(! itemRate.match(/^\d+(\.\d{1,2})?$/)){
+  		flag=1;
+		msg="Rate Can only be Numbers.";	
+  	}
+
+  	if(flag==1){
+  		notifyValidateError(msg);
+  		$('#loadProductsDropdown').focus();
+  		return false;
+  	}
+
+  	salesGrand =parseFloat(salesGrand) + parseFloat($('#sprice').val());
+  	salesGrand=salesGrand.toFixed(2);
+	      	
 
 	var itemMeasurement = $('#loadProductsDropdown option:selected').attr('data-value');
 	var itemOffset=$('#loadUnitDropdown option:selected').attr('data-offset');
@@ -1373,6 +1475,16 @@ function addSalesRow(){
         html += "</tr>";
 
     $('#listSalesChallan').append(html);
+    $('#grandTotal').text(salesGrand);
+
+    //restore original state of the panel.
+
+  	$('#loadUnitDropdown').val($('#loadUnitDropdown option:first').val());
+  	$('#loadProductsDropdown').val($('#loadProductsDropdown option:first').val());
+  	$('#srate').val("");
+  	$('#squantity').val("");
+  	$('#sprice').val("");
+  	$('#loadProductsDropdown').focus();
 }
 function addSalesReturnRow(){
 	var itemid    =$("#loadProductsDropdownsr option:selected").val();
@@ -1381,7 +1493,42 @@ function addSalesReturnRow(){
 	var itemQty   =$('#srquantity').val();
 	var itemRate  =$('#srrate').val();
 	var itemPrice =$('#srprice').val();
+	var msg,flag=0;
+	
+	if($("#loadProductsDropdownsr").val()==-1){
+		flag=1;
+		msg="Please Select Product.";
+  	}
+  	else if($('#loadUnitDropdownsr').val()==-1){
+  		flag=1;
+		msg="Please Select Unit of Measurement.";
+  	}
+  	else if(itemQty==""){
+  		flag=1;
+		msg="Please Enter Quantity.";
+  	}
+  	else if(! itemQty.match(/^\d+$/)){
+  		flag=1;
+		msg="Quantity can only be Numbers.";
+  	}
+  	else if(itemRate==""){
+  		flag=1;
+		msg="Please Enter Rate.";
+  	}
+  	else if(! itemRate.match(/^\d+(\.\d{1,2})?$/)){
+  		flag=1;
+		msg="Rate Can only be Numbers.";	
+  	}
 
+  	if(flag==1){
+  		notifyValidateError(msg);
+  		$('#loadProductsDropdownsr').focus();
+  		return false;
+  	}
+
+	salesReturnGrand =parseFloat(salesReturnGrand) + parseFloat($('#srprice').val());
+  	salesReturnGrand=salesReturnGrand.toFixed(2);
+	      	
 	var itemMeasurement = $('#loadProductsDropdownsr option:selected').attr('data-value');
 	var itemOffset=$('#loadUnitDropdownsr option:selected').attr('data-offset');
 
@@ -1398,6 +1545,15 @@ function addSalesReturnRow(){
         html += "</tr>";
 
     $('#listSalesReturnChallan').append(html);
+    $('#srgrandTotal').text(salesReturnGrand);
+
+    //restore panel to original state
+  	$('#loadUnitDropdownsr').val($('#loadUnitDropdownsr option:first').val());
+  	$('#loadProductsDropdownsr').val($('#loadProductsDropdownsr option:first').val());
+  	$('#srrate').val("");
+  	$('#srquantity').val("");
+  	$('#srprice').val("");
+  	$('#loadProductsDropdownsr').focus();
 }
 function updateCustomer(customerid,companyid,fname,lname,contactno,gstno,address){
 	$('#ccustomerid').val(customerid);

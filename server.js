@@ -8,11 +8,12 @@ var serverportnumber=5005;
 
 //database connection
 var con = mysql.createConnection({
-            host: "localhost",
-            user: "root",
-            password: "",
-            database: "echallan"
-        });
+    host: "localhost",
+    user: "root",
+    password: "",
+    database: "echallan"
+});
+
 con.connect(function(){
 	console.log("connected to database.");
 });
@@ -955,7 +956,7 @@ wsServer.on('request',function(request){
 			var arr=[];
 			var sql="SELECT crm.companyid,crm.customerid,crm.challanno,crm.Date,crm.total,c.fname,c.lname,c.address,c.contactno FROM challanreturnmaster crm INNER JOIN customers c on crm.customerid=c.customerid where crm.Date > '"+fromDate+"' AND crm.Date < '"+toDate+"'  AND crm.companyid="+companyid+" ORDER BY crm.challanno";
 			con.query(sql, function (err, result, fields) {
-				if(res.length){	
+				if(result.length){	
 					for(var index in result){
 						var obj={
 							companyid 	: 	result[index].companyid,
