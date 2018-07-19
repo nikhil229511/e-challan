@@ -1,16 +1,17 @@
 {
   "name": "e-challan",
   "version": "1.0.0",
-  "description": "",
+  "description": "Challan Generating Application.",
   "main": "login.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Nikhil Patel",
   "license": "ISC",
   "dependencies": {
+    "async": "^2.6.0",
+    "forever": "^0.15.3",
     "mysql": "^2.15.0",
-    "websocket": "^1.0.26",
-    "async": "^2.6.0"
+    "websocket": "^1.0.26"
   }
 }
