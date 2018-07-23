@@ -1,5 +1,7 @@
 "use strict";
 
+
+var bcrypt=require('bcrypt');
 var async=require('async');
 var mysql=require('mysql');
 var WebSocketServer = require('websocket').server;
@@ -41,8 +43,13 @@ wsServer.on('request',function(request){
 					console.log('(R) => ' + message.utf8Data);
 					var c=JSON.parse(message.utf8Data);
 					switch(c.usertype){
+						
 						case "login":
 						verifyUser(c.data.username,c.data.password,connection);
+						break;
+
+						case "Adminlogin":
+						verifyAdmin(c.data.username,c.data.password,connection);
 						break;
 
 						case "insertCustomer":
@@ -108,7 +115,6 @@ wsServer.on('request',function(request){
 						case "LoadSalesChallan":
 							getAllProductList(c.data.companyid);
 							getSalesChallanNo(c.data.companyid);
-							//getSalesReturnChallanNo(c.data.companyid);
 							getAllCustomerList(c.data.companyid);
 							getAllUnitsList(c.data.companyid);
 						break;
@@ -158,8 +164,21 @@ wsServer.on('request',function(request){
 							getAllUnits(c.data.companyid);
 						break;
 
+						case "AdminsendAll":
+							getAllUsers(connection);
+						break;
+
+						case "insertUser":						
+							insertUser(c.data.username,c.data.password,connection);
+							getAllUsers(connection);
+						break;
+
 						case "logout":
 							logout(connection);
+						break;
+
+						case "Adminlogout":
+						Adminlogout(connection);
 						break;
 					}
 				}
@@ -177,23 +196,46 @@ wsServer.on('request',function(request){
 
 		function verifyUser(username,password,connection){
 			var obj;
-			var sql="SELECT companyid,username,password FROM loginmaster where username='"+username+"' and password='"+password+"';"
+			var sql="SELECT companyid,username,password FROM loginmaster where username='"+username+"';";
 			con.query(sql, function (err, result, fields) {
 				if(result.length==1){
-					obj={
-						msg:"success",
-						companyid:result[0].companyid,
-						username:result[0].username
-					}	
+					if(bcrypt.compareSync(password, result[0].password)) {
+						obj={
+							msg:"success",
+							companyid:result[0].companyid,
+							username:result[0].username
+						}
+					} else {
+						obj={
+							msg:"fail"
+						}
+					}					   	
 				}
-				else{
-					obj={
-						msg:"fail"
-					}
-				}
+				
 				var json=JSON.stringify({type:"login_callback",data:obj});
 					sendResponse(json,connection);
 			});				
+		}
+
+		function verifyAdmin(username,password,connection){
+			var obj;
+			var sql="SELECT adminid,Username,password FROM adminlogin where Username='"+username+"';"
+			con.query(sql, function (err, result, fields) {
+				if(result.length==1){
+					if(bcrypt.compareSync(password, result[0].password)) {
+						obj={
+							msg:"success",							
+						}
+					}						
+					else{
+						obj={
+							msg:"fail"
+						}
+					}
+				}				
+				var json=JSON.stringify({type:"Adminlogin_callback",data:obj});
+					sendResponse(json,connection);
+			});
 		}
 
 		function insertCustomer(fname,lname,contactno,gstno,address,companyid,connection){
@@ -369,6 +411,26 @@ wsServer.on('request',function(request){
 			});
 		}
 
+		function insertUser(username,password,connection){
+			var hash=bcrypt.hashSync(password,10);
+			var obj;
+			var sql="INSERT INTO loginmaster (username,password) values('"+username+"','"+hash+"');";
+			con.query(sql, function (err, result, fields) {
+				if(result.affectedRows){
+					obj={
+						msg:'UserInsertSuccess'
+					}								
+				}
+				else{
+					obj={
+						msg:'UserInsertFail'
+					}
+				}
+				var json=JSON.stringify({type:"insertUser_callback",data:obj});
+				sendResponse(json,connection);
+			});
+		}
+
 		function insertUnit(name,offset,companyid,connection){
 			var obj;
 			var sql="INSERT INTO unitmaster (unitname,offset,companyid) values('"+name+"',"+offset+","+companyid+");";
@@ -427,6 +489,22 @@ wsServer.on('request',function(request){
 			});
 		}
 
+		function getAllUsers(connection){
+			var arr=[];
+			var sql="SELECT username from loginmaster;";
+			con.query(sql, function (err, result, fields) {
+				if(result.length){
+					for(var index in result){
+						var obj={
+							username:result[index].username,							
+						}
+						arr.push(obj); 
+					}
+					var json=JSON.stringify({type:"getAllUsers_callback",data:arr});
+					sendResponse(json,connection);				
+				}
+			});
+		}
 		function getAllCustomers(companyid){
 			var arr=[];
 			var sql="SELECT * from customers where companyid="+companyid+";";
@@ -1030,6 +1108,11 @@ wsServer.on('request',function(request){
 		function logout(connection){
 			var json=JSON.stringify({type:'logout_callback'});
 			sendResponse(json,connection);			
+		}
+
+		function Adminlogout(connection){	
+			var json=JSON.stringify({type:'Adminlogout_callback'});
+			sendResponse(json,connection);
 		}
 
 		function sendResponse(json,connection){
