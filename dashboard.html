@@ -125,7 +125,7 @@
             <li><a class="treeview-item" style="cursor: pointer;" onclick='showUnits();' rel="noopener"><i class="icon fa fa-circle-o"></i> Unit Master</a></li>            
           </ul>
         </li>
-        <li><a class="app-menu__item" id="salesChallanDiv" style="cursor: pointer;" onclick='showSalesChallan();'><i class="app-menu__icon fa fa-edit"></i><span class="app-menu__label">Sales Challan</span></a></li>
+        <li><a class="app-menu__item" id="salesChallanDiv" style="cursor: pointer;" onclick='showSalesChallan()'><i class="app-menu__icon fa fa-edit"></i><span class="app-menu__label">Sales Challan</span></a></li>
         <li><a class="app-menu__item" id="salesReturnChallanDiv" style="cursor: pointer;" onclick='showSalesReturnChallan();'><i class="app-menu__icon fa fa-edit"></i><span class="app-menu__label">Sales-Return Challan</span></a></li>
         <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon fa fa-th-list "></i><span class="app-menu__label">Reports</span><i class="treeview-indicator fa fa-angle-right"></i></a>
           <ul class="treeview-menu">
@@ -173,17 +173,18 @@
             <h3 class="tile-title">Customers Detail</h3>
             <h6 id="errorMsg" style="color: red;"></h6>
             <div class="tile-body">
-              <form class="row formvalidate" id="customerForm">
+              <label class="control-label" style="color:red">Fields Marked with * are Mendatory. </label>
+              <form class="row formvalidate" id="customerForm">                  
                 <div class="form-group col-md-3">
-                  <label class="control-label">First Name</label>
+                  <label class="control-label">First Name<span style="color:red"> *</span></label>
                   <input class="form-control" id="cfname" type="text" name="cfname" placeholder="Enter First Name">
                 </div>
                 <div class="form-group col-md-3">
-                  <label class="control-label">Last Name</label>
+                  <label class="control-label">Last Name<span style="color:red"> *</span></label>
                   <input class="form-control" id="clname" type="text" name="clname" placeholder="Enter Last Name">
                 </div>
                 <div class="form-group col-md-3">
-                  <label class="control-label">Contact No.</label>
+                  <label class="control-label">Contact No.<span style="color:red"> *</span></label>
                   <input class="form-control" id="ccontactno" name="ccontactno" type="text" placeholder="Enter Contact Number">
                 </div>
                 <div class="form-group col-md-3">
@@ -191,7 +192,7 @@
                   <input class="form-control" id="cgstno" type="text" name="cgstno" placeholder="Enter GST  Number">
                 </div>
                 <div class="form-group col-md-8">
-                  <label class="control-label">Address</label>
+                  <label class="control-label">Address<span style="color:red"> *</span></label>
                   <input class="form-control" id="caddress" type="text" name="caddress" placeholder="Enter Address">
                   <input id="ccustomerid" type="hidden" name="customerid" value='-1'>
                 </div>
@@ -231,17 +232,18 @@
           <div class="tile">
             <h3 class="tile-title">Transporters Detail</h3>
             <div class="tile-body">
+              <label class="control-label" style="color:red">Fields Marked with * are Mendatory. </label>
               <form class="row formvalidate" id="transporterForm">
                 <div class="form-group col-md-3">
-                  <label class="control-label">First Name</label>
+                  <label class="control-label">First Name<span style="color:red"> *</span></label>
                   <input class="form-control" id="tfname" type="text" placeholder="Enter First Name">
                 </div>
                 <div class="form-group col-md-3">
-                  <label class="control-label">Last Name</label>
+                  <label class="control-label">Last Name<span style="color:red"> *</span></label>
                   <input class="form-control" id="tlname" type="text" placeholder="Enter Last Name">
                 </div>
                 <div class="form-group col-md-3">
-                  <label class="control-label">Contact No.</label>
+                  <label class="control-label">Contact No.<span style="color:red"> *</span></label>
                   <input class="form-control" id="tcontactno" type="text" placeholder="Enter Contact Number">
                 </div>
                 <div class="form-group col-md-3">
@@ -249,7 +251,7 @@
                   <input class="form-control" type="text" id="tgstno" placeholder="Enter GST  Number">
                 </div>
                 <div class="form-group col-md-8">
-                  <label class="control-label">Address</label>
+                  <label class="control-label">Address<span style="color:red"> *</span></label>
                   <input class="form-control" type="text" id="taddress" placeholder="Enter Address">
                   <input id="ttransportid" type="hidden" name="transportid" value='-1'>
                 </div>
@@ -289,21 +291,22 @@
           <div class="tile">
             <h3 class="tile-title">Products Detail</h3>
             <div class="tile-body">
+                <label class="control-label" style="color:red">Fields Marked with * are Mendatory. </label>
               <form class="row formvalidate" method="POST" id="productsForm">
                 <div class="form-group col-md-12">
-                  <label class="control-label">Product Name</label>
+                  <label class="control-label">Product Name<span style="color:red"> *</span></label>
                   <input class="form-control" id="pname" type="text" placeholder="Enter Product Name">
                 </div>
                 <div class="form-group col-md-3">
-                  <label class="control-label">Length</label>
+                  <label class="control-label">Length<span style="color:red"> *</span></label>
                   <input class="form-control" id="length" type="text" placeholder="Enter Length">
                 </div>
                 <div class="form-group col-md-3">
-                  <label class="control-label">Width</label>
+                  <label class="control-label">Width<span style="color:red"> *</span></label>
                   <input class="form-control" id="width" type="text" placeholder="Enter Width">
                 </div>
                 <div class="form-group col-md-3">
-                  <label class="control-label">Thickness</label>
+                  <label class="control-label">Thickness<span style="color:red"> *</span></label>
                   <input class="form-control" type="text" id="thickness" placeholder="Enter Thickness">
                   <input id="productid" type="hidden"  value='-1' name="productid">
                 </div>                  
@@ -342,13 +345,14 @@
           <div class="tile">
             <h3 class="tile-title">Units Detail</h3>
             <div class="tile-body">
+              <label class="control-label" style="color:red">Fields Marked with * are Mendatory. </label>
               <form class="row formvalidate" method="POST" id="productsForm">
                 <div class="form-group col-md-3">
-                  <label class="control-label">Unit Name</label>
+                  <label class="control-label">Unit Name<span style="color:red"> *</span></label>
                   <input class="form-control" id="uname" type="text" placeholder="Enter Unit Name">
                 </div>
                 <div class="form-group col-md-3">
-                  <label class="control-label">Offset</label>
+                  <label class="control-label">Offset<span style="color:red"> *</span></label>
                   <input class="form-control" id="uoffset" type="text" placeholder="Enter Offset value.">
                   <input id="unitid" type="hidden"  value='-1' name="unitid">
                 </div>                
@@ -1097,7 +1101,6 @@
   </main>
 
     <script>
-      sessionStorage.setItem('activeDiv','div_dashboard');
       function showDashboard(){
         sessionStorage.setItem('activeDiv','div_dashboard');
         checkDiv();

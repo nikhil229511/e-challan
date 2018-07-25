@@ -159,7 +159,7 @@ $(function(){
 	  		}
 	  	}	
 	  	else if(json.type == "getAllCustomer_callback"){
-	  		var htmlString="";
+			var htmlString="";
 	  		var html="<option value='-1'>Select Customer</option>";
 
 	  		for(var i=0;i<json.data.length;i++){
@@ -578,9 +578,19 @@ $(function(){
 	    	$('#sales_return_report_datewise_div').hide();
 	    });
 	    $('#ssearchcustomername').change(function(){
-	    	$('#sales_report_customerwise_div').hide();
+			$('#searchSalesCustomerName1').text("");
+			$('#searchSalesAddress').text("");
+			$('#searchSalesContactNo').text("");
+			$('#searchSalesPrintListCustomerwise').html("");
+			
+			$('#sales_report_customerwise_div').hide();
 	    });
 	    $('#srsearchcustomername').change(function(){
+			$('#searchSalesReturnCustomerName1').text("");
+			$('#searchSalesReturnAddress').text("");
+			$('#searchSalesReturnContactNo').text("");
+			$('#searchSalesReturnPrintListCustomerwise').html("");
+
 	    	$('#sales_return_report_customerwise_div').hide();
 	    });
 	    

@@ -16,7 +16,9 @@ var con = mysql.createConnection({
     database: "echallan"
 });
 
-con.connect(function(){
+con.connect(function(err){
+	if(err)
+		throw err;
 	console.log("connected to database.");
 });
 
@@ -54,17 +56,17 @@ wsServer.on('request',function(request){
 
 						case "insertCustomer":
 							insertCustomer(c.data.fname,c.data.lname,c.data.contactno,c.data.gstno,c.data.address,c.data.companyid,connection);
-							getAllCustomers(c.data.companyid);
+							getAllCustomers(c.data.companyid,connection);
 						break;
 
 						case "updateCustomer":
 							updateCustomer(c.data.customerid,c.data.fname,c.data.lname,c.data.contactno,c.data.gstno,c.data.address,c.data.companyid,connection);
-							getAllCustomers(c.data.companyid);
+							getAllCustomers(c.data.companyid,connection);
 						break;
 
 						case "deleteCustomer":
 							deleteCustomer(c.data.customerid,c.data.companyid,connection);
-							getAllCustomers(c.data.companyid);
+							getAllCustomers(c.data.companyid,connection);
 						break;
 
 						case "insertTransporter":
@@ -158,7 +160,7 @@ wsServer.on('request',function(request){
 						break;
 
 						case "sendAll":
-							getAllCustomers(c.data.companyid);
+							getAllCustomers(c.data.companyid,connection);
 							getAllTransporters(c.data.companyid);
 							getAllProducts(c.data.companyid);
 							getAllUnits(c.data.companyid);
@@ -503,9 +505,13 @@ wsServer.on('request',function(request){
 					var json=JSON.stringify({type:"getAllUsers_callback",data:arr});
 					sendResponse(json,connection);				
 				}
+				else{
+					var json=JSON.stringify({type:"getAllUsers_callback",data:arr});
+					sendResponse(json,connection);				
+				}
 			});
 		}
-		function getAllCustomers(companyid){
+		function getAllCustomers(companyid,connection){
 			var arr=[];
 			var sql="SELECT * from customers where companyid="+companyid+";";
 			con.query(sql, function (err, result, fields) {
@@ -524,6 +530,10 @@ wsServer.on('request',function(request){
 					}
 					var json=JSON.stringify({type:"getAllCustomer_callback",data:arr});
 					sendResponse(json,connection);				
+				}
+				else{
+					var json=JSON.stringify({type:"getAllCustomer_callback",data:arr});
+					sendResponse(json,connection);
 				}
 			});
 		}
@@ -548,6 +558,10 @@ wsServer.on('request',function(request){
 					var json=JSON.stringify({type:"getAllTransporter_callback",data:arr});
 					sendResponse(json,connection);				
 				}
+				else{
+					var json=JSON.stringify({type:"getAllTransporter_callback",data:arr});
+					sendResponse(json,connection);
+				}
 			});
 		}
 
@@ -568,6 +582,10 @@ wsServer.on('request',function(request){
 					}
 					var json=JSON.stringify({type:"getAllProducts_callback",data:arr});
 					sendResponse(json,connection);				
+				}
+				else{
+					var json=JSON.stringify({type:"getAllProducts_callback",data:arr});
+					sendResponse(json,connection);
 				}
 			});
 		}
@@ -590,6 +608,10 @@ wsServer.on('request',function(request){
 					var json=JSON.stringify({type:"getAllProductList_callback",data:arr});
 					sendResponse(json,connection);				
 				}
+				else{
+					var json=JSON.stringify({type:"getAllProductList_callback",data:arr});
+					sendResponse(json,connection);				
+				}
 			});
 		}
 
@@ -603,7 +625,7 @@ wsServer.on('request',function(request){
 					}
 					var json=JSON.stringify({type:"getSalesChallanNo_callback",data:obj});
 					sendResponse(json,connection);
-				}
+				}				
 			});
 		}
 		function getSalesReturnChallanNo(companyid){
@@ -616,7 +638,7 @@ wsServer.on('request',function(request){
 					}
 					var json=JSON.stringify({type:"getSalesReturnChallanNo_callback",data:obj});
 					sendResponse(json,connection);
-				}
+				}				
 			});
 		}
 
@@ -639,6 +661,10 @@ wsServer.on('request',function(request){
 					var json=JSON.stringify({type:"getAllCustomerList_callback",data:arr});
 					sendResponse(json,connection);
 				}
+				else{
+					var json=JSON.stringify({type:"getAllCustomerList_callback",data:arr});
+					sendResponse(json,connection);
+				}
 			});
 		}
 
@@ -655,6 +681,10 @@ wsServer.on('request',function(request){
 						}
 						arr.push(obj); 
 					}
+					var json=JSON.stringify({type:"getAllUnitList_callback",data:arr});
+					sendResponse(json,connection);				
+				}
+				else{
 					var json=JSON.stringify({type:"getAllUnitList_callback",data:arr});
 					sendResponse(json,connection);				
 				}
@@ -830,6 +860,10 @@ wsServer.on('request',function(request){
 						}
 						arr.push(obj); 
 					}
+					var json=JSON.stringify({type:"getAllUnits_callback",data:arr});
+					sendResponse(json,connection);				
+				}
+				else{
 					var json=JSON.stringify({type:"getAllUnits_callback",data:arr});
 					sendResponse(json,connection);				
 				}
