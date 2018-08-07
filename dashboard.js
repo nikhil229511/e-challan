@@ -454,7 +454,20 @@ $(function(){
 	  		sessionStorage.removeItem('companyid');
 	  		sessionStorage.removeItem('username');
 	  		window.location='login.html';
-	  	}
+		}
+		else if(json.type == "changePassword_callback"){
+			if(json.data.msg== 'changePasswordSuccess'){
+				notifyChangePassword();
+				sessionStorage.removeItem('companyid');
+				sessionStorage.removeItem('username');
+				window.location('login.html');
+			}
+			else if(json.data.msg == 'changePasswordFail'){
+				var msg="New Password and Confirm Password Mismatch.";
+				notifyValidateError(msg);
+			}
+		}
+		  
 
 	  	$('.demoSwalCustomer').click(function(e){
 	  		var id=$(e.currentTarget).attr('id');
@@ -637,6 +650,61 @@ $(function(){
 	$('a[href="#"]').click(function (event) {
 	   event.preventDefault();
 	});
+
+	//change Password
+	$('#ChangePassword').click(validatePassword);
+	function validatePassword(event){
+		event.preventDefault();
+		var msg='';
+		var flag=0;
+		var currentpassword=$('#CurrentPassword').val();
+		var newpassword=$('#NewPassword').val();
+		var confirmnewpassword=$('#ConfirmNewPassword').val();
+		
+		if(currentpassword =='' || currentpassword == null){
+			flag=1;
+			msg="Enter Current Password.";
+		}
+		else if(!currentpassword.match(/(?=.{9,})(?=.*?[^\w\s])(?=.*?[0-9])(?=.*?[A-Z]).*?[a-z].*/)){
+			flag=1;
+			msg="Current Password Must Contain At least 1 Capital letter, 1 Small letter, 1 Numeric Value and 1 Symbol.";
+		}
+		else if(newpassword == '' || newpassword== null){
+			flag=1;
+			msg="Enter New Password.";
+		}
+		else if(!newpassword.match(/(?=.{9,})(?=.*?[^\w\s])(?=.*?[0-9])(?=.*?[A-Z]).*?[a-z].*/)){
+			flag=1;
+			msg="New Password Must Contain At least 1 Capital letter, 1 Small letter, 1 Numeric Value and 1 Symbol.";
+		}
+		else if(confirmnewpassword == '' || confirmnewpassword== null){
+			flag=1;
+			msg="Enter Confirm Password."
+		}
+		else if(newpassword != confirmnewpassword){
+			flag=1;
+			msg="New Password and Confirm Password Mismatch"	
+		}
+		
+		//check error flag.
+		if(flag == 0)
+			changePassword();
+		else{
+			notifyValidateError(msg);
+		}
+	}
+	function changePassword(){
+		var currentpassword=$('#CurrentPassword').val();
+		var newpassword=$('#NewPassword').val();
+		var username=sessionStorage.getItem('username');
+		var obj={
+			username:username,
+			currentpassword:currentpassword,
+			newpassword:newpassword
+		}
+		var json=JSON.stringify({usertype: "changePassword", data:obj});	
+		connection.send(json);
+	}
 
 	//Customer
 	$('#csubmit').click(validateCustomer);
@@ -1638,3 +1706,11 @@ function notifyValidateError(msg){
       	type: "danger"
     });
 };
+function notifyChangePassword(){
+	$.notify({
+		title: "Password ChangedSuccessfully.",
+		icon: 'fa fa-check' 
+  	},{
+		type: "success"
+  	});
+}

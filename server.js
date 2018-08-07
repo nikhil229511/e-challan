@@ -174,6 +174,14 @@ wsServer.on('request',function(request){
 							insertUser(c.data.username,c.data.password,connection);
 							getAllUsers(connection);
 						break;
+						
+						case "changePassword":
+							changePassword(c.data.username,c.data.currentpassword,c.data.newpassword,connection);
+						break;
+
+						case "AdminChangePassword":
+							changeUserPassword(c.data.username,c.data.password,connection);
+						break;
 
 						case "logout":
 							logout(connection);
@@ -429,6 +437,116 @@ wsServer.on('request',function(request){
 					}
 				}
 				var json=JSON.stringify({type:"insertUser_callback",data:obj});
+				sendResponse(json,connection);
+			});
+		}
+
+		//used by admin
+		function changeUserPassword(username,password,connection){
+			var hash=bcrypt.hashSync(password,10);
+			var obj;
+			var sql="update loginmaster SET password='"+hash+"' WHERE username='"+username+"';";
+			con.query(sql, function (err, result, fields) {
+				if(result.affectedRows){
+					obj={
+						msg:'changePasswordSuccess'
+					}								
+				}
+				else{
+					obj={
+						msg:'changePasswordFail'
+					}
+				}
+				var json=JSON.stringify({type:"changeUserPassword_callback",data:obj});
+				sendResponse(json,connection);
+			});
+		}
+
+		//used by users
+		function changePassword(username,currentpassword,newpassword,connection){
+			var currentpass="",obj;
+			async.series([
+				function(callback){
+		            var sql="START TRANSACTION";
+		            con.query(sql, function (err, result) {
+		                if (err){        
+		                    obj={
+								msg:'changePasswordFail'
+							}
+							var json=JSON.stringify({type:"changePassword_callback",data:obj});
+							sendResponse(json,connection);
+							return false;
+		                }else
+		                    callback(null,'succes1');    
+		            });		            
+		        },
+		        function(callback){
+					var user=username.replace(/\"/g, "");
+					var sql="SELECT * FROM loginmaster WHERE username='"+user+"';";
+					con.query(sql, function (err, result) {
+					    if (err){        
+		                    obj={
+								msg:'changePasswordFail'
+							}
+							var json=JSON.stringify({type:"changePassword_callback",data:obj});
+							sendResponse(json,connection);
+							return false;
+		                }else{
+		                    currentpass=result[0].password;
+		                    callback(null,'succes2');    
+		                }
+		            });		            
+		        },
+		        function(callback){
+					if(!bcrypt.compareSync(currentpassword, currentpass)) {
+						obj={
+							msg:'changePasswordFail'
+						}
+						var json=JSON.stringify({type:"changePassword_callback",data:obj});
+						sendResponse(json,connection);
+						return false;
+					}
+					else{
+						callback(null,'succes3');
+					}		            	            
+				},
+				function(callback){
+					var hashnew=bcrypt.hashSync(newpassword,10);
+					var user=username.replace(/\"/g, "");
+					var sql="UPDATE loginmaster SET password='"+hashnew+"' WHERE username='"+user+"';";
+					con.query(sql, function (err, result) {
+					    if (err){        
+		                    obj={
+								msg:'changePasswordFail'
+							}
+							var json=JSON.stringify({type:"changePassword_callback",data:obj});
+							sendResponse(json,connection);
+							return false;
+		                }else{
+		                    callback(null,'succes4');    
+		                }
+		            });		            
+		        },
+		        function(callback){
+		            var sql="COMMIT";
+		            con.query(sql, function (err, result) {
+		                if (err){        
+		                    obj={
+								msg:'changePasswordFail'
+							}
+							var json=JSON.stringify({type:"changePassword_callback",data:obj});
+							sendResponse(json,connection);
+							return false;
+		                }else
+		                    callback(null,'success5');
+		            });		           
+				}	
+			],
+			function(){
+				obj={
+					msg:'changePasswordSuccess'
+				}
+				var json=JSON.stringify({type:"changePassword_callback",data:obj});
 				sendResponse(json,connection);
 			});
 		}

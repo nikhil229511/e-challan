@@ -137,6 +137,7 @@
             <li><a class="treeview-item" id='' style="cursor: pointer;" onclick='showSalesReturnCustomerwise();'><i class="icon fa fa-circle-o"></i>Customer-wise (Sales Return)</a></li>
           </ul>
         </li>
+        <li><a class="app-menu__item" id="changePasswordDiv" style="cursor: pointer;" onclick='showChangePassword()'><i class="app-menu__icon fa fa-sign-out"></i><span class="app-menu__label">Change Password</span></a></li>                
         <li><a class="app-menu__item" id="logout" style="cursor: pointer;"><i class="app-menu__icon fa fa-sign-out"></i><span class="app-menu__label">Logout</span></a></li>                
       </ul>
     </aside>
@@ -1097,6 +1098,34 @@
           </div>
         </div>        
       </div>
+      <!-- Changable content change password-->      
+      <div id="div_change_password" style="display: none;">
+        <div class="col-md-12">
+          <div class="tile">
+            <h3 class="tile-title">Change Password</h3>
+            <h6 id="errorMsg" style="color: red;"></h6>
+            <div class="tile-body">
+              <form class="row" id="">
+                <div class="form-group col-md-3">
+                  <label class="control-label">Current Password</label>
+                  <input class="form-control" id="CurrentPassword" type="password" name="CurrentPassword" placeholder="Current Password...">
+                </div>
+                <div class="form-group col-md-3">
+                  <label class="control-label">Password</label>
+                  <input class="form-control" id="NewPassword" type="password" name="NewPassword" placeholder="New Password...">
+                </div>
+                <div class="form-group col-md-3">
+                  <label class="control-label">Confirm Password</label>
+                  <input class="form-control" id="ConfirmNewPassword" name="ConfirmNewPassword" type="password" placeholder="Confirm New Password...">
+                </div>
+                <div class="form-group col-md-3 align-self-end">
+                  <button class="btn btn-primary" id="ChangePassword" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Okay</button>
+                </div>
+              </form>
+            </div>
+          </div>                      
+        </div>
+      </div>
 
   </main>
 
@@ -1163,6 +1192,11 @@
         sessionStorage.setItem('activeDiv','div_sales_return_report_customerwise');
         checkDiv();   
       }
+      
+      function showChangePassword(){
+        sessionStorage.setItem('activeDiv','div_change_password');
+        checkDiv();   
+      }
 
       function checkDiv(){
         var div_active=sessionStorage.getItem('activeDiv');
@@ -1179,6 +1213,7 @@
         $('#div_sales_return_report_datewise').hide();
         $('#div_sales_report_customerwise').hide();
         $('#div_sales_return_report_customerwise').hide();
+        $('#div_change_password').hide();
         $('#'+div_active).show();
 
         $(".app-menu").find("li a").click(function(){       

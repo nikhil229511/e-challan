@@ -26,14 +26,15 @@ $(function(){
           
         if(json.type == "getAllUsers_callback"){
             var htmlString="";
-            
+            var html="<option value='-1'>Select User</option>";
             for(var i=0;i<json.data.length;i++){
-                
+                html +='<option>'+json.data[i].username+'</option>';
                 htmlString +='<tr>';
                 htmlString +='<td>'+json.data[i].username+'</td>';
                 htmlString +='</tr>';
             }
-            $('#UserData').html(htmlString);
+			$('#UserData').html(htmlString);
+			$('#changePasswordUsername').html(html);
         }
         else if(json.type == "insertUser_callback"){
             if(json.data.msg== 'UserInsertSuccess'){
@@ -46,7 +47,17 @@ $(function(){
         }	  	
 	  	else if(json.type == "Adminlogout_callback"){
 	  		window.location='login.html';
-        }
+		}
+		else if(json.type == "changeUserPassword_callback"){
+			if(json.data.msg== 'changePasswordSuccess'){
+                notifyChangePassword();
+				$('#changePasswordPassword').val("");
+				$('#changePasswordConfirmPassword').val("");
+            }
+            else if(json.data.msg == 'changePasswordFail'){
+                notifyFail();
+            }
+		}	
 	};
 
 	$('a[href="#"]').click(function (event) {
@@ -109,19 +120,76 @@ $(function(){
 		connection.send(json);
 		$('#username').focus();
 	}
-    
+
+
+	//change password of the existing user
+	$('#changepassword').click(validatePassword);
+	function validatePassword(){
+		event.preventDefault();
+		var msg='';
+		var flag=0;
+		var username=$('#changePasswordUsername option:selected').text();
+		var password=$('#changePasswordPassword').val();
+		var confirmpassword=$('#changePasswordConfirmPassword').val();
+		
+		if(username == 'Select User'){
+			flag=1;
+			msg="Enter Username.";
+		}
+		else if(password == '' || password== null){
+			flag=1;
+			msg="Enter Password.";
+        }
+        else if(!password.match(/(?=.{9,})(?=.*?[^\w\s])(?=.*?[0-9])(?=.*?[A-Z]).*?[a-z].*/)){
+			flag=1;
+            msg="Password Must Contain At least 1 Capital letter, 1 Small letter, 1 Numeric Value and 1 Symbol.";
+        }        
+		else if(confirmpassword == '' || confirmpassword== null){
+			flag=1;
+			msg="Enter Confirm Password."
+		}
+		else if(password != confirmpassword){
+			flag=1;
+			msg="Confirm Password didn't Match."	
+		}
+        if(flag == 0)
+			changePassword();
+		else{
+			notifyValidateError(msg);
+		}
+	}
+	function changePassword(){
+		var username=$('#changePasswordUsername option:selected').text();
+		var password=$('#changePasswordPassword').val();
+		
+		var obj={
+			username:username,
+			password:password
+		}
+		var json=JSON.stringify({usertype:"AdminChangePassword",data:obj});
+		connection.send(json);	
+	}
+	
     $('#logout').click(logout);
 	function logout(){        
         var json=JSON.stringify({usertype:"Adminlogout"});
 		connection.send(json);
 	}
-
 });
 
 function notifyInsert(){
     $.notify({
       	title: "Insert Complete : ",
       	message: "Something cool is just Inserted!",
+      	icon: 'fa fa-check' 
+    },{
+      	type: "success"
+    });
+};
+function notifyChangePassword(){
+    $.notify({
+      	title: "Password Changed : ",
+      	message: "Password has been changed!",
       	icon: 'fa fa-check' 
     },{
       	type: "success"
