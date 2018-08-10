@@ -295,13 +295,9 @@ $(function(){
 	  			notifyFail();
 	  		}
 	  		else if(json.data.msg == 'ChallanSelectSuccess'){
-	  			var d1=json.dataM.date;
-	  			d1=d1.substring(0,10);
-	  			d1=d1.split("-");
-	  			var d=d1[2]+"/"+d1[1]+"/"+d1[0];
 	  			$('#searchSalesCustomerName').text(json.dataM.customername);
 	  			$('#searchSalesChallanNo').text(json.dataM.challanno);
-	  			$('#SearchSalesDate').text(d);
+	  			$('#SearchSalesDate').text(json.dataM.date);
 	  			$('#searchSalesgrandTotal').text(json.dataM.total);
 	  			$('#searchSalesCustomerAddress').text(json.dataM.address);
 
@@ -326,14 +322,10 @@ $(function(){
 	  			notifyFail();
 	  		}
 	  		else if(json.data.msg == 'ChallanSelectSuccess'){
-	  			var d1=json.dataM.date;
-	  			d1=d1.substring(0,10);
-	  			d1=d1.split("-");
-	  			var d=d1[2]+"/"+d1[1]+"/"+d1[0];
 	  			
 	  			$('#searchSalesReturnCustomerName').text(json.dataM.customername);
 	  			$('#searchSalesReturnChallanNo').text(json.dataM.challanno);
-	  			$('#SearchSalesReturnDate').text(d);
+	  			$('#SearchSalesReturnDate').text(json.dataM.date);
 	  			$('#searchSalesReturngrandTotal').text(json.dataM.total);
 	  			$('#searchSalesReturnCustomerAddress').text(json.dataM.address);
 
@@ -361,15 +353,10 @@ $(function(){
 			var html="";
 			
 			for(var i in json.data){
-				var d1=json.data[i].date;
-				d1=d1.substring(0,10);
-	  			d1=d1.split("-");
-	  			var d=d1[2]+"/"+d1[1]+"/"+d1[0];
-
 				html += "<tr>";
 				html += "<td>"+json.data[i].fname+" "+json.data[i].lname+"</td>";
 				html += "<td>"+json.data[i].challanno+"</td>";
-				html += "<td>"+d+"</td>";
+				html += "<td>"+json.data[i].date+"</td>";
 				html += "<td>"+json.data[i].contactno+"</td>";
 				html += "<td style='text-align:right;'> <span data-prefix>₹</span>"+json.data[i].total+"</td>";
 				html += "</tr>";
@@ -385,15 +372,15 @@ $(function(){
 			var html="";
 			
 			for(var i in json.data){
-				var d1=json.data[i].date;
+				/*var d1=json.data[i].date;
 				d1=d1.substring(0,10);
 	  			d1=d1.split("-");
 	  			var d=d1[2]+"/"+d1[1]+"/"+d1[0];
-
+				*/
 				html += "<tr>";
 				html += "<td>"+json.data[i].fname+" "+json.data[i].lname+"</td>";
 				html += "<td>"+json.data[i].challanno+"</td>";
-				html += "<td>"+d+"</td>";
+				html += "<td>"+json.data[i].date+"</td>";
 				html += "<td>"+json.data[i].contactno+"</td>";
 				html += "<td style='text-align:right;'> <span data-prefix>₹</span>"+json.data[i].total+"</td>";
 				html += "</tr>";
@@ -410,14 +397,9 @@ $(function(){
 			var html="";
 			
 			for(var i in json.data){
-				var d1=json.data[i].date;
-				d1=d1.substring(0,10);
-	  			d1=d1.split("-");
-	  			var d=d1[2]+"/"+d1[1]+"/"+d1[0];
-
 				html += "<tr>";
 				html += "<td>"+json.data[i].challanno+"</td>";
-				html += "<td>"+d+"</td>";
+				html += "<td>"+json.data[i].date+"</td>";
 				html += "<td style='text-align:right;'> <span data-prefix>₹</span>"+json.data[i].total+"</td>";
 				html += "</tr>";
 
@@ -433,14 +415,9 @@ $(function(){
 			var html="";
 			if(json.data.length){
 				for(var i in json.data){
-					var d1=json.data[i].date;
-					d1=d1.substring(0,10);
-		  			d1=d1.split("-");
-		  			var d=d1[2]+"/"+d1[1]+"/"+d1[0];
-
 					html += "<tr>";
 					html += "<td>"+json.data[i].challanno+"</td>";
-					html += "<td>"+d+"</td>";
+					html += "<td>"+json.data[i].date+"</td>";
 					html += "<td style='text-align:right;'> <span data-prefix>₹</span>"+json.data[i].total+"</td>";
 					html += "</tr>";
 				}
@@ -1412,12 +1389,10 @@ $(function(){
 		fromdate=fromdate.replace(/\//g, "-");
 		var t=fromdate.split('-');
 		fromdate=t[2]+"-"+t[1]+"-"+t[0];
-		
 		var todate=$('#ssearchtodate').val();
 		todate=todate.replace(/\//g, "-");
 		var t=todate.split('-');
 		todate=t[2]+"-"+t[1]+"-"+t[0];
-
 		var obj={
 			fromDate 	: 	fromdate,
 			toDate 		: 	todate,
@@ -1708,7 +1683,8 @@ function notifyValidateError(msg){
 };
 function notifyChangePassword(){
 	$.notify({
-		title: "Password ChangedSuccessfully.",
+		title: "Success",
+		message: "Password changed Successfully.",
 		icon: 'fa fa-check' 
   	},{
 		type: "success"

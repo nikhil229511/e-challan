@@ -988,12 +988,22 @@ wsServer.on('request',function(request){
 			});
 		}
 
+		function GetFormattedDate(date) {
+		    var month = date .getMonth() + 1;
+		    var day = date .getDate();
+		    var year = date .getFullYear();
+		    return day + "/" + month + "/" + year;
+		}
+
 		function SearchSalesChallanNowise(companyid,challanno,connection){
 			var challanid=-1,obj,objM,objD,arr=[];
 			async.series([
 					function(callback){
 						var sql="SELECT cm.challanid,cm.companyid,cm.customerid,c.fname,c.lname,c.address,c.gstno,cm.challanno,cm.Date,cm.total FROM challanmaster cm INNER JOIN customers c on c.customerid=cm.customerid WHERE cm.companyid="+companyid+" and cm.challanno="+challanno+";";
+
 						con.query(sql, function (err, result) {
+							var d = new Date(result[0].Date);
+							var d1=GetFormattedDate(d);
 							if (err){        
 			                    obj={
 									msg:'ChallanSelectFail'
@@ -1008,7 +1018,7 @@ wsServer.on('request',function(request){
 				                		customerid 	: result[0].customerid,
 				                		customername: result[0].fname+" "+result[0].lname,
 				                		challanno 	: result[0].challanno,
-				                		date 		: result[0].Date,
+				                		date 		: d1,
 				                		total 		: result[0].total,
 				                		gstno 		: result[0].gstno,
 				                		address 	: result[0].address			                		
@@ -1078,6 +1088,8 @@ wsServer.on('request',function(request){
 					function(callback){
 						var sql="SELECT crm.challanid,crm.companyid,crm.customerid,c.fname,c.lname,c.address,c.gstno,crm.challanno,crm.date,crm.total FROM challanreturnmaster crm INNER JOIN customers c on c.customerid=crm.customerid WHERE crm.companyid="+companyid+" and crm.challanno="+challanno+";";
 						con.query(sql, function (err, result) {
+							var d = new Date(result[0].date);
+							var d1=GetFormattedDate(d);							
 							if (err){        
 			                    obj={
 									msg:'ChallanSelectFail'
@@ -1092,7 +1104,7 @@ wsServer.on('request',function(request){
 				                		customerid 	: result[0].customerid,
 				                		customername: result[0].fname+" "+result[0].lname,
 				                		challanno 	: result[0].challanno,
-				                		date 		: result[0].date,
+				                		date 		: d1,
 				                		total 		: result[0].total,
 				                		gstno 		: result[0].gstno,
 				                		address 	: result[0].address			                		
@@ -1163,11 +1175,13 @@ wsServer.on('request',function(request){
 			con.query(sql, function (err, result, fields) {
 				if(result.length){
 					for(var index in result){
+						var d = new Date(result[index].Date);
+						var d1=GetFormattedDate(d);				
 						var obj={
 							companyid 	: 	result[index].companyid,
 							customerid 	: 	result[index].customerid,
 							challanno 	: 	result[index].challanno,
-							date 		:  	result[index].Date,
+							date 		:  	d1,
 							total 		: 	result[index].total,
 							fname 	 	: 	result[index].fname,
 							lname 		: 	result[index].lname,
@@ -1184,15 +1198,17 @@ wsServer.on('request',function(request){
 
 		function SearchSalesReturnChallanDatewise(fromDate,toDate,companyid,connection){
 			var arr=[];
-			var sql="SELECT crm.companyid,crm.customerid,crm.challanno,crm.Date,crm.total,c.fname,c.lname,c.address,c.contactno FROM challanreturnmaster crm INNER JOIN customers c on crm.customerid=c.customerid where crm.Date > '"+fromDate+"' AND crm.Date < '"+toDate+"'  AND crm.companyid="+companyid+" ORDER BY crm.challanno";
+			var sql="SELECT crm.companyid,crm.customerid,crm.challanno,crm.date,crm.total,c.fname,c.lname,c.address,c.contactno FROM challanreturnmaster crm INNER JOIN customers c on crm.customerid=c.customerid where crm.Date > '"+fromDate+"' AND crm.Date < '"+toDate+"'  AND crm.companyid="+companyid+" ORDER BY crm.challanno";
 			con.query(sql, function (err, result, fields) {
 				if(result.length){	
 					for(var index in result){
+						var d = new Date(result[index].date);
+						var d1=GetFormattedDate(d);				
 						var obj={
 							companyid 	: 	result[index].companyid,
 							customerid 	: 	result[index].customerid,
 							challanno 	: 	result[index].challanno,
-							date 		:  	result[index].Date,
+							date 		:  	d1,
 							total 		: 	result[index].total,
 							fname 	 	: 	result[index].fname,
 							lname 		: 	result[index].lname,
@@ -1213,11 +1229,13 @@ wsServer.on('request',function(request){
 			con.query(sql, function (err, result, fields) {
 				if(result.length){
 					for(var index in result){
+						var d = new Date(result[index].Date);
+						var d1=GetFormattedDate(d);										
 						var obj={
 							companyid 	: 	result[index].companyid,
 							customerid 	: 	result[index].customerid,
 							challanno 	: 	result[index].challanno,
-							date 		:  	result[index].Date,
+							date 		:  	d1,
 							total 		: 	result[index].total,
 							fname 	 	: 	result[index].fname,
 							lname 		: 	result[index].lname,
@@ -1234,15 +1252,17 @@ wsServer.on('request',function(request){
 
 		function SearchSalesReturnChallanCustomerwise(fname,lname,companyid,connection){
 			var arr=[];
-			var sql="SELECT crm.companyid,crm.customerid,crm.challanno,crm.Date,crm.total,c.fname,c.lname,c.address,c.contactno FROM challanreturnmaster crm INNER JOIN customers c on crm.customerid=c.customerid where c.fname='"+fname+"' AND c.lname= '"+lname+"' AND crm.companyid="+companyid+" ORDER BY crm.challanno";
+			var sql="SELECT crm.companyid,crm.customerid,crm.challanno,crm.date,crm.total,c.fname,c.lname,c.address,c.contactno FROM challanreturnmaster crm INNER JOIN customers c on crm.customerid=c.customerid where c.fname='"+fname+"' AND c.lname= '"+lname+"' AND crm.companyid="+companyid+" ORDER BY crm.challanno";
 			con.query(sql, function (err, result, fields) {
 				if(result.length){
 					for(var index in result){
+						var d = new Date(result[index].date);
+						var d1=GetFormattedDate(d);
 						var obj={
 							companyid 	: 	result[index].companyid,
 							customerid 	: 	result[index].customerid,
 							challanno 	: 	result[index].challanno,
-							date 		:  	result[index].Date,
+							date 		:  	d1,
 							total 		: 	result[index].total,
 							fname 	 	: 	result[index].fname,
 							lname 		: 	result[index].lname,
