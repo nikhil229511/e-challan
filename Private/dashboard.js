@@ -21,7 +21,7 @@ $(function(){
 		}
 	},3000);
 	if(sessionStorage.getItem('companyid') ==null && sessionStorage.getItem('username') ==null){
-		window.location='login.html'
+		window.location='index.html'
 	}
 	var connection = new WebSocket('ws://localhost:5005/');
 	var htmlString="<strong><em>"+sessionStorage.getItem('username')+"</em></strong>";
@@ -430,14 +430,14 @@ $(function(){
 	  	else if(json.type == "logout_callback"){
 	  		sessionStorage.removeItem('companyid');
 	  		sessionStorage.removeItem('username');
-	  		window.location='login.html';
+	  		window.location='./../Public/index.html';
 		}
 		else if(json.type == "changePassword_callback"){
 			if(json.data.msg== 'changePasswordSuccess'){
 				notifyChangePassword();
 				sessionStorage.removeItem('companyid');
 				sessionStorage.removeItem('username');
-				window.location('login.html');
+				window.location('index.html');
 			}
 			else if(json.data.msg == 'changePasswordFail'){
 				var msg="New Password and Confirm Password Mismatch.";
