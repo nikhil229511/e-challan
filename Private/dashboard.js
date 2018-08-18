@@ -168,12 +168,13 @@ $(function(){
 	  			html +='<option>'+strName+'</option>';
 
 	  			htmlString +='<tr>';
+	  			htmlString +='<td>'+json.data[i].firmname+'</td>';
 	  			htmlString +='<td>'+json.data[i].fname+'</td>';
 	  			htmlString +='<td>'+json.data[i].lname+'</td>';	
 	  			htmlString +='<td>'+json.data[i].gstno+'</td>';
 	  			htmlString +='<td>'+json.data[i].contactno+'</td>';
 	  			htmlString +='<td>'+json.data[i].address+'</td>';
-	  			htmlString +="<td><a href='#' onclick=updateCustomer("+json.data[i].customerid+","+json.data[i].companyid+",'"+json.data[i].fname+"','"+json.data[i].lname+"','"+json.data[i].contactno+"','"+json.data[i].gstno+"','"+encodeURIComponent(json.data[i].address) +"'); >";
+	  			htmlString +="<td><a href='#' onclick=updateCustomer("+json.data[i].customerid+","+json.data[i].companyid+",'"+encodeURIComponent(json.data[i].firmname)+"','"+json.data[i].fname+"','"+json.data[i].lname+"','"+json.data[i].contactno+"','"+json.data[i].gstno+"','"+encodeURIComponent(json.data[i].address) +"'); >";
 	  			htmlString +='<i class="fa fa-pencil" aria-hidden="true"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 	  			htmlString +='<a href="#" class="demoSwalCustomer" id='+json.data[i].customerid+'><i class="fa fa-trash" aria-hidden="true"></i></a></td>';
 	  			htmlString +='</tr>';
@@ -203,10 +204,7 @@ $(function(){
 	  		for(var i=0;i<json.data.length;i++){
 	  			htmlString +='<tr>';
 	  			htmlString +='<td>'+json.data[i].productname+'</td>';
-	  			htmlString +='<td>'+json.data[i].length+'</td>';	
-	  			htmlString +='<td>'+json.data[i].width+'</td>';
-	  			htmlString +='<td>'+json.data[i].thickness+'</td>';
-	  			htmlString +="<td><a href='#' onclick=updateProduct("+json.data[i].productid+",'"+encodeURIComponent(json.data[i].productname)+"',"+json.data[i].length+","+json.data[i].width+","+json.data[i].thickness+"); >";
+	  			htmlString +="<td><a href='#' onclick=updateProduct("+json.data[i].productid+",'"+encodeURIComponent(json.data[i].productname)+"'); >";
 	  			htmlString +='<i class="fa fa-pencil" aria-hidden="true"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 	  			htmlString +='<a href="#" class="demoSwalProduct" id='+json.data[i].productid+'><i class="fa fa-trash" aria-hidden="true"></i></a></td>';
 	  			htmlString +='</tr>';
@@ -235,13 +233,14 @@ $(function(){
 	  			var obj={
 	  				productid:json.data[i].productid,
 	  				productname:json.data[i].productname,
-	  				length:json.data[i].length,
-	  				width:json.data[i].width,
-	  				thickness:json.data[i].thickness,
-	  				totol_offset: (json.data[i].length * json.data[i].width)
+	  				// length:json.data[i].length,
+	  				// width:json.data[i].width,
+	  				// thickness:json.data[i].thickness,
+	  				// totol_offset: (json.data[i].length * json.data[i].width)
 	  			}
 	  			productList.push(obj);
-	  			htmlString +='<option data-value='+obj.totol_offset+' value='+json.data[i].productid+'>'+json.data[i].productname+' ( '+json.data[i].length+' * '+json.data[i].width+' * '+json.data[i].thickness+' ) </option>';
+	  			//data-value='+obj.totol_offset+'
+	  			htmlString +='<option  value='+json.data[i].productid+'>'+json.data[i].productname+'</option>';
 	  		}
 	  		$('#loadProductsDropdown').append(htmlString);
 	  		$('#loadProductsDropdownsr').append(htmlString);
@@ -253,6 +252,7 @@ $(function(){
 	  		for(var i=0;i<json.data.length;i++){
 	  			var obj={
 	  				customerid 	: json.data[i].customerid,
+	  				firmname 	: json.data[i].firmname,
 	  				fname		: json.data[i].fname,
 	  				lname		: json.data[i].lname,
 	  				address 	: json.data[i].address,
@@ -260,7 +260,7 @@ $(function(){
 	  				contactno 	: json.data[i].contactno
 	  			}
 	  			customers.push(obj);
-	  			htmlString +='<option value='+json.data[i].customerid+'>'+json.data[i].fname+' '+json.data[i].lname+'</option>';
+	  			htmlString +='<option value='+json.data[i].customerid+'>'+json.data[i].firmname+' - '+json.data[i].fname+' '+json.data[i].lname+'</option>';
 	  		}
 	  		$('#scustomername').append(htmlString);
 	  		$('#srcustomername').append(htmlString);
@@ -295,7 +295,8 @@ $(function(){
 	  			notifyFail();
 	  		}
 	  		else if(json.data.msg == 'ChallanSelectSuccess'){
-	  			$('#searchSalesCustomerName').text(json.dataM.customername);
+	  			var to=json.dataM.firmname+" - ("+ json.dataM.customername+")";
+	  			$('#searchSalesCustomerName').text(to);
 	  			$('#searchSalesChallanNo').text(json.dataM.challanno);
 	  			$('#SearchSalesDate').text(json.dataM.date);
 	  			$('#searchSalesgrandTotal').text(json.dataM.total);
@@ -306,8 +307,10 @@ $(function(){
 	  			for(var index in json.dataD){
 	  				html  = "<tr class='itemRow'>";
 					html +=	"<td id='itemid' data-ProductId="+json.dataD[index].productid+">"+json.dataD[index].productname+"</td>";
-			    	html +=	"<td id='itemunit' data-unit="+json.dataD[index].unit+">"+json.dataD[index].unit+"</td>"
-			        html +=	"<td id='itemqty' data-qty="+json.dataD[index].quantity+" style='text-align:right;'>"+json.dataD[index].quantity+"</td>";                    
+			    	html +=	"<td id='itemunit' data-unit="+json.dataD[index].length+">"+json.dataD[index].length+"</td>";
+			    	html +=	"<td id='itemunit' data-unit="+json.dataD[index].width+">"+json.dataD[index].width+"</td>";
+			    	html +=	"<td id='itemunit' data-unit="+json.dataD[index].unit+">"+json.dataD[index].unit+"</td>";
+			        html +=	"<td id='itemqty' data-qty="+json.dataD[index].quantity+" style='text-align:right;'>"+json.dataD[index].quantity+"</td>";
 			        html +=	"<td id='itemrate' data-rate="+json.dataD[index].rate+" style='text-align:right;'><span data-prefix>₹</span>"+json.dataD[index].rate+"</td>";
 			        html +=	"<td id='itemprice' data-price="+json.dataD[index].price+" style='text-align:right;'><span data-prefix>₹</span>"+json.dataD[index].price+"</td>";
 			        html += "</tr>";
@@ -322,8 +325,8 @@ $(function(){
 	  			notifyFail();
 	  		}
 	  		else if(json.data.msg == 'ChallanSelectSuccess'){
-	  			
-	  			$('#searchSalesReturnCustomerName').text(json.dataM.customername);
+	  			var to=json.dataM.firmname+" - ("+ json.dataM.customername+")";
+	  			$('#searchSalesReturnCustomerName').text(to);
 	  			$('#searchSalesReturnChallanNo').text(json.dataM.challanno);
 	  			$('#SearchSalesReturnDate').text(json.dataM.date);
 	  			$('#searchSalesReturngrandTotal').text(json.dataM.total);
@@ -334,7 +337,9 @@ $(function(){
 	  			for(var index in json.dataD){
 	  				html  = "<tr class='itemRow'>";
 					html +=	"<td id='itemid' data-ProductId="+json.dataD[index].productid+">"+json.dataD[index].productname+"</td>";
-			    	html +=	"<td id='itemunit' data-unit="+json.dataD[index].unit+">"+json.dataD[index].unit+"</td>"
+			    	html +=	"<td id='itemunit' data-unit="+json.dataD[index].length+">"+json.dataD[index].length+"</td>";
+			    	html +=	"<td id='itemunit' data-unit="+json.dataD[index].width+">"+json.dataD[index].width+"</td>";
+			    	html +=	"<td id='itemunit' data-unit="+json.dataD[index].unit+">"+json.dataD[index].unit+"</td>";
 			        html +=	"<td id='itemqty' data-qty="+json.dataD[index].quantity+" style='text-align:right;'>"+json.dataD[index].quantity+"</td>";                    
 			        html +=	"<td id='itemrate' data-rate="+json.dataD[index].rate+" style='text-align:right;'><span data-prefix>₹</span>"+json.dataD[index].rate+"</td>";
 			        html +=	"<td id='itemprice' data-price="+json.dataD[index].price+" style='text-align:right;'><span data-prefix>₹</span>"+json.dataD[index].price+"</td>";
@@ -694,7 +699,9 @@ $(function(){
 		$('#ccontactno').val("");
 		$('#cgstno').val("");
 		$('#caddress').val("");
-		$('#ccustomerid').val('-1');	
+		$('#cfirm').val("");
+		$('#ccustomerid').val('-1');
+
 	}
 	function validateCustomer(event){
 		event.preventDefault();
@@ -706,22 +713,23 @@ $(function(){
 		var cgstno=$('#cgstno').val();
 		var caddress=$('#caddress').val();
 		var ccustomerid=$('#ccustomerid').val();
+		var cfirm=$('#cfirm').val();
 		var letters = /^[A-Za-z]+$/;
-		if(cfname =='' || cfname == null){
+		if(cfirm =='' || cfirm == null){
 			flag=1;
-			msg="Enter First Name.";
+			msg="Enter Firm Name.";
 		}
-		else if(!cfname.match(/^[A-Za-z]+$/)){
-			flag=1;
-			msg="First Name Only Accepts Alphabets."
+		else if(cfname.length !=0){
+			if(!cfname.match(/^[A-Za-z]+$/)){
+				flag=1;
+				msg="First Name Only Accepts Alphabets."
+			}
 		}
-		else if(clname == '' || clname== null){
-			flag=1;
-			msg="Enter Last Name.";
-		}
-		else if(!clname.match(/^[A-Za-z]+$/)){
-			flag=1;
-			msg="Last Name Only Accepts Alphabets."
+		else if(clname.length!=0){ 
+			if(!clname.match(/^[A-Za-z]+$/)){
+				flag=1;
+				msg="Last Name Only Accepts Alphabets."
+			}
 		}
 		else if(ccontactno == '' || ccontactno== null){
 			flag=1;
@@ -754,8 +762,10 @@ $(function(){
 		var cgstno=$('#cgstno').val();
 		var caddress=$('#caddress').val();
 		var ccustomerid=$('#ccustomerid').val();
+		var cfirm=$('#cfirm').val();
 		var obj={
 			customerid:ccustomerid,
+			firmname:cfirm,
 			fname : cfname,
 			lname : clname,
 			contactno:ccontactno,
@@ -890,9 +900,6 @@ $(function(){
 		if(event)
 			event.preventDefault();
 		$('#pname').val("");
-		$('#length').val("");
-		$('#width').val("");
-		$('#thickness').val("");
 		$('#productid').val('-1');
 	}
 	function validateProduct(){
@@ -901,38 +908,35 @@ $(function(){
 		var flag=0;
 		
 		var name=$('#pname').val();
-		var len=$('#length').val();
-		var width=$('#width').val();
-		var thickness=$('#thickness').val();
 		var productid=$('#productid').val();
 
 		if(name =='' || name == null){
 			flag=1;
 			msg="Enter Product Name.";
 		}
-		else if(len == '' || len == null){
-			flag=1;
-			msg="Enter Length.";
-		}
-		else if(!len.match(/^\d+(\.\d{1,2})?$/)){
-			flag=1;
-			msg="Length Should be Number.";
-		}
-		else if(width == '' || width== null){
-			flag=1;
-			msg="Enter Width.";
-		}
-		else if(!width.match(/^\d+(\.\d{1,2})?$/)){
-			flag=1;
-			msg="width Should be Number.";
-		}else if(thickness == '' || thickness== null){
-			flag=1;
-			msg="Enter Thickness.";			
-		}
-		else if(!thickness.match(/^\d+(\.\d{1,2})?$/)){
-			flag=1;
-			msg="Thickness Should be Number.";
-		}
+		// else if(len == '' || len == null){
+		// 	flag=1;
+		// 	msg="Enter Length.";
+		// }
+		// else if(!len.match(/^\d+(\.\d{1,2})?$/)){
+		// 	flag=1;
+		// 	msg="Length Should be Number.";
+		// }
+		// else if(width == '' || width== null){
+		// 	flag=1;
+		// 	msg="Enter Width.";
+		// }
+		// else if(!width.match(/^\d+(\.\d{1,2})?$/)){
+		// 	flag=1;
+		// 	msg="width Should be Number.";
+		// }else if(thickness == '' || thickness== null){
+		// 	flag=1;
+		// 	msg="Enter Thickness.";			
+		// }
+		// else if(!thickness.match(/^\d+(\.\d{1,2})?$/)){
+		// 	flag=1;
+		// 	msg="Thickness Should be Number.";
+		// }
 		if(flag == 0)
 			insertProduct();
 		else{
@@ -941,17 +945,14 @@ $(function(){
 	}
 	function insertProduct(){
 		var name=$('#pname').val();
-		var length=$('#length').val();
-		var width=$('#width').val();
-		var thickness=$('#thickness').val();
+		// var length=$('#length').val();
+		// var width=$('#width').val();
+		// var thickness=$('#thickness').val();
 		var productid=$('#productid').val();
 		
 		var obj={
 			productid:productid,
 			name:name,
-			length:length,
-			width:width,
-			thickness:thickness,
 			companyid: sessionStorage.getItem('companyid')
 		}
 		var json;
@@ -1050,31 +1051,35 @@ $(function(){
 		connection.send(json);
 	}
 
-	var ans,qty,measurement,offset,rate;
+	var ans,qty,length,width,offset,rate;
 	$('.calculate').change(function(){
-		if($('option:selected', this).attr('data-value'))
-			measurement = $('option:selected', this).attr('data-value');
+		if($('#slength').val())
+			length=$('#slength').val();
+		if($('#swidth').val())
+			width=$('#swidth').val();		
 		if($('option:selected', this).attr('data-offset'))
-			offset=$('option:selected', this).attr('data-offset');
+			offset=$('option:selected', this).attr('data-offset');		
 		if($('#squantity').val())
 			qty=$('#squantity').val();
 		if($('#srate').val())
 			rate=$('#srate').val();
-		ans=(measurement/offset)*qty*rate;
+		ans=((length*width)/offset)*qty*rate;
 		ans=ans.toFixed(2);
 		$('#sprice').val(ans);
 	});
 
 	$('.calculatesr').change(function(){
-		if($('option:selected', this).attr('data-value'))
-			measurement = $('option:selected', this).attr('data-value');
+		if($('#srlength').val())
+			length=$('#srlength').val();
+		if($('#srwidth').val())
+			width=$('#srwidth').val();		
 		if($('option:selected', this).attr('data-offset'))
 			offset=$('option:selected', this).attr('data-offset');
 		if($('#srquantity').val())
 			qty=$('#srquantity').val();
 		if($('#srrate').val())
 			rate=$('#srrate').val();
-		ans=(measurement/offset)*qty*rate;
+		ans=((length*width)/offset)*qty*rate;
 		ans=ans.toFixed(2);
 		$('#srprice').val(ans);
 	});
@@ -1202,8 +1207,8 @@ $(function(){
       		showCancelButton: true,
       		confirmButtonText: "Yes!",
       		cancelButtonText: "No!",
-      		closeOnConfirm: true,
-      		closeOnCancel: true
+      		closeOnConfirm: false,
+      		closeOnCancel: false
       	}, function(isConfirm) {
       		if (isConfirm) {
       			insertSalesChallan();
@@ -1231,6 +1236,12 @@ $(function(){
 				if($(this).attr('data-Productid')){
 					prodid=$(this).attr('data-Productid');
 				}
+				else if($(this).attr('data-width')){
+					width=$(this).attr('data-width');
+				}
+				else if($(this).attr('data-length')){
+					length=$(this).attr('data-length');
+				}
 				else if($(this).attr('data-unit')){
 					unit=$(this).attr('data-unit');
 				}
@@ -1246,6 +1257,8 @@ $(function(){
 			});
 			var obj={
 				productid : prodid,
+				length 	  : length,
+				width 	  : width,
 				unit      : unit,
 				qty       : qty,
 				rate      : rate,
@@ -1321,6 +1334,12 @@ $(function(){
 				if($(this).attr('data-Productid')){
 					prodid=$(this).attr('data-Productid');
 				}
+				else if($(this).attr('data-width')){
+					width=$(this).attr('data-width');
+				}
+				else if($(this).attr('data-length')){
+					length=$(this).attr('data-length');
+				}
 				else if($(this).attr('data-unit')){
 					unit=$(this).attr('data-unit');
 				}
@@ -1336,6 +1355,8 @@ $(function(){
 			});
 			var obj={
 				productid : prodid,
+				length 	  : length,
+				width 	  : width,
 				unit      : unit,
 				qty       : qty,
 				rate      : rate,
@@ -1473,6 +1494,8 @@ $(function(){
 function addSalesRow(){
 	var itemid    =$("#loadProductsDropdown option:selected").val();
 	var itemName  =$("#loadProductsDropdown option:selected").text();
+	var itemLength=$('#slength').val();
+	var itemWidth =$('#swidth').val();
 	var itemUnit  =$("#loadUnitDropdown option:selected").text();
 	var itemQty   =$('#squantity').val();
 	var itemRate  =$('#srate').val();
@@ -1482,10 +1505,27 @@ function addSalesRow(){
 		flag=1;
 		msg="Please Select Product.";
   	}
-  	else if($('#loadUnitDropdown').val()==-1){
+  	else if(itemLength==""){
+  		flag=1;
+  		msg="Enter Length.";
+  	}
+ 	else if(!itemLength.match(/^\d+(\.\d{1,2})?$/)){
+	 	flag=1;
+	 	msg="Length Should be Number.";
+	}
+  	else if(itemWidth==""){
+  		flag=1;
+  		msg="Enter Width.";
+  	}
+  	else if(!itemWidth.match(/^\d+(\.\d{1,2})?$/)){
+	 	flag=1;
+	 	msg="Width Should be Number.";
+	}
+	else if($('#loadUnitDropdown').val()==-1){
   		flag=1;
 		msg="Please Select Unit of Measurement.";
   	}
+
   	else if(itemQty==""){
   		flag=1;
 		msg="Please Enter Quantity.";
@@ -1518,6 +1558,8 @@ function addSalesRow(){
 
 	var html  = "<tr class='itemRow'>";
 		html +=	"<td id='itemid' data-ProductId="+itemid+">"+itemName+"</td>";
+		html +=	"<td id='itemid' data-length="+itemLength+">"+itemLength+"</td>";
+		html +=	"<td id='itemid' data-width="+itemWidth+">"+itemWidth+"</td>";
     	html +=	"<td id='itemunit' data-unit="+itemUnit+">"+itemUnit+"</td>"
         html +=	"<td id='itemqty' data-qty="+itemQty+" style='text-align:right;'>"+itemQty+"</td>";                    
         html +=	"<td id='itemrate' data-rate="+itemRate+" style='text-align:right;'><span data-prefix>₹</span>"+itemRate+"</td>";
@@ -1530,13 +1572,15 @@ function addSalesRow(){
     $('#listSalesChallan').append(html);
     $('#grandTotal').text(salesGrand);
 
-    //restore original state of the panel.
 
+    //restore original state of the panel.
   	$('#loadUnitDropdown').val($('#loadUnitDropdown option:first').val());
   	$('#loadProductsDropdown').val($('#loadProductsDropdown option:first').val());
   	$('#srate').val("");
   	$('#squantity').val("");
   	$('#sprice').val("");
+  	$('#slength').val("");
+  	$('#swidth').val("");
   	$('#loadProductsDropdown').focus();
 }
 function addSalesReturnRow(){
@@ -1544,6 +1588,8 @@ function addSalesReturnRow(){
 	var itemName  =$("#loadProductsDropdownsr option:selected").text();
 	var itemUnit  =$("#loadUnitDropdownsr option:selected").text();
 	var itemQty   =$('#srquantity').val();
+	var itemLength=$('#srlength').val();
+	var itemWidth=$('#srwidth').val();
 	var itemRate  =$('#srrate').val();
 	var itemPrice =$('#srprice').val();
 	var msg,flag=0;
@@ -1552,6 +1598,22 @@ function addSalesReturnRow(){
 		flag=1;
 		msg="Please Select Product.";
   	}
+  	else if(itemLength==""){
+  		flag=1;
+  		msg="Enter Length.";
+  	}
+ 	else if(!itemLength.match(/^\d+(\.\d{1,2})?$/)){
+	 	flag=1;
+	 	msg="Length Should be Number.";
+	}
+  	else if(itemWidth==""){
+  		flag=1;
+  		msg="Enter Width.";
+  	}
+  	else if(!itemWidth.match(/^\d+(\.\d{1,2})?$/)){
+	 	flag=1;
+	 	msg="Width Should be Number.";
+	}
   	else if($('#loadUnitDropdownsr').val()==-1){
   		flag=1;
 		msg="Please Select Unit of Measurement.";
@@ -1587,6 +1649,8 @@ function addSalesReturnRow(){
 
 	var html  = "<tr class='itemRowsr'>";
 		html +=	"<td id='itemidsr' data-ProductId="+itemid+">"+itemName+"</td>";
+		html +=	"<td id='itemqtysr' data-length="+itemLength+" style='text-align:right;'>"+itemLength+"</td>";                    
+		html +=	"<td id='itemqtysr' data-width="+itemWidth+" style='text-align:right;'>"+itemWidth+"</td>";                    
     	html +=	"<td id='itemunitsr' data-unit="+itemUnit+">"+itemUnit+"</td>"
         html +=	"<td id='itemqtysr' data-qty="+itemQty+" style='text-align:right;'>"+itemQty+"</td>";                    
         html +=	"<td id='itemratesr' data-rate="+itemRate+" style='text-align:right;'><span data-prefix>₹</span>"+itemRate+"</td>";
@@ -1605,11 +1669,14 @@ function addSalesReturnRow(){
   	$('#loadProductsDropdownsr').val($('#loadProductsDropdownsr option:first').val());
   	$('#srrate').val("");
   	$('#srquantity').val("");
+  	$('#srwidth').val("");
+  	$('#srlength').val("");
   	$('#srprice').val("");
   	$('#loadProductsDropdownsr').focus();
 }
-function updateCustomer(customerid,companyid,fname,lname,contactno,gstno,address){
+function updateCustomer(customerid,companyid,firmname,fname,lname,contactno,gstno,address){
 	$('#ccustomerid').val(customerid);
+	$('#cfirm').val(decodeURIComponent(firmname));
 	$('#cfname').val(fname);
 	$('#clname').val(lname);
 	$('#ccontactno').val(contactno);	
@@ -1624,12 +1691,9 @@ function updateTransporter(transportid,companyid,fname,lname,contactno,gstno,add
 	$('#tgstno').val(gstno);
 	$('#taddress').val(decodeURIComponent(address));
 }
-function updateProduct(productid,productname,length,width,thickness){
+function updateProduct(productid,productname){
 	$('#productid').val(productid);
-	$('#pname').val(decodeURIComponent(productname));
-	$('#length').val(length);
-	$('#width').val(width);
-	$('#thickness').val(thickness);
+	$('#pname').val(decodeURIComponent(productname));	
 }
 function updateUnit(unitid,unitname,offset){
 	$('#unitid').val(unitid);

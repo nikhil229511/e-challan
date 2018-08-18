@@ -1,6 +1,5 @@
 "use strict";
 
-
 var bcrypt=require('bcrypt');
 var async=require('async');
 var mysql=require('mysql');
@@ -55,7 +54,7 @@ wsServer.on('request',function(request){
 						break;
 
 						case "insertCustomer":
-							insertCustomer(c.data.fname,c.data.lname,c.data.contactno,c.data.gstno,c.data.address,c.data.companyid,connection);
+							insertCustomer(c.data.firmname,c.data.fname,c.data.lname,c.data.contactno,c.data.gstno,c.data.address,c.data.companyid,connection);
 							getAllCustomers(c.data.companyid,connection);
 						break;
 
@@ -85,12 +84,12 @@ wsServer.on('request',function(request){
 						break;
 
 						case "insertProduct":
-							insertProduct(c.data.name,c.data.length,c.data.width,c.data.thickness,c.data.companyid,connection);
+							insertProduct(c.data.name,c.data.companyid,connection);
 							getAllProducts(c.data.companyid);
 						break;
 
 						case "updateProduct":
-							updateProduct(c.data.productid,c.data.name,c.data.length,c.data.width,c.data.thickness,c.data.companyid,connection);
+							updateProduct(c.data.productid,c.data.name,c.data.companyid,connection);
 							getAllProducts(c.data.companyid);
 						break;
 
@@ -248,9 +247,9 @@ wsServer.on('request',function(request){
 			});
 		}
 
-		function insertCustomer(fname,lname,contactno,gstno,address,companyid,connection){
+		function insertCustomer(firmname,fname,lname,contactno,gstno,address,companyid,connection){
 			var obj;
-			var sql="INSERT INTO customers (companyid,fname,lname,contactno,address,gstno) values("+companyid+",'"+fname+"','"+lname+"','"+contactno+"','"+address+"','"+gstno+"');";
+			var sql="INSERT INTO customers (companyid,firmname,fname,lname,contactno,address,gstno) values("+companyid+",'"+firmname+"','"+fname+"','"+lname+"','"+contactno+"','"+address+"','"+gstno+"');";
 			con.query(sql, function (err, result, fields) {
 				if(result.affectedRows){
 					obj={
@@ -362,9 +361,9 @@ wsServer.on('request',function(request){
 			});
 		}
 
-		function insertProduct(name,length,width,thickness,companyid,connection){
+		function insertProduct(name,companyid,connection){
 			var obj;
-			var sql="INSERT INTO products (productname,length,width,thickness,companyid) values('"+name+"',"+length+","+width+","+thickness+","+companyid+");";
+			var sql="INSERT INTO products (productname,companyid) values('"+name+"',"+companyid+");";
 			con.query(sql, function (err, result, fields) {
 				// if(err)
 				// 	throw err;
@@ -383,9 +382,9 @@ wsServer.on('request',function(request){
 			});
 		}
 
-		function updateProduct(productid,name,length,width,thickness,companyid,connection){
+		function updateProduct(productid,name,companyid,connection){
 			var obj;
-			var sql="UPDATE products set productname='"+name+"',length='"+length+"',width='"+width+"',thickness='"+thickness+"' WHERE productid="+productid+" AND companyid="+companyid+";";
+			var sql="UPDATE products set productname='"+name+"' WHERE productid="+productid+" AND companyid="+companyid+";";
 			con.query(sql, function (err, result, fields) {
 				if(result.affectedRows){
 					obj={
@@ -635,8 +634,11 @@ wsServer.on('request',function(request){
 			con.query(sql, function (err, result, fields) {
 				if(result.length){
 					for(var index in result){
+						/*console.log("----------------------------------------------");
+						console.log(result);*/
 						var obj={
 							customerid:result[index].customerid,
+							firmname:result[index].firmname,
 							companyid:result[index].companyid,
 							fname:result[index].fname,
 							lname:result[index].lname,
@@ -691,10 +693,7 @@ wsServer.on('request',function(request){
 					for(var index in result){
 						var obj={
 							productid:result[index].productid,
-							productname:result[index].productname,
-							length:result[index].length,
-							width:result[index].width,
-							thickness:result[index].thickness						
+							productname:result[index].productname							
 						}
 						arr.push(obj); 
 					}
@@ -716,10 +715,7 @@ wsServer.on('request',function(request){
 					for(var index in result){
 						var obj={
 							productid:result[index].productid,
-							productname:result[index].productname,
-							length:result[index].length,
-							width:result[index].width,
-							thickness:result[index].thickness						
+							productname:result[index].productname							
 						}
 						arr.push(obj); 
 					}
@@ -762,12 +758,13 @@ wsServer.on('request',function(request){
 
 		function getAllCustomerList(companyid){
 			var arr=[];
-			var sql="SELECT fname,lname,customerid,address,gstno,contactno from customers where companyid="+companyid+";";
+			var sql="SELECT firmname,fname,lname,customerid,address,gstno,contactno from customers where companyid="+companyid+";";
 			con.query(sql, function (err, result, fields) {
 				if(result.length){
 					for(var index in result){
 						var obj={
 							customerid 		: 	result[index].customerid,
+							firmname 		: 	result[index].firmname,
 							fname 			: 	result[index].fname,
 							lname 			: 	result[index].lname,
 							address 		: 	result[index].address,
@@ -843,12 +840,12 @@ wsServer.on('request',function(request){
 		            });		            
 		        },
 		        function(callback){
-		            var sql="INSERT INTO challandetail (challanid,productid,unit,quantity,rate,price) values";
+		            var sql="INSERT INTO challandetail (challanid,productid,length,width,unit,quantity,rate,price) values";
 		            for(var i=0;i<product_arr.length;i++){
 						if(i==product_arr.length-1)
-							sql += "("+challanid+","+product_arr[i].productid+",'"+product_arr[i].unit+"',"+product_arr[i].qty+","+product_arr[i].rate+","+product_arr[i].price+")";
+							sql += "("+challanid+","+product_arr[i].productid+","+product_arr[i].length+","+product_arr[i].width+",'"+product_arr[i].unit+"',"+product_arr[i].qty+","+product_arr[i].rate+","+product_arr[i].price+")";
 						else
-							sql += "("+challanid+","+product_arr[i].productid+",'"+product_arr[i].unit+"',"+product_arr[i].qty+","+product_arr[i].rate+","+product_arr[i].price+"),";
+							sql += "("+challanid+","+product_arr[i].productid+","+product_arr[i].length+","+product_arr[i].width+",'"+product_arr[i].unit+"',"+product_arr[i].qty+","+product_arr[i].rate+","+product_arr[i].price+"),";
 					}
 		            con.query(sql, function (err, result) {
 		                if (err){        
@@ -921,12 +918,12 @@ wsServer.on('request',function(request){
 		            });		            
 		        },
 		        function(callback){
-		            var sql="INSERT INTO challanreturndetail (challanid,productid,unit,quantity,rate,price) values";
+		            var sql="INSERT INTO challanreturndetail (challanid,productid,length,width,unit,quantity,rate,price) values";
 		            for(var i=0;i<product_arr.length;i++){
 						if(i==product_arr.length-1)
-							sql += "("+challanid+","+product_arr[i].productid+",'"+product_arr[i].unit+"',"+product_arr[i].qty+","+product_arr[i].rate+","+product_arr[i].price+")";
+							sql += "("+challanid+","+product_arr[i].productid+","+product_arr[i].length+","+product_arr[i].width+",'"+product_arr[i].unit+"',"+product_arr[i].qty+","+product_arr[i].rate+","+product_arr[i].price+")";
 						else
-							sql += "("+challanid+","+product_arr[i].productid+",'"+product_arr[i].unit+"',"+product_arr[i].qty+","+product_arr[i].rate+","+product_arr[i].price+"),";
+							sql += "("+challanid+","+product_arr[i].productid+","+product_arr[i].length+","+product_arr[i].width+",'"+product_arr[i].unit+"',"+product_arr[i].qty+","+product_arr[i].rate+","+product_arr[i].price+"),";
 					}
 		            con.query(sql, function (err, result) {
 		                if (err){        
@@ -999,7 +996,7 @@ wsServer.on('request',function(request){
 			var challanid=-1,obj,objM,objD,arr=[];
 			async.series([
 					function(callback){
-						var sql="SELECT cm.challanid,cm.companyid,cm.customerid,c.fname,c.lname,c.address,c.gstno,cm.challanno,cm.Date,cm.total FROM challanmaster cm INNER JOIN customers c on c.customerid=cm.customerid WHERE cm.companyid="+companyid+" and cm.challanno="+challanno+";";
+						var sql="SELECT c.firmname,cm.challanid,cm.companyid,cm.customerid,c.fname,c.lname,c.address,c.gstno,cm.challanno,cm.Date,cm.total FROM challanmaster cm INNER JOIN customers c on c.customerid=cm.customerid WHERE cm.companyid="+companyid+" and cm.challanno="+challanno+";";
 
 						con.query(sql, function (err, result) {
 							var d = new Date(result[0].Date);
@@ -1016,6 +1013,7 @@ wsServer.on('request',function(request){
 			                		challanid=result[0].challanid;
 				                	objM={
 				                		customerid 	: result[0].customerid,
+				                		firmname 	: result[0].firmname,
 				                		customername: result[0].fname+" "+result[0].lname,
 				                		challanno 	: result[0].challanno,
 				                		date 		: d1,
@@ -1052,6 +1050,8 @@ wsServer.on('request',function(request){
 				                    	objD={
 				                    		productid 	: result[index].productid,
 				                    		productname : result[index].productname,
+				                    		length 		: result[index].length,
+				                    		width 		: result[index].width,
 				                    		unit 		: result[index].unit,
 				                    		quantity 	: result[index].quantity,
 				                    		rate 		: result[index].rate,
@@ -1086,7 +1086,7 @@ wsServer.on('request',function(request){
 			var challanid,obj,objM,objD,arr=[];
 			async.series([
 					function(callback){
-						var sql="SELECT crm.challanid,crm.companyid,crm.customerid,c.fname,c.lname,c.address,c.gstno,crm.challanno,crm.date,crm.total FROM challanreturnmaster crm INNER JOIN customers c on c.customerid=crm.customerid WHERE crm.companyid="+companyid+" and crm.challanno="+challanno+";";
+						var sql="SELECT c.firmname,crm.challanid,crm.companyid,crm.customerid,c.fname,c.lname,c.address,c.gstno,crm.challanno,crm.date,crm.total FROM challanreturnmaster crm INNER JOIN customers c on c.customerid=crm.customerid WHERE crm.companyid="+companyid+" and crm.challanno="+challanno+";";
 						con.query(sql, function (err, result) {
 							var d = new Date(result[0].date);
 							var d1=GetFormattedDate(d);							
@@ -1102,6 +1102,7 @@ wsServer.on('request',function(request){
 				                	challanid=result[0].challanid;
 				                	objM={
 				                		customerid 	: result[0].customerid,
+				                		firmname 	: result[0].firmname,
 				                		customername: result[0].fname+" "+result[0].lname,
 				                		challanno 	: result[0].challanno,
 				                		date 		: d1,
@@ -1138,6 +1139,8 @@ wsServer.on('request',function(request){
 				                    	//console.log(result[index].productid);
 				                    	objD={
 				                    		productid 	: result[index].productid,
+				                    		length 		: result[index].length,
+				                    		width 		: result[index].width,
 				                    		productname : result[index].productname,
 				                    		unit 		: result[index].unit,
 				                    		quantity 	: result[index].quantity,
